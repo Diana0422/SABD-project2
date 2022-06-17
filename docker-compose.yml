@@ -1,0 +1,78 @@
+version: '2.2'
+services:
+  ## SERVICE1: APACHE KAFKA + ZOOKEEPER
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  kafka:
+    image: 'bitnami/kafka:latest'
+    ports:
+      - '9092:9092'
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+
+  ## SERVICE2: APACHE FLINK -------------------------------------
+  jobmanager:
+    image: flink:latest
+    container_name: jobmanager
+    ports:
+      - '8081:8081' #Web UI
+    command: jobmanager
+    environment:
+    - |
+      FLINK_PROPERTIES=
+      jobmanager.rpc.address: jobmanager
+      state.backend.latency-track.keyed-state-enabled: true
+      metrics.reporters: grph
+      metrics.reporter.grph.factory.class: org.apache.flink.metrics.graphite.GraphiteReporterFactory
+      metrics.reporter.grph.host: graphite
+      metrics.reporter.grph.port: 2003
+      metrics.reporter.grph.protocol: TCP
+      metrics.reporter.grph.interval: 60 SECONDS
+
+  taskmanager:
+    image: flink:latest
+    command: taskmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 2
+        metrics.reporters: grph
+        metrics.reporter.grph.factory.class: org.apache.flink.metrics.graphite.GraphiteReporterFactory
+        metrics.reporter.grph.host: graphite
+        metrics.reporter.grph.port: 2003
+        metrics.reporter.grph.protocol: TCP
+        metrics.reporter.grph.interval: 60 SECONDS
+    depends_on:
+      - jobmanager
+
+  # SERVICE4: REDIS ---------------------------------------------
+  redis:
+    image: redislabs/redisearch
+    container_name: redis-cache
+    ports:
+      - '6379:6379'
+
+  # SERVICE5: GRAFANA -------------------------------------------
+#  grafana:
+#    build:
+#      context: ./grafana
+#    container_name: grafana
+#    ports:
+#      - '8000:3000'
+#    volumes:
+#      - grafana-data:/var/lib/grafana
+
+volumes:
+  grafana-data:
+    external: false

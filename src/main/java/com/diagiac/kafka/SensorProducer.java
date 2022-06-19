@@ -1,5 +1,6 @@
 package com.diagiac.kafka;
 
+import com.diagiac.kafka.bean.BlaBean;
 import com.diagiac.kafka.bean.SensorDataModel;
 import com.diagiac.kafka.serialize.JsonSerializer;
 import com.diagiac.kafka.utils.ReadCsv;
@@ -33,7 +34,7 @@ public class SensorProducer {
 
         // Read data from file https://archive.sensor.community/csv_per_month/2022-05/2022-05_bmp180.zip
 //        ReadCsv readCsv = new ReadCsv("data/2022-05_bmp180.csv");
-        ReadCsv readCsv = new ReadCsv("C:\\Users\\Test\\Downloads\\handson-flink\\kafka\\kafka-producer\\data\\2022-05_bmp180.csv");
+        ReadCsv readCsv = new ReadCsv("C:\\Users\\Test\\IdeaProjects\\SABD-project2\\data\\2022-05_bmp180.csv");
         List recordList = readCsv.readCSVFile();
         List orderedList = orderByTimestamp(recordList);
 

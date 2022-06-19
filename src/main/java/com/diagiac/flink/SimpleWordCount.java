@@ -1,4 +1,4 @@
-package com.flinking_sensors;
+package com.diagiac.flink;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -23,7 +23,7 @@ public class SimpleWordCount {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         DataStream<Tuple2<String, Integer>> dataStream = env
-                .socketTextStream("localhost", 9999)
+                .socketTextStream("localhost", 9092)
                 .flatMap(new Splitter())
                 // If you want to use keyed state, you need to specify a key
                 // that should be used to partition the state
@@ -39,7 +39,7 @@ public class SimpleWordCount {
     public static class Splitter implements FlatMapFunction<String, Tuple2<String, Integer>> {
         @Override
         public void flatMap(String sentence, Collector<Tuple2<String, Integer>> out) {
-            for (String word : sentence.split(" ")) {
+            for (String word : sentence.split(",")) {
                 out.collect(new Tuple2<>(word, 1));
             }
         }

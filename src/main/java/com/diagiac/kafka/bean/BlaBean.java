@@ -1,11 +1,10 @@
 package com.diagiac.kafka.bean;
+
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvBindByPosition;
 import lombok.Data;
 
 @Data
-public class SensorDataModel {
-
+public class BlaBean {
     @CsvBindByName
     private String sensor_id;
     @CsvBindByName

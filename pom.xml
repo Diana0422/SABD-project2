@@ -79,6 +79,11 @@
             <artifactId>flink-clients_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220320</version>
+        </dependency>
 
     </dependencies>
 

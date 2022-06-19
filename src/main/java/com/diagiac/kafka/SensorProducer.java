@@ -1,6 +1,5 @@
 package com.diagiac.kafka;
 
-import com.diagiac.kafka.bean.BlaBean;
 import com.diagiac.kafka.bean.SensorDataModel;
 import com.diagiac.kafka.serialize.JsonSerializer;
 import com.diagiac.kafka.utils.ReadCsv;

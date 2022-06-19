@@ -1,6 +1,5 @@
 package com.diagiac.kafka;
 
-import com.diagiac.kafka.bean.BlaBean;
 import com.diagiac.kafka.bean.SensorDataModel;
 import com.diagiac.kafka.serialize.JsonDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,15 +24,15 @@ public class SensorConsumer {
         props.put("value.deserializer", JsonDeserializer.class);
 
         //kafka consumer object
-        KafkaConsumer<Integer, BlaBean> consumer = new KafkaConsumer<Integer, BlaBean>(props);
+        KafkaConsumer<Integer, SensorDataModel> consumer = new KafkaConsumer<Integer, SensorDataModel>(props);
 
         //subscribe to topic
         consumer.subscribe(Arrays.asList("input-records"));
 
         //infinite poll loop
         while (true) {
-            ConsumerRecords<Integer, BlaBean> records = consumer.poll(Duration.ofMillis(100));
-            for (ConsumerRecord<Integer, BlaBean> record : records)
+            ConsumerRecords<Integer, SensorDataModel> records = consumer.poll(Duration.ofMillis(100));
+            for (ConsumerRecord<Integer, SensorDataModel> record : records)
                 System.out.printf("offset = %d, key = %s, value = %s\n", record.offset(), record.key(), record.value().toString());
         }
     }

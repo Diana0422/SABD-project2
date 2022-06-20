@@ -1,6 +1,5 @@
 package com.diagiac.kafka.utils;
 
-import com.diagiac.kafka.bean.BlaBean;
 import com.diagiac.kafka.bean.SensorDataModel;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;

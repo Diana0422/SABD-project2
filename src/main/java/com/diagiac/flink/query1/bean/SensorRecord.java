@@ -1,4 +1,4 @@
-package com.diagiac.flink.bean;
+package com.diagiac.flink.query1.bean;
 
 import lombok.Data;
 import org.json.JSONObject;

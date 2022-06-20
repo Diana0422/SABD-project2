@@ -51,7 +51,7 @@ public class SensorProducer {
             producer.send(producerRecord);
             System.out.printf("Send: %d - %s%n", j, data1.toString());
             producer.flush();
-            Thread.sleep(timeDiff);
+            Thread.sleep(timeDiff/500000); //TODO pesare in maniera da velocizzare il processamento
             j++;
         }
     }

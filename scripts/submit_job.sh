@@ -1,16 +1,8 @@
 #!/bin/bash
 # PREPARE ENVIRONMENT
-DIR=../target
-if [ -d "$DIR" ];
-then
-    echo "$DIR directory exists."
-    mvn package
-else
-	echo "$DIR directory does not exist."
-	mvn clean package
-fi
-# EXECUTE QUERIES (MANDATORY)
+mvn -pl sabd2-flink package
 
+# EXECUTE QUERIES (MANDATORY)
 if [[ $1 -eq 1 ]]
 then
   echo "Submitting query 1 to Flink"

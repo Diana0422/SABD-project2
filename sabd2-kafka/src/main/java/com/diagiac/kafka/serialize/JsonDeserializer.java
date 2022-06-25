@@ -7,14 +7,14 @@ import org.apache.kafka.common.serialization.Deserializer;
 import java.io.IOException;
 import java.util.Map;
 
-public class JsonDeserializer<T> implements Deserializer {
+public class JsonDeserializer implements Deserializer<SensorDataModel> {
     private final ObjectMapper objectMapper = new ObjectMapper();
     SensorDataModel dataModel;
     @Override
     public void configure(Map configs, boolean isKey) {}
 
     @Override
-    public Object deserialize(String s, byte[] bytes) {
+    public SensorDataModel deserialize(String s, byte[] bytes) {
         if (bytes.length == 0) {
             return null;
         }

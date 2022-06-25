@@ -1,4 +1,3 @@
-#!/bin/bash
 # PREPARE ENVIRONMENT
 mvn -pl sabd2-flink clean package
 

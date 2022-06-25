@@ -19,6 +19,8 @@ import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolC
 import java.time.Duration;
 
 public class Query1 extends Query {
+    // kafka + flink https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/connectors/datastream/kafka/
+    // watermark gen https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/dev/datastream/event-time/generating_watermarks/
 
     /**
      * For those sensors having sensor_id< 10000, find the number
@@ -39,14 +41,15 @@ public class Query1 extends Query {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         // env.enableCheckpointing(5000);
         /* set up the Kafka source that consumes records from broker */
-        KafkaSource<String> source = KafkaSource.<String>builder()
+
+        var source = KafkaSource.<String>builder()
                 .setBootstrapServers("kafka://kafka:9092")
                 .setTopics("input-records")
                 .setGroupId("flink-group")
                 .setStartingOffsets(OffsetsInitializer.latest())
                 .setValueOnlyDeserializer(new SimpleStringSchema())
                 .build();
-
+        var kafkaSource = env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
         /* Set up the Redis sink */
         FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig.Builder().setHost("redis").setPort(6379).build();
 
@@ -56,7 +59,6 @@ public class Query1 extends Query {
         * - temperature > −93.2 °C (lowest temperature ever recorded on earth)
         * - temperature < 56.7 °C (highest temperature ever recorded on earth)
         * */
-        var kafkaSource = env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
         var filtered = kafkaSource.filter(new RecordFilter());
         var dataStream = filtered.map(new RecordMapper()); // FIXME questo map non va bene! è una traformazione che mi fa perdere tempo (cit. Nardelli)
         var water = dataStream.assignTimestampsAndWatermarks(
@@ -70,7 +72,7 @@ public class Query1 extends Query {
                 .window(TumblingEventTimeWindows.of(Time.hours(1)))
                 .aggregate(new AverageAggregator());
 
-        keyedStream.print();
+        windowedStream.print();
         // TODO per effettuare la query è necessario applicare una AggregateFunction sul windowedStream per recuperare i dati non dall'inizio del dataset
         env.execute("Query1");
 

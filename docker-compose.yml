@@ -11,14 +11,30 @@ services:
     image: 'bitnami/kafka:latest'
     ports:
       - '9092:9092'
+      - '29092:29092'
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_CREATE_TOPICS= 'input-records:1:1'
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
     depends_on:
       - zookeeper
+
+## SENSOR PRODUCER APP -----------------------------------------
+  publisher:
+    depends_on:
+      - kafka
+    environment:
+      TOPIC: input-records
+      ENVIRONMENT: local
+      INTERNAL_KAFKA_ADDR: 'kafka:9092'
+    build:
+      context: ./kafka
 
   ## SERVICE2: APACHE FLINK -------------------------------------
   jobmanager:
@@ -38,6 +54,8 @@ services:
       metrics.reporter.grph.port: 2003
       metrics.reporter.grph.protocol: TCP
       metrics.reporter.grph.interval: 60 SECONDS
+    volumes:
+      - ./target:/opt/flink/sensor-app/
 
   taskmanager:
     image: flink:latest

@@ -1,11 +1,13 @@
-package com.diagiac.flink.query1.bean;
+package com.diagiac.flink;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
 
 @Data
+@NoArgsConstructor
 public class SensorRecord {
     private Long sensorId;
     private String sensorType;

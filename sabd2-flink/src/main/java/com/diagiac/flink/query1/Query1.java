@@ -1,6 +1,7 @@
 package com.diagiac.flink.query1;
 
 import com.diagiac.flink.Query;
+import com.diagiac.flink.SensorRecord;
 import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter;
@@ -9,6 +10,7 @@ import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
@@ -18,6 +20,20 @@ import java.time.Duration;
 
 public class Query1 extends Query {
 
+    /**
+     * For those sensors having sensor_id< 10000, find the number
+     * of measurements and the temperature average value
+     *
+     * Q1 output:
+     * ts, sensor_id, count, avg_temperature
+     *
+     * Using a tumbling window, calculate this query:
+     * – every 1 hour (event time)
+     * – every 1 week (event time)
+     * – from the beginning of the dataset
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         // set up the streaming execution environment
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -62,22 +78,22 @@ public class Query1 extends Query {
     }
 
     @Override
-    public void initialize() {
+    public DataStreamSource<SensorRecord> initialize() {
+        return null;
+    }
+
+    @Override
+    public void queryConfiguration() {
 
     }
 
     @Override
-    public void processing() {
+    public void realtimePreprocessing(DataStreamSource<SensorRecord> d) {
 
     }
 
     @Override
-    public void preProcessing() {
-
-    }
-
-    @Override
-    public void postProcessing() {
+    public void sinkConfiguration() {
 
     }
 }

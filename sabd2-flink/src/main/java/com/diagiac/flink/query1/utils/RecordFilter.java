@@ -17,12 +17,12 @@ public class RecordFilter implements FilterFunction<String> {
         if (temperatureIsPresent) {
             temperature = Double.parseDouble(jsonObject.getString("temperature"));
         } else {
-            return false;
+            return false; // TODO decidere se gestire la tupla non valida
         }
         if (sensorIsPresent) {
             sensorId = Long.parseLong(jsonObject.getString("sensor_id"));
         } else {
-            return false;
+            return false; // If sensor is not present we drop the record
         }
         boolean validTemperature = temperature > -93.2 && temperature < 56.7;
         boolean validSensor = sensorId < 10000;

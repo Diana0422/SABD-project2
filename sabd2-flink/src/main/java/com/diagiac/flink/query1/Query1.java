@@ -1,5 +1,6 @@
 package com.diagiac.flink.query1;
 
+import com.diagiac.flink.Query;
 import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter;
@@ -15,7 +16,7 @@ import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolC
 
 import java.time.Duration;
 
-public class Query1 {
+public class Query1 extends Query {
 
     public static void main(String[] args) throws Exception {
         // set up the streaming execution environment
@@ -46,7 +47,7 @@ public class Query1 {
                 WatermarkStrategy.<Query1Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
                         .withTimestampAssigner((queryRecord1, l) -> queryRecord1.getTimestamp().getTime()) // assign the timestamp
         );
-        var keyedStream = water.keyBy(Query1Record::getSensorId);
+        var keyedStream = water.keyBy(Query1Record::getSensorId); // Set the sensorid as the record's key
 
         /* window hour based */
         var windowedStream = keyedStream
@@ -58,5 +59,25 @@ public class Query1 {
         env.execute("Query1");
 
         // TODO definire una Watermark Strategy
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void processing() {
+
+    }
+
+    @Override
+    public void preProcessing() {
+
+    }
+
+    @Override
+    public void postProcessing() {
+
     }
 }

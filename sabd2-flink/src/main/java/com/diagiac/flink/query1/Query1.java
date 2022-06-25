@@ -1,18 +1,17 @@
 package com.diagiac.flink.query1;
 
 import com.diagiac.flink.query1.bean.Query1Record;
-import com.diagiac.flink.query1.serialize.InputMessageDeserializationSchema;
-import com.diagiac.flink.query1.utils.*;
+import com.diagiac.flink.query1.utils.AverageAggregator;
+import com.diagiac.flink.query1.utils.RecordFilter;
+import com.diagiac.flink.query1.utils.RecordMapper;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
-import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolConfig;
-import org.apache.flink.streaming.util.serialization.JSONKeyValueDeserializationSchema;
 
 import java.time.Duration;
 
@@ -24,7 +23,7 @@ public class Query1 {
         // env.enableCheckpointing(5000);
         /* set up the Kafka source that consumes records from broker */
         KafkaSource<String> source = KafkaSource.<String>builder()
-                .setBootstrapServers("kafka:9092")
+                .setBootstrapServers("kafka://kafka:9092")
                 .setTopics("input-records")
                 .setGroupId("flink-group")
                 .setStartingOffsets(OffsetsInitializer.latest())

@@ -1,8 +1,7 @@
 package com.diagiac.kafka.bean;
+
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvBindByPosition;
 import lombok.Data;
-import org.json.JSONObject;
 
 @Data
 public class SensorDataModel {

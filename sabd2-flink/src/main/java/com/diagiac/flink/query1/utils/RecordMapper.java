@@ -5,7 +5,7 @@ import org.apache.flink.api.common.functions.MapFunction;
 
 public class RecordMapper implements MapFunction<String, Query1Record> {
     @Override
-    public Query1Record map(String valueRecord) throws Exception {
+    public Query1Record map(String valueRecord) {
         return Query1Record.create(valueRecord);
     }
 }

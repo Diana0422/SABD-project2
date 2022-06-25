@@ -34,52 +34,52 @@ services:
       ENVIRONMENT: local
       INTERNAL_KAFKA_ADDR: 'kafka:9092'
     build:
-      context: ./kafka
+      context: ./sabd2-kafka
 
   ## SERVICE2: APACHE FLINK -------------------------------------
-  jobmanager:
-    image: flink:latest
-    container_name: jobmanager
-    ports:
-      - '8081:8081' #Web UI
-    command: jobmanager
-    environment:
-    - |
-      FLINK_PROPERTIES=
-      jobmanager.rpc.address: jobmanager
-      state.backend.latency-track.keyed-state-enabled: true
-      metrics.reporters: grph
-      metrics.reporter.grph.factory.class: org.apache.flink.metrics.graphite.GraphiteReporterFactory
-      metrics.reporter.grph.host: graphite
-      metrics.reporter.grph.port: 2003
-      metrics.reporter.grph.protocol: TCP
-      metrics.reporter.grph.interval: 60 SECONDS
-    volumes:
-      - ./target:/opt/flink/sensor-app/
-
-  taskmanager:
-    image: flink:latest
-    command: taskmanager
-    environment:
-      - |
-        FLINK_PROPERTIES=
-        jobmanager.rpc.address: jobmanager
-        taskmanager.numberOfTaskSlots: 2
-        metrics.reporters: grph
-        metrics.reporter.grph.factory.class: org.apache.flink.metrics.graphite.GraphiteReporterFactory
-        metrics.reporter.grph.host: graphite
-        metrics.reporter.grph.port: 2003
-        metrics.reporter.grph.protocol: TCP
-        metrics.reporter.grph.interval: 60 SECONDS
-    depends_on:
-      - jobmanager
-
-  # SERVICE4: REDIS ---------------------------------------------
-  redis:
-    image: redislabs/redisearch
-    container_name: redis-cache
-    ports:
-      - '6379:6379'
+#  jobmanager:
+#    image: flink:latest
+#    container_name: jobmanager
+#    ports:
+#      - '8081:8081' #Web UI
+#    command: jobmanager
+#    environment:
+#    - |
+#      FLINK_PROPERTIES=
+#      jobmanager.rpc.address: jobmanager
+#      state.backend.latency-track.keyed-state-enabled: true
+#      metrics.reporters: grph
+#      metrics.reporter.grph.factory.class: org.apache.flink.metrics.graphite.GraphiteReporterFactory
+#      metrics.reporter.grph.host: graphite
+#      metrics.reporter.grph.port: 2003
+#      metrics.reporter.grph.protocol: TCP
+#      metrics.reporter.grph.interval: 60 SECONDS
+#    volumes:
+#      - ./target:/opt/flink/sensor-app/
+#
+#  taskmanager:
+#    image: flink:latest
+#    command: taskmanager
+#    environment:
+#      - |
+#        FLINK_PROPERTIES=
+#        jobmanager.rpc.address: jobmanager
+#        taskmanager.numberOfTaskSlots: 2
+#        metrics.reporters: grph
+#        metrics.reporter.grph.factory.class: org.apache.flink.metrics.graphite.GraphiteReporterFactory
+#        metrics.reporter.grph.host: graphite
+#        metrics.reporter.grph.port: 2003
+#        metrics.reporter.grph.protocol: TCP
+#        metrics.reporter.grph.interval: 60 SECONDS
+#    depends_on:
+#      - jobmanager
+#
+#  # SERVICE4: REDIS ---------------------------------------------
+#  redis:
+#    image: redislabs/redisearch
+#    container_name: redis-cache
+#    ports:
+#      - '6379:6379'
 
   # SERVICE5: GRAFANA -------------------------------------------
 #  grafana:

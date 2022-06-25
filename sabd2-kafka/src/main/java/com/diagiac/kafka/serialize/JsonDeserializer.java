@@ -3,6 +3,7 @@ package com.diagiac.kafka.serialize;
 import com.diagiac.kafka.bean.SensorDataModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Deserializer;
+
 import java.io.IOException;
 import java.util.Map;
 

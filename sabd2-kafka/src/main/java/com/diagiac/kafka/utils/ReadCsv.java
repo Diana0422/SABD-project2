@@ -13,20 +13,20 @@ import java.util.List;
 
 public class ReadCsv {
 
-    private String csvFileName;
-    private List recordList;
+    private final String csvFileName;
+    private List<SensorDataModel> recordList;
 
     public ReadCsv(String csvName) {
         this.csvFileName = csvName;
     }
 
-    public List readCSVFile() {
+    public List<SensorDataModel> readCSVFile() {
         try {
             // replace semicolon with the comma separator
             replaceSemicolonSeparator();
             // read the csv into the bean
             CSVReader csvReader = new CSVReader(new FileReader(csvFileName));
-            CsvToBean csvToBean = new CsvToBeanBuilder(csvReader)
+            CsvToBean<SensorDataModel> csvToBean = new CsvToBeanBuilder<SensorDataModel>(csvReader)
                     .withType(SensorDataModel.class)
                     .withIgnoreEmptyLine(true).build();
 
@@ -44,7 +44,7 @@ public class ReadCsv {
         BufferedReader reader = new BufferedReader(new FileReader(csvFileName));
         String line = reader.readLine();
         while (line != null) {
-            oldContent.append(line+"\n");
+            oldContent.append(line).append("\n");
             line = reader.readLine();
         }
         reader.close();

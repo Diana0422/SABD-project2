@@ -14,5 +14,5 @@ then
   echo "Submitting query 3 to Flink"
   docker exec -t -i jobmanager flink run -p $2 -c com.diagiac.flink.query3.Query3 ./sensor-app/sabd2-flink-1.0-jar-with-dependencies.jar $3
 else
-  echo "Usage: ./scripts/submit-job.sh query_num parallelism_level"
+  echo "Usage: ./scripts/submit-job.sh query_num parallelism_level window_time"
 fi

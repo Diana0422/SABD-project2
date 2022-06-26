@@ -10,15 +10,31 @@ import java.sql.Timestamp;
 public class Query1Record  implements FlinkRecord {
     private Long sensorId;
     private Timestamp timestamp;
-    private double temperature;
+    private Double temperature;
     private long count;
 
     public static Query1Record create(String rawMessage){
         JSONObject jsonObject = new JSONObject(rawMessage);
         Query1Record record = new Query1Record();
-        record.setSensorId(Long.parseLong(jsonObject.getString("sensor_id")));
-        record.setTimestamp(Timestamp.valueOf(jsonObject.getString("timestamp").replace("T", " ")));
-        record.setTemperature(Double.parseDouble(jsonObject.getString("temperature")));
+        String sensor = jsonObject.getString("sensor_id");
+        String timestamp = jsonObject.getString("timestamp").replace("T", " ");
+        String temperature = jsonObject.getString("temperature");
+
+        if (sensor.isEmpty()) {
+            record.setSensorId(null);
+        } else {
+            record.setSensorId(Long.parseLong(sensor));
+        }
+        if (timestamp.isEmpty()) {
+            record.setTimestamp(null);
+        } else {
+            record.setTimestamp(Timestamp.valueOf(timestamp));
+        }
+        if (temperature.isEmpty()) {
+            record.setTemperature(null);
+        } else {
+            record.setTemperature(Double.parseDouble(temperature));
+        }
         record.setCount(1);
         return record;
     }

@@ -25,7 +25,7 @@ public class SensorProducer {
             System.out.println("The dataset doesn't exists, download and extract it from https://archive.sensor.community/csv_per_month/2022-05/2022-05_bmp180.zip");
             return;
         }
-        var url = (args.length > 1 ? args[1] : "127.0.0.1:9093");
+        var url = (args.length > 1 ? args[1] : "127.0.0.1:29092");
 
         var speedup = args.length > 2 ? Integer.parseInt(args[2]) : 5_000_000;
 
@@ -62,7 +62,7 @@ public class SensorProducer {
                 producer.send(producerRecord);
                 System.out.printf("Send: %d - %s%n", j, data1);
                 producer.flush();
-                Thread.sleep(timeDiff / speedup); //TODO pesare in maniera da velocizzare il processamento
+                Thread.sleep(timeDiff / speedup); // weighted to speed up the producer
                 j++;
             }
         } catch (NullPointerException n) {

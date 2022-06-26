@@ -4,13 +4,14 @@ import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query2.bean.Query2Record;
+import com.diagiac.flink.query2.serialize.QueryRecordDeserializer2;
 import com.diagiac.flink.query2.util.AverageAggregator2;
+import com.diagiac.flink.query2.util.RecordFilter2;
 import com.diagiac.flink.query2.util.SortKeyedProcessFunction;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
-import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
 import java.time.Duration;
@@ -35,7 +36,7 @@ public class Query2 extends Query {
      */
     public static void main(String[] args) throws Exception {
         var q2 = new Query2();
-        SingleOutputStreamOperator<Query2Record> d = q2.initialize();
+        SingleOutputStreamOperator<Query2Record> d =  q2.initialize();
         q2.realtimePreprocessing(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
         q2.sinkConfiguration();
         q2.queryConfiguration();
@@ -44,12 +45,12 @@ public class Query2 extends Query {
 
     @Override
     public SingleOutputStreamOperator<Query2Record> initialize() {
-        var kafkaSource = KafkaSource.<String>builder()
-                .setBootstrapServers("127.0.0.1:9093") // kafka://kafka:9092,
+        var source = KafkaSource.<Query2Record>builder()
+                .setBootstrapServers("kafka://kafka:9092") // kafka://kafka:9092,
                 .setTopics("input-records")
                 .setGroupId("flink-group")
                 .setStartingOffsets(OffsetsInitializer.latest())
-                .setValueOnlyDeserializer(new SimpleStringSchema())
+                .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(QueryRecordDeserializer2.class))
                 .build();
 
         /* // Checkpointing - Start a checkpoint every 1000 ms
@@ -59,9 +60,8 @@ public class Query2 extends Query {
         env.getCheckpointConfig().setCheckpointStorage("file:///tmp/frauddetection/checkpoint");
         */
 
-        DataStreamSource<String> dataStreamSource = env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(), "Kafka Source");
-        var filtered = dataStreamSource.filter(new RecordFilter2());
-        return filtered.map(new RecordMapper2());
+        var kafkaSource = env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
+        return kafkaSource.filter(new RecordFilter2());
     }
 
     @Override
@@ -78,9 +78,9 @@ public class Query2 extends Query {
         );
 
         // Query2Record -> (Location, resto di query2Record)
-        var locationKey = water.keyBy(Query2Record::getLocation);
+        var locationKeyed = water.keyBy(Query2Record::getLocation);
 
-        var windowed = locationKey.window(window.getWindowStrategy());
+        var windowed = locationKeyed.window(window.getWindowStrategy());
 
         // (Location, resto di query2Record) -> (Location, avgTemperature) nella finestra
         var aggregated = windowed.aggregate(new AverageAggregator2());

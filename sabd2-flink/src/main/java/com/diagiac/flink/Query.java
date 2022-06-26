@@ -17,7 +17,7 @@ public abstract class Query {
      *
      * @return
      */
-    public abstract SingleOutputStreamOperator<Query2Record> initialize();
+    public abstract SingleOutputStreamOperator<? extends FlinkRecord> initialize();
 
     /**
      * Implements the query to execute

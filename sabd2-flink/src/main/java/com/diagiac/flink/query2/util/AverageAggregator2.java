@@ -1,6 +1,8 @@
 package com.diagiac.flink.query2.util;
 
+import com.diagiac.flink.query2.bean.LocationTemperature;
 import com.diagiac.flink.query2.bean.Query2Record;
+import com.diagiac.flink.query2.bean.Query2Aggregator;
 import org.apache.flink.api.common.functions.AggregateFunction;
 
 public class AverageAggregator2 implements AggregateFunction<Query2Record, Query2Aggregator, LocationTemperature> {

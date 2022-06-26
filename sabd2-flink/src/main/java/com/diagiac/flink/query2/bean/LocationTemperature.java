@@ -1,4 +1,4 @@
-package com.diagiac.flink.query2.util;
+package com.diagiac.flink.query2.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

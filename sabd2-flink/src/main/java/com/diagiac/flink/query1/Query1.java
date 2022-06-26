@@ -1,16 +1,18 @@
 package com.diagiac.flink.query1;
 
+import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.Query;
-import com.diagiac.flink.SensorRecord;
+import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter;
 import com.diagiac.flink.query1.utils.RecordMapper;
+import com.diagiac.flink.query2.bean.Query2Record;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
@@ -80,7 +82,7 @@ public class Query1 extends Query {
     }
 
     @Override
-    public DataStreamSource<SensorRecord> initialize() {
+    public SingleOutputStreamOperator<Query2Record> initialize() {
         return null;
     }
 
@@ -90,7 +92,7 @@ public class Query1 extends Query {
     }
 
     @Override
-    public void realtimePreprocessing(DataStreamSource<SensorRecord> d) {
+    public void realtimePreprocessing(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
 
     }
 

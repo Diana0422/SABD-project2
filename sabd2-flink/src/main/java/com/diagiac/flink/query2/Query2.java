@@ -1,19 +1,25 @@
 package com.diagiac.flink.query2;
 
+import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.Query;
-import com.diagiac.flink.SensorRecord;
+import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query2.bean.Query2Record;
+import com.diagiac.flink.query2.util.AverageAggregator2;
+import com.diagiac.flink.query2.util.SortKeyedProcessFunction;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
+import java.time.Duration;
+
 public class Query2 extends Query {
 
     /**
      * Find the real-time top-5 ranking of locations (location) having
-     * the highest average temperature and the top-5 ranking of locations (location)
+     * the highest *average* temperature and the top-5 ranking of locations (location)
      * having the lowest average temperature
      * <p>
      * Q2 output:
@@ -29,21 +35,21 @@ public class Query2 extends Query {
      */
     public static void main(String[] args) throws Exception {
         var q2 = new Query2();
-        DataStreamSource<SensorRecord> d = q2.initialize();
-        q2.realtimePreprocessing(d);
+        SingleOutputStreamOperator<Query2Record> d = q2.initialize();
+        q2.realtimePreprocessing(d, WindowEnum.valueOf(args[0])); // TODO: testare
         q2.sinkConfiguration();
         q2.queryConfiguration();
         q2.execute();
     }
 
     @Override
-    public DataStreamSource<SensorRecord> initialize() {
-        KafkaSource<SensorRecord> kafkaSource = KafkaSource.<SensorRecord>builder()
+    public SingleOutputStreamOperator<Query2Record> initialize() {
+        var kafkaSource = KafkaSource.<String>builder()
                 .setBootstrapServers("kafka://kafka:9092")
                 .setTopics("input-records")
                 .setGroupId("flink-group")
                 .setStartingOffsets(OffsetsInitializer.latest())
-                // .setValueOnlyDeserializer()
+                .setValueOnlyDeserializer(new SimpleStringSchema())
                 .build();
 
         /* // Checkpointing - Start a checkpoint every 1000 ms
@@ -53,7 +59,9 @@ public class Query2 extends Query {
         env.getCheckpointConfig().setCheckpointStorage("file:///tmp/frauddetection/checkpoint");
         */
 
-        return env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(), "Kafka Source");
+        DataStreamSource<String> dataStreamSource = env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(), "Kafka Source");
+        var filtered = dataStreamSource.filter(new RecordFilter2());
+        return filtered.map(new RecordMapper2());
     }
 
     @Override
@@ -62,9 +70,26 @@ public class Query2 extends Query {
     }
 
     @Override
-    public void realtimePreprocessing(DataStreamSource<SensorRecord> d) {
-        SingleOutputStreamOperator<Query2Record> map = d.map(Query2Record::new);
-        map.print();
+    public void realtimePreprocessing(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
+        var dd = (SingleOutputStreamOperator<Query2Record>) d;
+        var water = dd.assignTimestampsAndWatermarks(
+                WatermarkStrategy.<Query2Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
+                        .withTimestampAssigner((queryRecord2, l) -> queryRecord2.getTimestamp().getTime()) // assign the timestamp
+        );
+
+        // Query2Record -> (Location, resto di query2Record)
+        var locationKey = water.keyBy(Query2Record::getLocation);
+
+        var windowed = locationKey.window(window.getWindowStrategy());
+
+        // (Location, resto di query2Record) -> (Location, avgTemperature) nella finestra
+        var aggregated = windowed.aggregate(new AverageAggregator2());
+
+        var windowedAll = aggregated.windowAll(window.getWindowStrategy());
+        var processed = windowedAll.process(new SortKeyedProcessFunction());
+
+        processed.print();
+
     }
 
     @Override

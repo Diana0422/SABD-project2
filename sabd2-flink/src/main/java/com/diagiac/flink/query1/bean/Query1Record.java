@@ -1,12 +1,13 @@
 package com.diagiac.flink.query1.bean;
 
+import com.diagiac.flink.FlinkRecord;
 import lombok.Data;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
 
 @Data
-public class Query1Record {
+public class Query1Record  implements FlinkRecord {
     private Long sensorId;
     private Timestamp timestamp;
     private double temperature;

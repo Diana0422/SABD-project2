@@ -1,6 +1,7 @@
 package com.diagiac.flink;
 
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import com.diagiac.flink.query2.bean.Query2Record;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 public abstract class Query {
@@ -13,9 +14,10 @@ public abstract class Query {
 
     /**
      * Settings for the query (e.g. window, parallelism, watermark, checkpointing)
+     *
      * @return
      */
-    public abstract DataStreamSource<SensorRecord> initialize();
+    public abstract SingleOutputStreamOperator<Query2Record> initialize();
 
     /**
      * Implements the query to execute
@@ -25,7 +27,7 @@ public abstract class Query {
     /**
      * Settings for the source from which data comes from.
      */
-    public abstract void realtimePreprocessing(DataStreamSource<SensorRecord> d);
+    public abstract void realtimePreprocessing(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window);
 
     /**
      * Settings for the sink that consumes the output of the queries

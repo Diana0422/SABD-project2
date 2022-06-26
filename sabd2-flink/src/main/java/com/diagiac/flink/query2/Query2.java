@@ -36,7 +36,7 @@ public class Query2 extends Query {
     public static void main(String[] args) throws Exception {
         var q2 = new Query2();
         SingleOutputStreamOperator<Query2Record> d = q2.initialize();
-        q2.realtimePreprocessing(d, WindowEnum.valueOf(args[0])); // TODO: testare
+        q2.realtimePreprocessing(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
         q2.sinkConfiguration();
         q2.queryConfiguration();
         q2.execute();
@@ -45,7 +45,7 @@ public class Query2 extends Query {
     @Override
     public SingleOutputStreamOperator<Query2Record> initialize() {
         var kafkaSource = KafkaSource.<String>builder()
-                .setBootstrapServers("kafka://kafka:9092")
+                .setBootstrapServers("127.0.0.1:9093") // kafka://kafka:9092,
                 .setTopics("input-records")
                 .setGroupId("flink-group")
                 .setStartingOffsets(OffsetsInitializer.latest())

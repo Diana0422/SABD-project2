@@ -7,8 +7,8 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
+import java.io.File;
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -19,17 +19,22 @@ public class SensorProducer {
 
     public static void main(String[] args) throws InterruptedException {
 
-        if (args.length != 1){
-            System.out.println(Arrays.toString(args));
-            System.out.println("Must add dataset argument");
+        // TODO: leggere i file da conf.properties
+        var dataset = (args.length > 0 ? args[0] : "sabd2-kafka/2022-05_bmp180.csv");
+        if (!new File(dataset).exists()) {
+            System.out.println("The dataset doesn't exists, download and extract it from https://archive.sensor.community/csv_per_month/2022-05/2022-05_bmp180.zip");
             return;
         }
+        var url = (args.length > 1 ? args[1] : "127.0.0.1:9093");
+
+        var speedup = args.length > 2 ? Integer.parseInt(args[2]) : 5_000_000;
 
         //properties for producer:
         // Recover data from file https://archive.sensor.community/csv_per_month/2022-05/2022-05_bmp180.zip and send each row
         // to the Kafka broker, so that the Kafka consumer can poll from the topic
         Properties props = new Properties();
-        props.put("bootstrap.servers", "kafka//kafka:9092");
+        props.put("broker.list", url);
+        props.put("bootstrap.servers", url);
         props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer"); // TODO forse cambio
         props.put("value.serializer", JsonSerializer.class); // TODO forse cambio
 
@@ -39,7 +44,7 @@ public class SensorProducer {
 
             // Read data from file https://archive.sensor.community/csv_per_month/2022-05/2022-05_bmp180.zip
             // ReadCsv readCsv = new ReadCsv("data/2022-05_bmp180.csv");
-            ReadCsv readCsv = new ReadCsv(args[0]);
+            ReadCsv readCsv = new ReadCsv(dataset);
             List<SensorDataModel> recordList = readCsv.readCSVFile();
             List<SensorDataModel> orderedList = orderByTimestamp(recordList);
 
@@ -57,10 +62,10 @@ public class SensorProducer {
                 producer.send(producerRecord);
                 System.out.printf("Send: %d - %s%n", j, data1);
                 producer.flush();
-                Thread.sleep(timeDiff / 5_000_000); //TODO pesare in maniera da velocizzare il processamento
+                Thread.sleep(timeDiff / speedup); //TODO pesare in maniera da velocizzare il processamento
                 j++;
             }
-        } catch(NullPointerException n){
+        } catch (NullPointerException n) {
             n.printStackTrace();
         }
     }

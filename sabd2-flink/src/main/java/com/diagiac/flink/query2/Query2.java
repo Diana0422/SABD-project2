@@ -18,6 +18,10 @@ import java.time.Duration;
 
 public class Query2 extends Query {
 
+    public Query2(String url) {
+        this.url = url;
+    }
+
     /**
      * Find the real-time top-5 ranking of locations (location) having
      * the highest *average* temperature and the top-5 ranking of locations (location)
@@ -35,7 +39,8 @@ public class Query2 extends Query {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        var q2 = new Query2();
+        var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
+        var q2 = new Query2(url);
         SingleOutputStreamOperator<Query2Record> d =  q2.initialize();
         q2.realtimePreprocessing(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
         q2.sinkConfiguration();
@@ -46,7 +51,7 @@ public class Query2 extends Query {
     @Override
     public SingleOutputStreamOperator<Query2Record> initialize() {
         var source = KafkaSource.<Query2Record>builder()
-                .setBootstrapServers("kafka://kafka:9092") // kafka://kafka:9092,
+                .setBootstrapServers(this.url) // kafka://kafka:9092,
                 .setTopics("input-records")
                 .setGroupId("flink-group")
                 .setStartingOffsets(OffsetsInitializer.latest())

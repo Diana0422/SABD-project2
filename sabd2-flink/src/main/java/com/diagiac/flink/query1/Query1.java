@@ -16,6 +16,9 @@ import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolC
 import java.time.Duration;
 
 public class Query1 extends Query {
+    public Query1(String url) {
+        this.url = url;
+    }
     // kafka + flink https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/connectors/datastream/kafka/
     // watermark gen https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/dev/datastream/event-time/generating_watermarks/
 
@@ -34,7 +37,8 @@ public class Query1 extends Query {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        var q1 = new Query1();
+        var url = args.length > 1 ? args[1]: "127.0.0.1:29092";
+        var q1 = new Query1(url);
         SingleOutputStreamOperator<Query1Record> d = q1.initialize();
         q1.realtimePreprocessing(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
         q1.sinkConfiguration();
@@ -46,7 +50,7 @@ public class Query1 extends Query {
     public SingleOutputStreamOperator<Query1Record> initialize() {
         /* set up the Kafka source that consumes records from broker */
         var source = KafkaSource.<Query1Record>builder()
-                .setBootstrapServers("kafka://kafka:9092")
+                .setBootstrapServers(this.url)
                 .setTopics("input-records")
                 .setGroupId("flink-group")
                 .setStartingOffsets(OffsetsInitializer.latest())

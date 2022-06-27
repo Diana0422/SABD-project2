@@ -1,12 +1,12 @@
 package com.diagiac.flink;
 
-import com.diagiac.flink.query2.bean.Query2Record;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 public abstract class Query {
 
     protected StreamExecutionEnvironment env;
+    protected String url;
 
     public Query(){
         this.env = StreamExecutionEnvironment.getExecutionEnvironment();

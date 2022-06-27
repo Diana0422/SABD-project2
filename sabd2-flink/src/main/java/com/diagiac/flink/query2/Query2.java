@@ -42,9 +42,8 @@ public class Query2 extends Query {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
         var q2 = new Query2(url);
         SingleOutputStreamOperator<Query2Record> d =  q2.initialize();
-        q2.realtimePreprocessing(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
+        q2.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
         q2.sinkConfiguration();
-        q2.queryConfiguration();
         q2.execute();
     }
 
@@ -69,13 +68,12 @@ public class Query2 extends Query {
         return kafkaSource.filter(new RecordFilter2());
     }
 
-    @Override
-    public void queryConfiguration() {
+    private void queryConfiguration() {
 
     }
 
     @Override
-    public void realtimePreprocessing(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
+    public void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
         var dd = (SingleOutputStreamOperator<Query2Record>) d;
         var water = dd.assignTimestampsAndWatermarks(
                 WatermarkStrategy.<Query2Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))

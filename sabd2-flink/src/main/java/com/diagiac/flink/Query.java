@@ -22,12 +22,7 @@ public abstract class Query {
     /**
      * Implements the query to execute
      */
-    public abstract void queryConfiguration();
-
-    /**
-     * Settings for the source from which data comes from.
-     */
-    public abstract void realtimePreprocessing(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window);
+    public abstract void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window);
 
     /**
      * Settings for the sink that consumes the output of the queries

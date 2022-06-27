@@ -1,6 +1,24 @@
 package com.diagiac.flink.query3;
 
-public class Query3 {
+import com.diagiac.flink.FlinkRecord;
+import com.diagiac.flink.Query;
+import com.diagiac.flink.WindowEnum;
+import com.diagiac.flink.query3.bean.Query3Cell;
+import com.diagiac.flink.query3.bean.Query3Record;
+import com.diagiac.flink.query3.util.CellMapper;
+import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.connector.kafka.source.KafkaSource;
+import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
+import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+
+import java.time.Duration;
+
+public class Query3 extends Query {
+
+    public Query3(String url) {
+        this.url = url;
+    }
 
 
     /**
@@ -23,6 +41,56 @@ public class Query3 {
      * @param args
      */
     public static void main(String[] args) {
+        var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
+        var q3 = new Query3(url);
+        SingleOutputStreamOperator<Query3Record> d =  q3.initialize();
+        q3.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
+        q3.sinkConfiguration();
+        q3.execute();
+    }
+
+    @Override
+    public SingleOutputStreamOperator<Query3Record> initialize() {
+        var source = KafkaSource.<Query3Record>builder()
+                .setBootstrapServers(this.url) // kafka://kafka:9092,
+                .setTopics("input-records")
+                .setGroupId("flink-group")
+                .setStartingOffsets(OffsetsInitializer.latest())
+                .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(QueryRecordDeserializer3.class))
+                .build();
+
+        /* // Checkpointing - Start a checkpoint every 1000 ms
+        env.enableCheckpointing(1000);
+        env.getCheckpointConfig().setTolerableCheckpointFailureNumber(2);
+        env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
+        env.getCheckpointConfig().setCheckpointStorage("file:///tmp/frauddetection/checkpoint");
+        */
+
+        var kafkaSource = env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
+        return kafkaSource.filter(new RecordFilter3());
+    }
+
+    @Override
+    public void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
+        var dd = (SingleOutputStreamOperator<Query3Record>) d;
+        var water = dd.assignTimestampsAndWatermarks(
+                WatermarkStrategy.<Query3Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
+                        .withTimestampAssigner((queryRecord3, l) -> queryRecord3.getTimestamp().getTime()) // assign the timestamp
+        );
+
+        // Query2Record -> (Location, resto di query2Record)
+
+
+        var mapped = water.map(new CellMapper());
+        var filtered = mapped.filter(a -> a.getCell() != null);
+        var keyed = mapped.keyBy(Query3Cell::getCell);
+        var windowed = keyed.window(window.getWindowStrategy());
+        var aggregated = windowed.aggregate(new AvgMedianAggregator3());
+
+    }
+
+    @Override
+    public void sinkConfiguration() {
 
     }
 }

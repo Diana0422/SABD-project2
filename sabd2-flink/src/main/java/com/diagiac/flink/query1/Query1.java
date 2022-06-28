@@ -55,7 +55,8 @@ public class Query1 extends Query {
                 .setStartingOffsets(OffsetsInitializer.latest())
                 .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(QueryRecordDeserializer1.class))
                 .build();
-        var kafkaSource = env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
+        var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query1Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
+                .withTimestampAssigner((queryRecord1, l) -> queryRecord1.getTimestamp().getTime()), "Kafka Source");
         return kafkaSource.filter(new RecordFilter1());
     }
 
@@ -66,13 +67,9 @@ public class Query1 extends Query {
     @Override
     public void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
         var dd = (SingleOutputStreamOperator<Query1Record>) d;
-        var water = dd.assignTimestampsAndWatermarks(
-                WatermarkStrategy.<Query1Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
-                        .withTimestampAssigner((queryRecord1, l) -> queryRecord1.getTimestamp().getTime()) // assign the timestamp
-        );
 
         // Query1Record -> (sensorId, resto di Query1Record)
-        var sensorKeyed = water.keyBy(Query1Record::getSensorId); // Set the sensorid as the record's key
+        var sensorKeyed = dd.keyBy(Query1Record::getSensorId); // Set the sensorid as the record's key
         var windowed = sensorKeyed.window(window.getWindowStrategy());
         var aggregated = windowed.aggregate(new AverageAggregator());
         aggregated.print();

@@ -2,9 +2,11 @@ package com.diagiac.flink.query2.bean;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 @Data
 public class Query2Result {
+    private Timestamp timestamp; // TODO:!
     private Long locations1;
     private Long locations2;
     private Long locations3;

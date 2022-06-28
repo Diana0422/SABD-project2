@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 public class GeoCell {
@@ -52,13 +53,6 @@ public class GeoCell {
         }
     }
 
-    public GeoCell(GeoPoint southWest, GeoPoint northEast) {
-        this.NW = new GeoPoint(northEast.getLat(), southWest.getLon());
-        this.NE = northEast;
-        this.SW = southWest;
-        this.SE = new GeoPoint(southWest.getLat(), northEast.getLon());
-    }
-
     public boolean containsGeoPoint(GeoPoint p) {
         boolean latOk = p.getLat() >= SW.getLat() && p.getLat() < NW.getLat();
         boolean lonOk = p.getLon() >= SW.getLon() && p.getLon() < SE.getLon();
@@ -71,6 +65,24 @@ public class GeoCell {
             }
         }
         return latOk && lonOk || inIncludedSegments;
+    }
+
+    @Override
+    public String toString() {
+        return "GeoCell(" + id + ')';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GeoCell geoCell = (GeoCell) o;
+        return id == geoCell.id && Objects.equals(NW, geoCell.NW) && Objects.equals(NE, geoCell.NE) && Objects.equals(SW, geoCell.SW) && Objects.equals(SE, geoCell.SE) && Objects.equals(includedSegments, geoCell.includedSegments);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, NW, NE, SW, SE, includedSegments);
     }
 
     public enum CellType {

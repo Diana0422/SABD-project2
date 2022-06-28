@@ -1,7 +1,6 @@
 package com.diagiac.flink.query2.bean;
 
 import com.diagiac.flink.FlinkRecord;
-import com.diagiac.flink.SensorRecord;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONObject;
@@ -16,12 +15,6 @@ public class Query2Record implements FlinkRecord {
     private Double temperature;
     private long count;
 
-    public Query2Record(SensorRecord sensor){
-        this.location = sensor.getLocation();
-        this.timestamp = sensor.getTimestamp();
-        this.temperature = sensor.getTemperature();
-        this.count = 1;
-    }
 
     public static Query2Record create(String valueRecord) {
         JSONObject jsonObject = new JSONObject(valueRecord);

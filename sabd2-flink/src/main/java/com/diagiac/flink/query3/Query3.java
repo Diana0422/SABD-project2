@@ -3,7 +3,6 @@ package com.diagiac.flink.query3;
 import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
-import com.diagiac.flink.query3.bean.Query3Cell;
 import com.diagiac.flink.query3.bean.Query3Record;
 import com.diagiac.flink.query3.util.CellMapper;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
@@ -83,10 +82,10 @@ public class Query3 extends Query {
 
         var mapped = water.map(new CellMapper());
         var filtered = mapped.filter(a -> a.getCell() != null);
-        var keyed = mapped.keyBy(Query3Cell::getCell);
+        var keyed = filtered.keyBy(query3Cell -> query3Cell.getCell().getId());
         var windowed = keyed.window(window.getWindowStrategy());
         var aggregated = windowed.aggregate(new AvgMedianAggregator3());
-
+        aggregated.print();
     }
 
     @Override

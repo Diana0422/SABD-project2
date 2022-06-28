@@ -1,6 +1,5 @@
 # PREPARE ENVIRONMENT
-mvn -pl sabd2-flink clean package
-
+#mvn -pl sabd2-flink clean package
 # EXECUTE QUERIES (MANDATORY)
 if [[ $1 -eq 1 ]]
 then

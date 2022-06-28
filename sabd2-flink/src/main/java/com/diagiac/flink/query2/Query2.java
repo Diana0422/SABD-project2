@@ -82,12 +82,10 @@ public class Query2 extends Query {
 
         // Query2Record -> (Location, resto di query2Record)
         var locationKeyed = water.keyBy(Query2Record::getLocation);
-
         var windowed = locationKeyed.window(window.getWindowStrategy());
 
         // (Location, resto di query2Record) -> (Location, avgTemperature) nella finestra
         var aggregated = windowed.aggregate(new AverageAggregator2());
-
         var windowedAll = aggregated.windowAll(window.getWindowStrategy());
         var processed = windowedAll.process(new SortKeyedProcessFunction());
 

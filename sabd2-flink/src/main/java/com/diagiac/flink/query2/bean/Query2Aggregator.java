@@ -2,9 +2,12 @@ package com.diagiac.flink.query2.bean;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 @Data
 public class Query2Aggregator {
 
+    private Timestamp timestamp;
     private Long location;
     private long count;
     private double temperatureSum;

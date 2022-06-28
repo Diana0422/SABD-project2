@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 public class RecordFilter3 implements FilterFunction<Query3Record> {
     /**
      * Removes all values that have no temperature, no longitude, no latitude
+     *
      * @param value The value to be filtered.
      * @return
      * @throws Exception
@@ -24,7 +25,10 @@ public class RecordFilter3 implements FilterFunction<Query3Record> {
         boolean timestampIsPresent = timestamp != null;
 
         if (temperatureIsPresent) {
-            return temperature > -93.2 && temperature < 56.7 && latitudeIsPresent && longitudeIsPresent && timestampIsPresent;
+            return temperature > -93.2 && temperature < 56.7
+                   && latitudeIsPresent
+                   && longitudeIsPresent
+                   && timestampIsPresent;
         } else {
             return false;
         }

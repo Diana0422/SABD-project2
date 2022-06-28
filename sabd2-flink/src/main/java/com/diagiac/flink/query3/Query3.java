@@ -3,8 +3,10 @@ package com.diagiac.flink.query3;
 import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
+import com.diagiac.flink.query3.bean.Query3Cell;
 import com.diagiac.flink.query3.bean.Query3Record;
 import com.diagiac.flink.query3.util.CellMapper;
+import com.diagiac.flink.query3.util.FinalProcessWindowFunction;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
@@ -72,20 +74,20 @@ public class Query3 extends Query {
     @Override
     public void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
         var dd = (SingleOutputStreamOperator<Query3Record>) d;
-        var water = dd.assignTimestampsAndWatermarks(
-                WatermarkStrategy.<Query3Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
-                        .withTimestampAssigner((queryRecord3, l) -> queryRecord3.getTimestamp().getTime()) // assign the timestamp
+        var mapped = dd.map(new CellMapper());
+        var filtered = mapped.filter(a -> a.getCell() != null);
+        var water = filtered.assignTimestampsAndWatermarks(
+                WatermarkStrategy.<Query3Cell>forBoundedOutOfOrderness(Duration.ofSeconds(60))
+                        .withTimestampAssigner((query3Cell, l) -> query3Cell.getTimestamp().getTime()) // assign the timestamp
         );
 
-        // Query2Record -> (Location, resto di query2Record)
 
-
-        var mapped = water.map(new CellMapper());
-        var filtered = mapped.filter(a -> a.getCell() != null);
-        var keyed = filtered.keyBy(query3Cell -> query3Cell.getCell().getId());
+        var keyed = water.keyBy(query3Cell -> query3Cell.getCell().getId());
         var windowed = keyed.window(window.getWindowStrategy());
         var aggregated = windowed.aggregate(new AvgMedianAggregator3());
-        aggregated.print();
+        var windowedAll = aggregated.windowAll(window.getWindowStrategy());
+        var finalProcess = windowedAll.process(new FinalProcessWindowFunction());
+        finalProcess.print();
     }
 
     @Override

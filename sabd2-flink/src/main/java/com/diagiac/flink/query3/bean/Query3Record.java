@@ -24,7 +24,7 @@ public class Query3Record implements FlinkRecord {
         record.setTimestamp(timestamp.isEmpty() ? null : Timestamp.valueOf(jsonObject.getString("timestamp").replace("T", " ")));
         record.setTemperature(temperature.isEmpty() ? null : Double.parseDouble(jsonObject.getString("temperature")));
         record.setLatitude(latitude.isEmpty() ? null : Double.parseDouble(jsonObject.getString("lat")));
-        record.setLatitude(longitude.isEmpty() ? null : Double.parseDouble(jsonObject.getString("lon")));
+        record.setLongitude(longitude.isEmpty() ? null : Double.parseDouble(jsonObject.getString("lon")));
         return record;
     }
 }

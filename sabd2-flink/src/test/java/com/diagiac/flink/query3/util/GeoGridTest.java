@@ -86,5 +86,7 @@ public class GeoGridTest {
         assertEquals(geoGrid.getCells().get(3), geoGrid.getContainingCell(new GeoPoint(38.0, 30.0)).orElse(null));
         assertEquals(geoGrid.getCells().get(12), geoGrid.getContainingCell(new GeoPoint(58.0, 2.0)).orElse(null));
         assertEquals(geoGrid.getCells().get(15), geoGrid.getContainingCell(new GeoPoint(58.0, 30.0)).orElse(null));
+
+        assertEquals(geoGrid.getCells().get(10), geoGrid.getContainingCell(new GeoPoint(51.0, 17.0)).orElse(null));
     }
 }

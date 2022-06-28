@@ -8,6 +8,13 @@ public class CellAvgMedianTemperature {
     private double avgTemperature;
     private double medianTemperature;
     private GeoCell cell;
+
+    public CellAvgMedianTemperature(){
+        this.avgTemperature = Double.NaN;
+        this.medianTemperature = Double.NaN;
+        this.cell = null;
+    }
+
     public CellAvgMedianTemperature(double avgTemperature, double medianTemperature, GeoCell cell) {
         this.avgTemperature = avgTemperature;
         this.medianTemperature = medianTemperature;

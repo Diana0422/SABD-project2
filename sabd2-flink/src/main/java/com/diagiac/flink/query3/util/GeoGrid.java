@@ -30,25 +30,25 @@ public class GeoGrid {
     public GeoGrid() {
         cells = new ArrayList<>(16);
         // South West + North East (lat, lon)
-        cells.add(new GeoCell(new GeoPoint(38.0, 2.0), new GeoPoint(43.0, 9.0), TwoBorders)); // 0
-        cells.add(new GeoCell(new GeoPoint(38.0, 9.0), new GeoPoint(43.0, 16.0), TwoBorders)); // 1
-        cells.add(new GeoCell(new GeoPoint(38.0, 16.0), new GeoPoint(43.0, 23.0), TwoBorders)); // 2
-        cells.add(new GeoCell(new GeoPoint(38.0, 23.0), new GeoPoint(43.0, 30.0), ThreeBordersEast)); // 3
+        cells.add(new GeoCell(0, new GeoPoint(38.0, 2.0), new GeoPoint(43.0, 9.0), TwoBorders)); // 0
+        cells.add(new GeoCell(1, new GeoPoint(38.0, 9.0), new GeoPoint(43.0, 16.0), TwoBorders)); // 1
+        cells.add(new GeoCell(2, new GeoPoint(38.0, 16.0), new GeoPoint(43.0, 23.0), TwoBorders)); // 2
+        cells.add(new GeoCell(3, new GeoPoint(38.0, 23.0), new GeoPoint(43.0, 30.0), ThreeBordersEast)); // 3
 
-        cells.add(new GeoCell(new GeoPoint(43.0, 2.0), new GeoPoint(48.0, 9.0), TwoBorders)); // 4
-        cells.add(new GeoCell(new GeoPoint(43.0, 9.0), new GeoPoint(48.0, 16.0), TwoBorders)); // 5
-        cells.add(new GeoCell(new GeoPoint(43.0, 16.0), new GeoPoint(48.0, 23.0), TwoBorders)); // 6
-        cells.add(new GeoCell(new GeoPoint(43.0, 23.0), new GeoPoint(48.0, 30.0), ThreeBordersEast)); // 7
+        cells.add(new GeoCell(4, new GeoPoint(43.0, 2.0), new GeoPoint(48.0, 9.0), TwoBorders)); // 4
+        cells.add(new GeoCell(5, new GeoPoint(43.0, 9.0), new GeoPoint(48.0, 16.0), TwoBorders)); // 5
+        cells.add(new GeoCell(6, new GeoPoint(43.0, 16.0), new GeoPoint(48.0, 23.0), TwoBorders)); // 6
+        cells.add(new GeoCell(7, new GeoPoint(43.0, 23.0), new GeoPoint(48.0, 30.0), ThreeBordersEast)); // 7
 
-        cells.add(new GeoCell(new GeoPoint(48.0, 2.0), new GeoPoint(53.0, 9.0), TwoBorders)); // 8
-        cells.add(new GeoCell(new GeoPoint(48.0, 9.0), new GeoPoint(53.0, 16.0), TwoBorders)); // 9
-        cells.add(new GeoCell(new GeoPoint(48.0, 16.0), new GeoPoint(53.0, 23.0), TwoBorders)); // 10
-        cells.add(new GeoCell(new GeoPoint(48.0, 23.0), new GeoPoint(53.0, 30.0), ThreeBordersEast)); // 11
+        cells.add(new GeoCell(8, new GeoPoint(48.0, 2.0), new GeoPoint(53.0, 9.0), TwoBorders)); // 8
+        cells.add(new GeoCell(9, new GeoPoint(48.0, 9.0), new GeoPoint(53.0, 16.0), TwoBorders)); // 9
+        cells.add(new GeoCell(10, new GeoPoint(48.0, 16.0), new GeoPoint(53.0, 23.0), TwoBorders)); // 10
+        cells.add(new GeoCell(11, new GeoPoint(48.0, 23.0), new GeoPoint(53.0, 30.0), ThreeBordersEast)); // 11
 
-        cells.add(new GeoCell(new GeoPoint(53.0, 2.0), new GeoPoint(58.0, 9.0), ThreeBordersNorth)); // 12
-        cells.add(new GeoCell(new GeoPoint(53.0, 9.0), new GeoPoint(58.0, 16.0), ThreeBordersNorth)); // 13
-        cells.add(new GeoCell(new GeoPoint(53.0, 16.0), new GeoPoint(58.0, 23.0), ThreeBordersNorth)); // 14
-        cells.add(new GeoCell(new GeoPoint(53.0, 23.0), new GeoPoint(58.0, 30.0), FourBorders)); // 15
+        cells.add(new GeoCell(12, new GeoPoint(53.0, 2.0), new GeoPoint(58.0, 9.0), ThreeBordersNorth)); // 12
+        cells.add(new GeoCell(13, new GeoPoint(53.0, 9.0), new GeoPoint(58.0, 16.0), ThreeBordersNorth)); // 13
+        cells.add(new GeoCell(14, new GeoPoint(53.0, 16.0), new GeoPoint(58.0, 23.0), ThreeBordersNorth)); // 14
+        cells.add(new GeoCell(15, new GeoPoint(53.0, 23.0), new GeoPoint(58.0, 30.0), FourBorders)); // 15
     }
 
     public boolean insideGrid(GeoPoint p) {

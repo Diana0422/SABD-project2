@@ -16,7 +16,8 @@ public class GeoCell {
 
     private List<GeoSegment> includedSegments;
 
-    public GeoCell(GeoPoint southWest, GeoPoint northEast, CellType cellType) {
+    public GeoCell(int id, GeoPoint southWest, GeoPoint northEast, CellType cellType) {
+        this.id = id;
         this.NW = new GeoPoint(northEast.getLat(), southWest.getLon());
         this.NE = northEast;
         this.SW = southWest;

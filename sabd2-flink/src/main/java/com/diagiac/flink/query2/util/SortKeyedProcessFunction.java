@@ -9,6 +9,7 @@ import org.apache.flink.util.Collector;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * LocationTemperature : location + temperature
@@ -33,6 +34,7 @@ public class SortKeyedProcessFunction extends ProcessAllWindowFunction<LocationT
         // MaX temperatures
         List<LocationTemperature> maxTemperatures = list.subList(size - 5, size);
         List<LocationTemperature> minTemperatures = list.subList(0, 5);
-        out.collect(new Query2Result(maxTemperatures, minTemperatures));
+        System.out.println("minTemperatures = " + minTemperatures.stream().map(LocationTemperature::getTimestamp).collect(Collectors.toList()));
+        out.collect(new Query2Result(list.get(0).getTimestamp(), maxTemperatures, minTemperatures));
     }
 }

@@ -88,8 +88,7 @@ public class Query2 extends Query {
         var aggregated = windowed.aggregate(new AverageAggregator2());
         var windowedAll = aggregated.windowAll(window.getWindowStrategy());
         var processed = windowedAll.process(new SortKeyedProcessFunction());
-
-        processed.print();
+        processed.print().setParallelism(1);
 
     }
 

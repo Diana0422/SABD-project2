@@ -4,9 +4,10 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 import java.util.List;
+
 @Data
 public class Query2Result {
-    private Timestamp timestamp; // TODO:!
+    private Timestamp timestamp;
     private Long locations1;
     private Long locations2;
     private Long locations3;
@@ -29,7 +30,8 @@ public class Query2Result {
     private Double temperature9;
     private Double temperature10;
 
-    public Query2Result(List<LocationTemperature> maxTemperatures, List<LocationTemperature> minTemperatures) {
+    public Query2Result(Timestamp timestamp, List<LocationTemperature> maxTemperatures, List<LocationTemperature> minTemperatures) {
+        this.timestamp = timestamp;
         locations1 = maxTemperatures.get(4).getLocation();
         locations2 = maxTemperatures.get(3).getLocation();
         locations3 = maxTemperatures.get(2).getLocation();
@@ -58,26 +60,27 @@ public class Query2Result {
     @Override
     public String toString() {
         return "Query2Result{" +
-               "locations1=" + locations1 +
-               ", locations2=" + locations2 +
-               ", locations3=" + locations3 +
-               ", locations4=" + locations4 +
-               ", locations5=" + locations5 +
-               ", locations6=" + locations6 +
-               ", locations7=" + locations7 +
-               ", locations8=" + locations8 +
-               ", locations9=" + locations9 +
-               ", locations10=" + locations10 +
-               ", temperature1=" + temperature1 +
-               ", temperature2=" + temperature2 +
-               ", temperature3=" + temperature3 +
-               ", temperature4=" + temperature4 +
-               ", temperature5=" + temperature5 +
-               ", temperature6=" + temperature6 +
-               ", temperature7=" + temperature7 +
-               ", temperature8=" + temperature8 +
-               ", temperature9=" + temperature9 +
-               ", temperature10=" + temperature10 +
-               '}';
+                "timestamp=" + timestamp +
+                ", locations1=" + locations1 +
+                ", locations2=" + locations2 +
+                ", locations3=" + locations3 +
+                ", locations4=" + locations4 +
+                ", locations5=" + locations5 +
+                ", locations6=" + locations6 +
+                ", locations7=" + locations7 +
+                ", locations8=" + locations8 +
+                ", locations9=" + locations9 +
+                ", locations10=" + locations10 +
+                ", temperature1=" + temperature1 +
+                ", temperature2=" + temperature2 +
+                ", temperature3=" + temperature3 +
+                ", temperature4=" + temperature4 +
+                ", temperature5=" + temperature5 +
+                ", temperature6=" + temperature6 +
+                ", temperature7=" + temperature7 +
+                ", temperature8=" + temperature8 +
+                ", temperature9=" + temperature9 +
+                ", temperature10=" + temperature10 +
+                '}';
     }
 }

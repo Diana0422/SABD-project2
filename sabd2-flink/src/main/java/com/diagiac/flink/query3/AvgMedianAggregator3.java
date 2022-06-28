@@ -9,7 +9,7 @@ public class AvgMedianAggregator3 implements AggregateFunction<Query3Cell, Query
 
     @Override
     public Query3Aggregator createAccumulator() {
-        return new Query3Aggregator(0L, 0L, null);
+        return new Query3Aggregator(null, 0L, 0L, null);
     }
 
     @Override
@@ -21,18 +21,19 @@ public class AvgMedianAggregator3 implements AggregateFunction<Query3Cell, Query
             query3Aggregator.setCell(query3Cell.getCell());
         }
 
-        return new Query3Aggregator(aggCount, aggTemp, query3Cell.getCell());
+        return new Query3Aggregator(query3Cell.getTimestamp(), aggCount, aggTemp, query3Cell.getCell());
     }
 
     @Override
     public CellAvgMedianTemperature getResult(Query3Aggregator accumulator) {
         // Cell, avg temperature, median temperature
-        return new CellAvgMedianTemperature(accumulator.getTemperatureSum() / accumulator.getCount(),0.0, accumulator.getCell());
+        return new CellAvgMedianTemperature(accumulator.getTimestamp(), accumulator.getTemperatureSum() / accumulator.getCount(),0.0, accumulator.getCell());
     }
 
     @Override
     public Query3Aggregator merge(Query3Aggregator acc1, Query3Aggregator acc2) {
         return new Query3Aggregator(
+                acc1.getTimestamp(),
                 acc1.getCount() + acc2.getCount(),
                 acc1.getTemperatureSum() + acc2.getTemperatureSum(),
                 acc1.getCell()

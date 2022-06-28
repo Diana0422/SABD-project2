@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * ts, cell_0, avg_temp0, med_temp0, ... cell_15, avg_temp15, med_temp15
@@ -66,7 +68,10 @@ public class Query3Result {
     private Double medianTemp15;
 
     public Query3Result(CellAvgMedianTemperature[] elements) {
-        timestamp = null; // TODO AIUTO!
+        timestamp = Arrays.stream(elements)
+                .map(CellAvgMedianTemperature::getTimestamp)
+                .filter(Objects::nonNull).findFirst()
+                .orElse(null);
         cell0 = elements[0].getCell();
         cell1 = elements[1].getCell();
         cell2 = elements[2].getCell();

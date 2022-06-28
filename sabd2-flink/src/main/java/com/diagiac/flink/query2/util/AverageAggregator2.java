@@ -11,7 +11,7 @@ public class AverageAggregator2 implements AggregateFunction<Query2Record, Query
     @Override
     public Query2Aggregator createAccumulator() {
         // creates initial accumulator
-        return new Query2Aggregator(0L, 0L, 0L);
+        return new Query2Aggregator(null, 0L, 0L, 0L);
     }
 
     @Override
@@ -23,17 +23,18 @@ public class AverageAggregator2 implements AggregateFunction<Query2Record, Query
             query2Aggregator.setLocation(queryRecord2.getLocation());
         }
 
-        return new Query2Aggregator(aggCount, aggTemp, queryRecord2.getLocation());
+        return new Query2Aggregator(queryRecord2.getTimestamp(), aggCount, aggTemp, queryRecord2.getLocation());
     }
 
     @Override
     public LocationTemperature getResult(Query2Aggregator accumulator) {
-        return new LocationTemperature(accumulator.getTemperatureSum() / accumulator.getCount(), accumulator.getLocation());
+        return new LocationTemperature(accumulator.getTimestamp(), accumulator.getTemperatureSum() / accumulator.getCount(), accumulator.getLocation());
     }
 
     @Override
     public Query2Aggregator merge(Query2Aggregator acc1, Query2Aggregator acc2) {
         return new Query2Aggregator(
+                acc1.getTimestamp(),
                 acc1.getCount() + acc2.getCount(),
                 acc1.getTemperatureSum() + acc2.getTemperatureSum(),
                 acc1.getLocation()

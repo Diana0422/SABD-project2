@@ -1,12 +1,13 @@
 package com.diagiac.flink.query2.bean;
 
+import com.diagiac.flink.FlinkResult;
 import lombok.Data;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Data
-public class Query2Result {
+public class Query2Result implements FlinkResult {
     private Timestamp timestamp;
     private Long locations1;
     private Long locations2;

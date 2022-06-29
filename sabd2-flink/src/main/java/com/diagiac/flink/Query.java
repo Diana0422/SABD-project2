@@ -22,12 +22,12 @@ public abstract class Query {
     /**
      * Implements the query to execute
      */
-    public abstract void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window);
+    public abstract SingleOutputStreamOperator<? extends FlinkResult> queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window);
 
     /**
      * Settings for the sink that consumes the output of the queries
      */
-    public abstract void sinkConfiguration();
+    public abstract void sinkConfiguration(SingleOutputStreamOperator<? extends FlinkResult> resultsStream);
 
     /**
      * Runs the Flink job

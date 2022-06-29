@@ -1,9 +1,11 @@
 package com.diagiac.flink.query3;
 
 import com.diagiac.flink.FlinkRecord;
+import com.diagiac.flink.FlinkResult;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query3.bean.Query3Record;
+import com.diagiac.flink.query3.bean.Query3Result;
 import com.diagiac.flink.query3.serialize.QueryRecordDeserializer3;
 import com.diagiac.flink.query3.util.AvgMedianAggregator3;
 import com.diagiac.flink.query3.util.CellMapper;
@@ -47,8 +49,8 @@ public class Query3 extends Query {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
         var q3 = new Query3(url);
         SingleOutputStreamOperator<Query3Record> d =  q3.initialize();
-        q3.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
-        q3.sinkConfiguration();
+        var resultStream = q3.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
+        q3.sinkConfiguration(resultStream);
         q3.execute();
     }
 
@@ -76,7 +78,7 @@ public class Query3 extends Query {
     }
 
     @Override
-    public void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
+    public SingleOutputStreamOperator<Query3Result> queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
         var dd = (SingleOutputStreamOperator<Query3Record>) d;
         var mapped = dd.map(new CellMapper());
         var filtered = mapped.filter(a -> a.getCell() != null);
@@ -85,11 +87,11 @@ public class Query3 extends Query {
         var aggregated = windowed.aggregate(new AvgMedianAggregator3());
         var windowedAll = aggregated.windowAll(window.getWindowStrategy());
         var finalProcess = windowedAll.process(new FinalProcessWindowFunction());
-        finalProcess.print();
+        return finalProcess;
     }
 
     @Override
-    public void sinkConfiguration() {
+    public void sinkConfiguration(SingleOutputStreamOperator<? extends FlinkResult> resultStream) {
 
     }
 }

@@ -1,7 +1,5 @@
 package com.diagiac.flink.query3;
 
-import com.diagiac.flink.FlinkRecord;
-import com.diagiac.flink.FlinkResult;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query3.bean.Query3Record;
@@ -19,7 +17,7 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
 import java.time.Duration;
 
-public class Query3 extends Query<Query3Record> {
+public class Query3 extends Query<Query3Record,Query3Result> {
 
     public Query3(String url, WindowEnum w) {
         this.url = url;
@@ -51,7 +49,7 @@ public class Query3 extends Query<Query3Record> {
         var w = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
         var q3 = new Query3(url, w);
         SingleOutputStreamOperator<Query3Record> d =  q3.sourceConfigurationAndFiltering();
-        var resultStream = q3.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
+        var resultStream = q3.queryConfiguration(d); // TODO: testare
         q3.sinkConfiguration(resultStream);
         q3.execute();
     }
@@ -92,7 +90,7 @@ public class Query3 extends Query<Query3Record> {
     }
 
     @Override
-    public void sinkConfiguration(SingleOutputStreamOperator<? extends FlinkResult> resultStream) {
+    public void sinkConfiguration(SingleOutputStreamOperator<Query3Result> resultStream) {
 
     }
 }

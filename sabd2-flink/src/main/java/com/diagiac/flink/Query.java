@@ -22,8 +22,10 @@ public abstract class Query<T extends FlinkRecord, R extends FlinkResult> {
 
     /**
      * Implements the query to execute
+     *
+     * @return
      */
-    public abstract void queryConfiguration(SingleOutputStreamOperator<T> d);
+    public abstract SingleOutputStreamOperator<R> queryConfiguration(SingleOutputStreamOperator<T> d);
 
     /**
      * Settings for the sink that consumes the output of the queries

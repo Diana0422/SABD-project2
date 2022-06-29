@@ -1,7 +1,5 @@
 package com.diagiac.flink.query2;
 
-import com.diagiac.flink.FlinkRecord;
-import com.diagiac.flink.FlinkResult;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query2.bean.Query2Record;
@@ -18,7 +16,7 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
 import java.time.Duration;
 
-public class Query2 extends Query<Query2Record> {
+public class Query2 extends Query<Query2Record,Query2Result> {
 
     public Query2(String url, WindowEnum w) {
         this.url = url;
@@ -46,7 +44,7 @@ public class Query2 extends Query<Query2Record> {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
         var q2 = new Query2(url, window);
         SingleOutputStreamOperator<Query2Record> d =  q2.sourceConfigurationAndFiltering();
-        var resultStream = q2.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
+        var resultStream = q2.queryConfiguration(d); // TODO: testare
         q2.sinkConfiguration(resultStream);
         q2.execute();
     }
@@ -88,7 +86,7 @@ public class Query2 extends Query<Query2Record> {
     }
 
     @Override
-    public void sinkConfiguration(SingleOutputStreamOperator<? extends FlinkResult> resultStream) {
+    public void sinkConfiguration(SingleOutputStreamOperator<Query2Result> resultStream) {
         /* Set up the Redis sink */
         // FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig.Builder().setHost("redis").setPort(6379).build();
     }

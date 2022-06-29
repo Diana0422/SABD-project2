@@ -34,7 +34,7 @@ public class SortKeyedProcessFunction extends ProcessAllWindowFunction<LocationT
         // MaX temperatures
         List<LocationTemperature> maxTemperatures = list.subList(size - 5, size);
         List<LocationTemperature> minTemperatures = list.subList(0, 5);
-        System.out.println("minTemperatures = " + minTemperatures.stream().map(LocationTemperature::getTimestamp).collect(Collectors.toList()));
+//        System.out.println("minTemperatures = " + minTemperatures.stream().map(LocationTemperature::getTimestamp).collect(Collectors.toList()));
         out.collect(new Query2Result(list.get(0).getTimestamp(), maxTemperatures, minTemperatures));
     }
 }

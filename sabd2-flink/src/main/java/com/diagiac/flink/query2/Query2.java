@@ -64,32 +64,25 @@ public class Query2 extends Query {
         env.getCheckpointConfig().setCheckpointStorage("file:///tmp/frauddetection/checkpoint");
         */
 
-        var kafkaSource = env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
+        var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query2Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
+                .withTimestampAssigner((queryRecord2, l) -> queryRecord2.getTimestamp().getTime()), "Kafka Source")
+                .setParallelism(1);
         return kafkaSource.filter(new RecordFilter2());
-    }
-
-    private void queryConfiguration() {
-
     }
 
     @Override
     public void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
         var dd = (SingleOutputStreamOperator<Query2Record>) d;
-        var water = dd.assignTimestampsAndWatermarks(
-                WatermarkStrategy.<Query2Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
-                        .withTimestampAssigner((queryRecord2, l) -> queryRecord2.getTimestamp().getTime()) // assign the timestamp
-        );
 
         // Query2Record -> (Location, resto di query2Record)
-        var locationKeyed = water.keyBy(Query2Record::getLocation);
+        var locationKeyed = dd.keyBy(Query2Record::getLocation);
         var windowed = locationKeyed.window(window.getWindowStrategy());
 
         // (Location, resto di query2Record) -> (Location, avgTemperature) nella finestra
         var aggregated = windowed.aggregate(new AverageAggregator2());
         var windowedAll = aggregated.windowAll(window.getWindowStrategy());
         var processed = windowedAll.process(new SortKeyedProcessFunction());
-        processed.print().setParallelism(1);
-
+        processed.print();
     }
 
     @Override

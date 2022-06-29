@@ -1,12 +1,13 @@
 package com.diagiac.flink.query1.utils;
 
-import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.query1.bean.Query1Record;
 import org.apache.flink.api.common.functions.FilterFunction;
 
 public class RecordFilter1 implements FilterFunction<Query1Record> {
+    private static final long serialVersionUID = 1111111111111111L;
     @Override
     public boolean filter(Query1Record value) throws Exception {
+        System.out.println("SONO NEL FILTRO");
         Double temperature = value.getTemperature();
         Long sensorId = value.getSensorId();
         boolean temperatureIsPresent = temperature != null;

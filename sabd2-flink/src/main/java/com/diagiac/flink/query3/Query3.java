@@ -1,6 +1,5 @@
 package com.diagiac.flink.query3;
 
-import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query3.bean.Query3Record;
@@ -17,10 +16,11 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
 import java.time.Duration;
 
-public class Query3 extends Query {
+public class Query3 extends Query<Query3Record> {
 
-    public Query3(String url) {
+    public Query3(String url, WindowEnum w) {
         this.url = url;
+        this.windowEnum = w;
     }
 
 
@@ -45,15 +45,16 @@ public class Query3 extends Query {
      */
     public static void main(String[] args) {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
-        var q3 = new Query3(url);
-        SingleOutputStreamOperator<Query3Record> d =  q3.initialize();
-        q3.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
+        var w = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
+        var q3 = new Query3(url, w);
+        SingleOutputStreamOperator<Query3Record> d =  q3.sourceConfigurationAndFiltering();
+        q3.queryConfiguration(d);
         q3.sinkConfiguration();
         q3.execute();
     }
 
     @Override
-    public SingleOutputStreamOperator<Query3Record> initialize() {
+    public SingleOutputStreamOperator<Query3Record> sourceConfigurationAndFiltering() {
         var source = KafkaSource.<Query3Record>builder()
                 .setBootstrapServers(this.url) // kafka://kafka:9092,
                 .setTopics("input-records")
@@ -76,14 +77,13 @@ public class Query3 extends Query {
     }
 
     @Override
-    public void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
-        var dd = (SingleOutputStreamOperator<Query3Record>) d;
-        var mapped = dd.map(new CellMapper());
+    public void queryConfiguration(SingleOutputStreamOperator<Query3Record> d) {
+        var mapped = d.map(new CellMapper());
         var filtered = mapped.filter(a -> a.getCell() != null);
         var keyed = filtered.keyBy(query3Cell -> query3Cell.getCell().getId());
-        var windowed = keyed.window(window.getWindowStrategy());
+        var windowed = keyed.window(windowEnum.getWindowStrategy());
         var aggregated = windowed.aggregate(new AvgMedianAggregator3());
-        var windowedAll = aggregated.windowAll(window.getWindowStrategy());
+        var windowedAll = aggregated.windowAll(windowEnum.getWindowStrategy());
         var finalProcess = windowedAll.process(new FinalProcessWindowFunction());
         finalProcess.print();
     }

@@ -6,8 +6,10 @@ import com.diagiac.flink.query1.bean.Query1Result;
 import org.apache.flink.api.common.functions.AggregateFunction;
 
 public class AverageAggregator implements AggregateFunction <Query1Record, Query1Aggregator, Query1Result> {
+    private static final long serialVersionUID = 33333333333333L;
     @Override
     public Query1Aggregator createAccumulator() {
+        System.out.println("SONO NELLA CREATE ACCUMULATOR");
         return new Query1Aggregator(null, 0L, 0L, 0.0);
     }
 

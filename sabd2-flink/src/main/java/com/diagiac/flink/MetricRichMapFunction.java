@@ -3,17 +3,16 @@ package com.diagiac.flink;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.configuration.Configuration;
 
-public class MetricRichMapFunction<T> extends RichMapFunction<T, String> {
-
+public class MetricRichMapFunction<T> extends RichMapFunction<T, T> {
     // transient keyword means that the field will NOT be serialized
     private transient double throughput = 0;
     private transient double latency = 0;
     private transient long counter = 0;
     private transient double start;
 
-
     @Override
     public void open(Configuration config) {
+        System.out.println("!!SONO NELLA OPEN!!!");
         getRuntimeContext().getMetricGroup()
                 .gauge("throughput", () -> this.throughput);
 
@@ -25,7 +24,7 @@ public class MetricRichMapFunction<T> extends RichMapFunction<T, String> {
     }
 
     @Override
-    public String map(T value) throws Exception {
+    public T map(T value) throws Exception {
         this.counter++;
 
         // Compute throughput and latency
@@ -35,6 +34,6 @@ public class MetricRichMapFunction<T> extends RichMapFunction<T, String> {
         this.throughput = this.counter / elapsed_sec;
         this.latency = elapsed_millis / this.counter;
 
-        return value.toString();
+        return value;
     }
 }

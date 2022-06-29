@@ -48,12 +48,9 @@ services:
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
         state.backend.latency-track.keyed-state-enabled: true
-        metrics.reporters: grph
-        metrics.reporter.grph.factory.class: org.apache.flink.metrics.graphite.GraphiteReporterFactory
-        metrics.reporter.grph.host: graphite
-        metrics.reporter.grph.port: 2003
-        metrics.reporter.grph.protocol: TCP
-        metrics.reporter.grph.interval: 60 SECONDS
+        metrics.reporters: prom
+        metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
+        metrics.reporter.prom.port: 9999
     volumes:
       - ./sabd2-flink/target:/opt/flink/sensor-app/
 
@@ -65,27 +62,33 @@ services:
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
         taskmanager.numberOfTaskSlots: 2
-        metrics.reporters: grph
-        metrics.reporter.grph.factory.class: org.apache.flink.metrics.graphite.GraphiteReporterFactory
-        metrics.reporter.grph.host: graphite
-        metrics.reporter.grph.port: 2003
-        metrics.reporter.grph.protocol: TCP
-        metrics.reporter.grph.interval: 60 SECONDS
+        metrics.reporters: prom
+        metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
+        metrics.reporter.prom.port: 9999
     depends_on:
       - jobmanager
 
-  graphite:
-    image: graphiteapp/graphite-statsd:latest
-    container_name: graphite
+  prometheus:
+    image: prom/prometheus:v2.33.3
+    container_name: prometheus
     ports:
-      - '80:80' # ui graphite
-      - "8080:8080" #ui graphite
-      - "2003:2003"
-      - "2004:2004"
-      - "8125:8125/udp"
-      - "8126:8126"
-    depends_on:
-      - jobmanager
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      # - ./prometheus/flink.rules.yml:/etc/prometheus/flink.rules.yml
+
+#  graphite:
+#    image: graphiteapp/graphite-statsd:latest
+#    container_name: graphite
+#    ports:
+#      - '80:80' # ui graphite
+#      - "8080:8080" #ui graphite
+#      - "2003:2003"
+#      - "2004:2004"
+#      - "8125:8125/udp"
+#      - "8126:8126"
+#    depends_on:
+#      - jobmanager
 
   #  # SERVICE4: REDIS ---------------------------------------------
   #  redis:
@@ -95,14 +98,14 @@ services:
   #      - '6379:6379'
 
   # SERVICE5: GRAFANA -------------------------------------------
-#  grafana:
-#    build:
-#      context: ./grafana
-#    container_name: grafana
-#    ports:
-#      - '8000:3000'
-#    volumes:
-#      - grafana-data:/var/lib/grafana
+  #  grafana:
+  #    build:
+  #      context: ./grafana
+  #    container_name: grafana
+  #    ports:
+  #      - '8000:3000'
+  #    volumes:
+  #      - grafana-data:/var/lib/grafana
 
 volumes:
   grafana-data:

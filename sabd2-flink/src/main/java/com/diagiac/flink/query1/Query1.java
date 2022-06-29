@@ -1,6 +1,5 @@
 package com.diagiac.flink.query1;
 
-import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
@@ -17,9 +16,10 @@ import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolC
 
 import java.time.Duration;
 
-public class Query1 extends Query {
-    public Query1(String url) {
+public class Query1 extends Query<Query1Record> {
+    public Query1(String url, WindowEnum windowAssigner) {
         this.url = url;
+        this.windowEnum = windowAssigner;
     }
     // kafka + flink https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/connectors/datastream/kafka/
     // watermark gen https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/dev/datastream/event-time/generating_watermarks/
@@ -41,15 +41,16 @@ public class Query1 extends Query {
      */
     public static void main(String[] args) throws Exception {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
-        var q1 = new Query1(url);
-        SingleOutputStreamOperator<Query1Record> d = q1.initialize();
-        q1.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
+        var windowAssigner = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
+        var q1 = new Query1(url, windowAssigner);
+        SingleOutputStreamOperator<Query1Record> d = q1.sourceConfigurationAndFiltering();
+        q1.queryConfiguration(d); // TODO: testare
         q1.sinkConfiguration();
         q1.execute();
     }
 
     @Override
-    public SingleOutputStreamOperator<Query1Record> initialize() {
+    public SingleOutputStreamOperator<Query1Record> sourceConfigurationAndFiltering() {
         /* set up the Kafka source that consumes records from broker */
         var source = KafkaSource.<Query1Record>builder()
                 .setBootstrapServers(this.url)
@@ -65,12 +66,10 @@ public class Query1 extends Query {
     }
 
     @Override
-    public void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
-        var dd = (SingleOutputStreamOperator<Query1Record>) d;
-
+    public void queryConfiguration(SingleOutputStreamOperator<Query1Record> d) {
         // Query1Record -> (sensorId, resto di Query1Record)
-        var sensorKeyed = dd.keyBy(Query1Record::getSensorId); // Set the sensorid as the record's key
-        var windowed = sensorKeyed.window(window.getWindowStrategy());
+        var sensorKeyed = d.keyBy(Query1Record::getSensorId); // Set the sensorid as the record's key
+        var windowed = sensorKeyed.window(windowEnum.getWindowStrategy());
         var aggregated = windowed.aggregate(new AverageAggregator());
         aggregated.map(new MetricRichMapFunction<>());
         aggregated.print();

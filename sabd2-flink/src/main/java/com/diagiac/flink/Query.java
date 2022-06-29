@@ -3,10 +3,11 @@ package com.diagiac.flink;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-public abstract class Query {
+public abstract class Query<T extends FlinkRecord> {
 
     protected StreamExecutionEnvironment env;
     protected String url;
+    protected WindowEnum windowEnum;
 
     public Query(){
         this.env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -17,12 +18,12 @@ public abstract class Query {
      *
      * @return
      */
-    public abstract SingleOutputStreamOperator<? extends FlinkRecord> initialize();
+    public abstract SingleOutputStreamOperator<T> sourceConfigurationAndFiltering();
 
     /**
      * Implements the query to execute
      */
-    public abstract void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window);
+    public abstract void queryConfiguration(SingleOutputStreamOperator<T> d);
 
     /**
      * Settings for the sink that consumes the output of the queries

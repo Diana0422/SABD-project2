@@ -1,15 +1,18 @@
 package com.diagiac.flink.query1;
 
 import com.diagiac.flink.FlinkRecord;
+import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.serialize.QueryRecordDeserializer1;
-import com.diagiac.flink.query1.utils.*;
+import com.diagiac.flink.query1.utils.AverageAggregator;
+import com.diagiac.flink.query1.utils.RecordFilter1;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
+import org.apache.flink.metrics.graphite.GraphiteReporter;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolConfig;
 
@@ -25,19 +28,20 @@ public class Query1 extends Query {
     /**
      * For those sensors having sensor_id< 10000, find the number
      * of measurements and the temperature average value
-     *
+     * <p>
      * Q1 output:
      * ts, sensor_id, count, avg_temperature
-     *
+     * <p>
      * Using a tumbling window, calculate this query:
      * – every 1 hour (event time)
      * – every 1 week (event time)
      * – from the beginning of the dataset
+     *
      * @param args
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        var url = args.length > 1 ? args[1]: "127.0.0.1:29092";
+        var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
         var q1 = new Query1(url);
         SingleOutputStreamOperator<Query1Record> d = q1.initialize();
         q1.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
@@ -56,7 +60,7 @@ public class Query1 extends Query {
                 .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(QueryRecordDeserializer1.class))
                 .build();
         var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query1Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
-                .withTimestampAssigner((queryRecord1, l) -> queryRecord1.getTimestamp().getTime()), "Kafka Source")
+                        .withTimestampAssigner((queryRecord1, l) -> queryRecord1.getTimestamp().getTime()), "Kafka Source")
                 .setParallelism(1);
         return kafkaSource.filter(new RecordFilter1());
     }
@@ -69,6 +73,7 @@ public class Query1 extends Query {
         var sensorKeyed = dd.keyBy(Query1Record::getSensorId); // Set the sensorid as the record's key
         var windowed = sensorKeyed.window(window.getWindowStrategy());
         var aggregated = windowed.aggregate(new AverageAggregator());
+        aggregated.map(new MetricRichMapFunction<>());
         aggregated.print();
     }
 

@@ -12,11 +12,11 @@ public class CellAvgMedianTemperature {
     private double medianTemperature;
     private GeoCell cell;
 
-    public CellAvgMedianTemperature(){
+    public CellAvgMedianTemperature(int i){
         this.timestamp = null;
         this.avgTemperature = Double.NaN;
         this.medianTemperature = Double.NaN;
-        this.cell = null;
+        this.cell = new GeoCell(i);
     }
 
     public CellAvgMedianTemperature(Timestamp timestamp, double avgTemperature, double medianTemperature, GeoCell cell) {

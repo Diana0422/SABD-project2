@@ -11,7 +11,7 @@ public class FinalProcessWindowFunction extends ProcessAllWindowFunction<CellAvg
     public void process(ProcessAllWindowFunction<CellAvgMedianTemperature, Query3Result, TimeWindow>.Context context, Iterable<CellAvgMedianTemperature> elements, Collector<Query3Result> out) throws Exception {
         CellAvgMedianTemperature[] orderedCells = new CellAvgMedianTemperature[16];
         for (int i = 0; i < orderedCells.length; i++) {
-            orderedCells[i] = new CellAvgMedianTemperature();
+            orderedCells[i] = new CellAvgMedianTemperature(i);
         }
         for (CellAvgMedianTemperature element : elements) {
             orderedCells[element.getCell().getId()] = element;

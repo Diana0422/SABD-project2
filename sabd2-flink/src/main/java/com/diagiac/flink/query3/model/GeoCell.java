@@ -54,6 +54,10 @@ public class GeoCell {
         }
     }
 
+    public GeoCell(int i) {
+        this.id = i;
+    }
+
     public boolean containsGeoPoint(GeoPoint p) {
         boolean latOk = p.getLat() >= SW.getLat() && p.getLat() < NW.getLat();
         boolean lonOk = p.getLon() >= SW.getLon() && p.getLon() < SE.getLon();

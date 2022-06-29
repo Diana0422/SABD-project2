@@ -47,6 +47,13 @@ services:
       - |
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
+        state.backend.latency-track.keyed-state-enabled: true
+        metrics.reporters: grph
+        metrics.reporter.grph.factory.class: org.apache.flink.metrics.graphite.GraphiteReporterFactory
+        metrics.reporter.grph.host: graphite
+        metrics.reporter.grph.port: 2003
+        metrics.reporter.grph.protocol: TCP
+        metrics.reporter.grph.interval: 60 SECONDS
     volumes:
       - ./sabd2-flink/target:/opt/flink/sensor-app/
 
@@ -58,6 +65,25 @@ services:
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
         taskmanager.numberOfTaskSlots: 2
+        metrics.reporters: grph
+        metrics.reporter.grph.factory.class: org.apache.flink.metrics.graphite.GraphiteReporterFactory
+        metrics.reporter.grph.host: graphite
+        metrics.reporter.grph.port: 2003
+        metrics.reporter.grph.protocol: TCP
+        metrics.reporter.grph.interval: 60 SECONDS
+    depends_on:
+      - jobmanager
+
+  graphite:
+    image: graphiteapp/graphite-statsd:latest
+    container_name: graphite
+    ports:
+      - '80:80' # ui graphite
+      - "8080:8080" #ui graphite
+      - "2003:2003"
+      - "2004:2004"
+      - "8125:8125/udp"
+      - "8126:8126"
     depends_on:
       - jobmanager
 

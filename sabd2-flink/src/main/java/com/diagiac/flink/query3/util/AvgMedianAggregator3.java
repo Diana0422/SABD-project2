@@ -1,4 +1,4 @@
-package com.diagiac.flink.query3;
+package com.diagiac.flink.query3.util;
 
 import com.diagiac.flink.query3.bean.CellAvgMedianTemperature;
 import com.diagiac.flink.query3.bean.Query3Aggregator;

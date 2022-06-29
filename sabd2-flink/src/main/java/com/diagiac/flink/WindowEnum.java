@@ -19,7 +19,7 @@ public enum WindowEnum {
                 eventTime = TumblingEventTimeWindows.of(Time.days(7));
                 break;
             case FromStart:
-                eventTime = TumblingEventTimeWindows.of(Time.days(9999));
+                eventTime = TumblingEventTimeWindows.of(Time.days(30));
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + this);

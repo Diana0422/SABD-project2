@@ -53,7 +53,7 @@ public class Query2 extends Query {
                 .setBootstrapServers(this.url) // kafka://kafka:9092,
                 .setTopics("input-records")
                 .setGroupId("flink-group")
-                .setStartingOffsets(OffsetsInitializer.latest())
+                .setStartingOffsets(OffsetsInitializer.earliest())
                 .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(QueryRecordDeserializer2.class))
                 .build();
 

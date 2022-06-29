@@ -3,10 +3,12 @@ package com.diagiac.flink.query3;
 import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
-import com.diagiac.flink.query3.bean.Query3Cell;
 import com.diagiac.flink.query3.bean.Query3Record;
+import com.diagiac.flink.query3.serialize.QueryRecordDeserializer3;
+import com.diagiac.flink.query3.util.AvgMedianAggregator3;
 import com.diagiac.flink.query3.util.CellMapper;
 import com.diagiac.flink.query3.util.FinalProcessWindowFunction;
+import com.diagiac.flink.query3.util.RecordFilter3;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
@@ -56,7 +58,7 @@ public class Query3 extends Query {
                 .setBootstrapServers(this.url) // kafka://kafka:9092,
                 .setTopics("input-records")
                 .setGroupId("flink-group")
-                .setStartingOffsets(OffsetsInitializer.latest())
+                .setStartingOffsets(OffsetsInitializer.earliest())
                 .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(QueryRecordDeserializer3.class))
                 .build();
 

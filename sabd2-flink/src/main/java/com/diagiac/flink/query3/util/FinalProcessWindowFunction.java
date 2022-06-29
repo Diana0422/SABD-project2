@@ -1,6 +1,6 @@
 package com.diagiac.flink.query3.util;
 
-import com.diagiac.flink.query3.Query3Result;
+import com.diagiac.flink.query3.bean.Query3Result;
 import com.diagiac.flink.query3.bean.CellAvgMedianTemperature;
 import org.apache.flink.streaming.api.functions.windowing.ProcessAllWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;

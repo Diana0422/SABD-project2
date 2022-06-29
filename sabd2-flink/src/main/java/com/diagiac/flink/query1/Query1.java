@@ -52,7 +52,7 @@ public class Query1 extends Query {
                 .setBootstrapServers(this.url)
                 .setTopics("input-records")
                 .setGroupId("flink-group")
-                .setStartingOffsets(OffsetsInitializer.latest())
+                .setStartingOffsets(OffsetsInitializer.earliest())
                 .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(QueryRecordDeserializer1.class))
                 .build();
         var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query1Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))

@@ -1,7 +1,6 @@
-package com.diagiac.flink.query3;
+package com.diagiac.flink.query3.bean;
 
-import com.diagiac.flink.query3.bean.CellAvgMedianTemperature;
-import com.diagiac.flink.query3.util.GeoCell;
+import com.diagiac.flink.query3.model.GeoCell;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

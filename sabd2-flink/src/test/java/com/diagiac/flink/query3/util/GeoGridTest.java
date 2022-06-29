@@ -1,5 +1,7 @@
 package com.diagiac.flink.query3.util;
 
+import com.diagiac.flink.query3.model.GeoGrid;
+import com.diagiac.flink.query3.model.GeoPoint;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

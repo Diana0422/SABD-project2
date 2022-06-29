@@ -1,6 +1,6 @@
 package com.diagiac.flink.query3.bean;
 
-import com.diagiac.flink.query3.util.GeoCell;
+import com.diagiac.flink.query3.model.GeoCell;
 import lombok.Data;
 
 import java.sql.Timestamp;

@@ -1,4 +1,4 @@
-package com.diagiac.flink.query3.util;
+package com.diagiac.flink.query3.model;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.diagiac.flink.query3.util.GeoCell.CellType.*;
+import static com.diagiac.flink.query3.model.GeoCell.CellType.*;
 
 @Data
 public class GeoGrid {

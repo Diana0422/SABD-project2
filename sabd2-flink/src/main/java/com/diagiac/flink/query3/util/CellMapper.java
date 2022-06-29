@@ -1,7 +1,9 @@
 package com.diagiac.flink.query3.util;
 
-import com.diagiac.flink.query3.bean.Query3Cell;
-import com.diagiac.flink.query3.bean.Query3Record;
+import com.diagiac.flink.query3.bean.*;
+import com.diagiac.flink.query3.model.GeoCell;
+import com.diagiac.flink.query3.model.GeoGrid;
+import com.diagiac.flink.query3.model.GeoPoint;
 import org.apache.flink.api.common.functions.MapFunction;
 
 import java.util.Optional;

@@ -61,10 +61,6 @@ public class Query1 extends Query {
         return kafkaSource.filter(new RecordFilter1());
     }
 
-    private void queryConfiguration() {
-
-    }
-
     @Override
     public void queryConfiguration(SingleOutputStreamOperator<? extends FlinkRecord> d, WindowEnum window) {
         var dd = (SingleOutputStreamOperator<Query1Record>) d;

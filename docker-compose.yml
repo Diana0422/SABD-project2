@@ -47,7 +47,6 @@ services:
       - |
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
-        state.backend.latency-track.keyed-state-enabled: true
     volumes:
       - ./sabd2-flink/target:/opt/flink/sensor-app/
 

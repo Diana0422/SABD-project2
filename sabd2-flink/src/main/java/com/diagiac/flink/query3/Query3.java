@@ -67,7 +67,9 @@ public class Query3 extends Query {
         env.getCheckpointConfig().setCheckpointStorage("file:///tmp/frauddetection/checkpoint");
         */
 
-        var kafkaSource = env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
+        var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query3Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
+                .withTimestampAssigner((query3Record, l) -> query3Record.getTimestamp().getTime()), "Kafka Source")
+                .setParallelism(1);
         return kafkaSource.filter(new RecordFilter3());
     }
 
@@ -76,13 +78,7 @@ public class Query3 extends Query {
         var dd = (SingleOutputStreamOperator<Query3Record>) d;
         var mapped = dd.map(new CellMapper());
         var filtered = mapped.filter(a -> a.getCell() != null);
-        var water = filtered.assignTimestampsAndWatermarks(
-                WatermarkStrategy.<Query3Cell>forBoundedOutOfOrderness(Duration.ofSeconds(60))
-                        .withTimestampAssigner((query3Cell, l) -> query3Cell.getTimestamp().getTime()) // assign the timestamp
-        );
-
-
-        var keyed = water.keyBy(query3Cell -> query3Cell.getCell().getId());
+        var keyed = filtered.keyBy(query3Cell -> query3Cell.getCell().getId());
         var windowed = keyed.window(window.getWindowStrategy());
         var aggregated = windowed.aggregate(new AvgMedianAggregator3());
         var windowedAll = aggregated.windowAll(window.getWindowStrategy());

@@ -1,5 +1,6 @@
 package com.diagiac.flink.query3.bean;
 
+import com.diagiac.flink.FlinkResult;
 import com.diagiac.flink.query3.model.GeoCell;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Query3Result {
+public class Query3Result implements FlinkResult {
     private Timestamp timestamp;
     private GeoCell cell0;
     private Double avgTemp0;

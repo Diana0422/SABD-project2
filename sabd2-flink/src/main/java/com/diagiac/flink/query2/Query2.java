@@ -1,8 +1,11 @@
 package com.diagiac.flink.query2;
 
+import com.diagiac.flink.FlinkRecord;
+import com.diagiac.flink.FlinkResult;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query2.bean.Query2Record;
+import com.diagiac.flink.query2.bean.Query2Result;
 import com.diagiac.flink.query2.serialize.QueryRecordDeserializer2;
 import com.diagiac.flink.query2.util.AverageAggregator2;
 import com.diagiac.flink.query2.util.RecordFilter2;
@@ -43,8 +46,8 @@ public class Query2 extends Query<Query2Record> {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
         var q2 = new Query2(url, window);
         SingleOutputStreamOperator<Query2Record> d =  q2.sourceConfigurationAndFiltering();
-        q2.queryConfiguration(d); // TODO: testare
-        q2.sinkConfiguration();
+        var resultStream = q2.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
+        q2.sinkConfiguration(resultStream);
         q2.execute();
     }
 
@@ -72,7 +75,7 @@ public class Query2 extends Query<Query2Record> {
     }
 
     @Override
-    public void queryConfiguration(SingleOutputStreamOperator<Query2Record> d) {
+    public SingleOutputStreamOperator<Query2Result> queryConfiguration(SingleOutputStreamOperator<Query2Record> d) {
         // Query2Record -> (Location, resto di query2Record)
         var locationKeyed = d.keyBy(Query2Record::getLocation);
         var windowed = locationKeyed.window(windowEnum.getWindowStrategy());
@@ -81,11 +84,11 @@ public class Query2 extends Query<Query2Record> {
         var aggregated = windowed.aggregate(new AverageAggregator2());
         var windowedAll = aggregated.windowAll(windowEnum.getWindowStrategy());
         var processed = windowedAll.process(new SortKeyedProcessFunction());
-        processed.print();
+        return processed;
     }
 
     @Override
-    public void sinkConfiguration() {
+    public void sinkConfiguration(SingleOutputStreamOperator<? extends FlinkResult> resultStream) {
         /* Set up the Redis sink */
         // FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig.Builder().setHost("redis").setPort(6379).build();
     }

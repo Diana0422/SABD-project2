@@ -1,8 +1,11 @@
 package com.diagiac.flink.query3;
 
+import com.diagiac.flink.FlinkRecord;
+import com.diagiac.flink.FlinkResult;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query3.bean.Query3Record;
+import com.diagiac.flink.query3.bean.Query3Result;
 import com.diagiac.flink.query3.serialize.QueryRecordDeserializer3;
 import com.diagiac.flink.query3.util.AvgMedianAggregator3;
 import com.diagiac.flink.query3.util.CellMapper;
@@ -48,8 +51,8 @@ public class Query3 extends Query<Query3Record> {
         var w = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
         var q3 = new Query3(url, w);
         SingleOutputStreamOperator<Query3Record> d =  q3.sourceConfigurationAndFiltering();
-        q3.queryConfiguration(d);
-        q3.sinkConfiguration();
+        var resultStream = q3.queryConfiguration(d, args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour); // TODO: testare
+        q3.sinkConfiguration(resultStream);
         q3.execute();
     }
 
@@ -77,7 +80,7 @@ public class Query3 extends Query<Query3Record> {
     }
 
     @Override
-    public void queryConfiguration(SingleOutputStreamOperator<Query3Record> d) {
+    public SingleOutputStreamOperator<Query3Result> queryConfiguration(SingleOutputStreamOperator<Query3Record> d) {
         var mapped = d.map(new CellMapper());
         var filtered = mapped.filter(a -> a.getCell() != null);
         var keyed = filtered.keyBy(query3Cell -> query3Cell.getCell().getId());
@@ -85,11 +88,11 @@ public class Query3 extends Query<Query3Record> {
         var aggregated = windowed.aggregate(new AvgMedianAggregator3());
         var windowedAll = aggregated.windowAll(windowEnum.getWindowStrategy());
         var finalProcess = windowedAll.process(new FinalProcessWindowFunction());
-        finalProcess.print();
+        return finalProcess;
     }
 
     @Override
-    public void sinkConfiguration() {
+    public void sinkConfiguration(SingleOutputStreamOperator<? extends FlinkResult> resultStream) {
 
     }
 }

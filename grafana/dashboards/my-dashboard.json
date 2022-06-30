@@ -3,21 +3,30 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "description": "Redis Dashboard",
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1656513012090,
+  "iteration": 1656603458417,
   "links": [
     {
       "icon": "external link",
@@ -36,10 +45,14 @@
       "url": "https://redis.io/"
     }
   ],
+  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "91uRl93nz"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -48,56 +61,149 @@
       },
       "id": 71,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "91uRl93nz"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Query1",
       "type": "row"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "91uRl93nz"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "averageTemperature"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              },
+              {
+                "id": "min",
+                "value": -33
+              },
+              {
+                "id": "max",
+                "value": 50
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-BlYlRd"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count"
+            },
+            "properties": [
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 50
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensorId"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 0
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "text",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
         "y": 1
       },
-      "hiddenSeries": false,
       "id": 73,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
       },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "9.0.2",
       "targets": [
         {
-          "command": "get",
-          "keyName": "8227",
+          "command": "hgetall",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "91uRl93nz"
+          },
+          "keyName": "query1",
           "query": "",
           "refId": "A",
           "streaming": true,
@@ -106,50 +212,16 @@
           "type": "command"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "Panel Title",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "transformations": [],
+      "type": "gauge"
     },
     {
       "collapsed": true,
-      "datasource": null,
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "91uRl93nz"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -159,7 +231,10 @@
       "id": 69,
       "panels": [
         {
-          "datasource": "-- Dashboard --",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -168,8 +243,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-blue",
-                    "value": null
+                    "color": "dark-blue"
                   }
                 ]
               },
@@ -200,21 +274,16 @@
             "textMode": "auto"
           },
           "pluginVersion": "7.1.5",
-          "scopedVars": {
-            "redis": {
-              "selected": true,
-              "text": "Redis-Cache",
-              "value": "Redis-Cache"
-            }
-          },
           "targets": [
             {
+              "datasource": {
+                "type": "datasource",
+                "uid": "-- Dashboard --"
+              },
               "panelId": 8,
               "refId": "A"
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Eviction Policy",
           "transformations": [
             {
@@ -231,12 +300,24 @@
           "type": "stat"
         }
       ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "91uRl93nz"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Query2",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": null,
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "91uRl93nz"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -250,7 +331,6 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": null,
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -289,9 +369,7 @@
           "stack": false,
           "steppedLine": false,
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Panel Title",
           "tooltip": {
             "shared": true,
@@ -300,37 +378,31 @@
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
-          "datasource": "-- Dashboard --",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -339,8 +411,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-blue",
-                    "value": null
+                    "color": "dark-blue"
                   }
                 ]
               }
@@ -370,21 +441,16 @@
             "textMode": "auto"
           },
           "pluginVersion": "7.1.5",
-          "scopedVars": {
-            "redis": {
-              "selected": true,
-              "text": "Redis-Cache",
-              "value": "Redis-Cache"
-            }
-          },
           "targets": [
             {
+              "datasource": {
+                "type": "datasource",
+                "uid": "-- Dashboard --"
+              },
               "panelId": 19,
               "refId": "A"
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Version",
           "transformations": [
             {
@@ -401,12 +467,24 @@
           "type": "stat"
         }
       ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "91uRl93nz"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Query3",
       "type": "row"
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "91uRl93nz"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -416,29 +494,31 @@
       "id": 56,
       "panels": [],
       "repeat": "redis",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
+      "targets": [
+        {
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "91uRl93nz"
+          },
+          "refId": "A"
         }
-      },
+      ],
       "title": "Main",
       "type": "row"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "dark-yellow",
@@ -476,25 +556,19 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "command": "info",
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "",
           "refId": "A",
           "section": "stats",
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Ops/sec",
       "transformations": [
         {
@@ -511,10 +585,12 @@
       "type": "stat"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 1,
           "mappings": [],
           "max": 11000,
@@ -523,8 +599,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "dark-yellow",
@@ -560,22 +635,17 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "panelId": 24,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Network",
       "transformations": [
         {
@@ -604,18 +674,18 @@
       "type": "gauge"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               }
             ]
           },
@@ -693,6 +763,8 @@
       "id": 8,
       "options": {
         "displayMode": "lcd",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
@@ -704,25 +776,19 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "command": "info",
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "",
           "refId": "A",
           "section": "memory",
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Memory",
       "transformations": [
         {
@@ -763,18 +829,18 @@
       "type": "bargauge"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
-                "value": null
+                "color": "dark-blue"
               }
             ]
           },
@@ -804,25 +870,19 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "command": "info",
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "",
           "refId": "A",
           "section": "server",
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Uptime",
       "transformations": [
         {
@@ -839,18 +899,18 @@
       "type": "stat"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
-                "value": null
+                "color": "dark-blue"
               }
             ]
           },
@@ -880,25 +940,19 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "command": "info",
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "",
           "refId": "A",
           "section": "clients",
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Connected Clients",
       "transformations": [
         {
@@ -915,17 +969,17 @@
       "type": "stat"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
-                "value": null
+                "color": "dark-blue"
               }
             ]
           },
@@ -955,31 +1009,27 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "dbsize",
           "refId": "A",
           "type": "cli"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Number of Keys",
       "type": "stat"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [],
           "min": 0,
@@ -987,8 +1037,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               }
             ]
           },
@@ -1005,6 +1054,8 @@
       "id": 36,
       "options": {
         "displayMode": "lcd",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
@@ -1016,22 +1067,17 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "panelId": 24,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Keys",
       "transformations": [
         {
@@ -1060,10 +1106,12 @@
       "type": "bargauge"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [],
           "min": 0,
@@ -1071,8 +1119,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               }
             ]
           },
@@ -1089,6 +1136,8 @@
       "id": 38,
       "options": {
         "displayMode": "lcd",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
@@ -1100,22 +1149,17 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "panelId": 24,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Keyspace",
       "transformations": [
         {
@@ -1145,7 +1189,10 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "91uRl93nz"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1155,32 +1202,35 @@
       "id": 32,
       "panels": [],
       "repeat": "redis",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
+      "targets": [
+        {
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "91uRl93nz"
+          },
+          "refId": "A"
         }
-      },
+      ],
       "title": "Other",
       "type": "row"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null,
             "displayMode": "color-text",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -1248,6 +1298,13 @@
       },
       "id": 4,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -1256,24 +1313,18 @@
           }
         ]
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "command": "clientList",
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "",
           "refId": "A",
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Client connections",
       "transformations": [
         {
@@ -1307,21 +1358,22 @@
       "type": "table"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null,
             "displayMode": "color-text",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -1413,6 +1465,13 @@
       },
       "id": 41,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -1421,25 +1480,19 @@
           }
         ]
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "command": "info",
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "",
           "refId": "A",
           "section": "commandstats",
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Command statistics",
       "transformations": [
         {
@@ -1459,30 +1512,22 @@
       "type": "table"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null,
             "displayMode": "color-text",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
-          "mappings": [
-            {
-              "from": "",
-              "id": 0,
-              "operator": "",
-              "text": "",
-              "to": "",
-              "type": 1
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -1550,27 +1595,28 @@
       },
       "id": 11,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.1.5",
-      "scopedVars": {
-        "redis": {
-          "selected": true,
-          "text": "Redis-Cache",
-          "value": "Redis-Cache"
-        }
-      },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "command": "slowlogGet",
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "",
           "refId": "A",
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Slow queries log",
       "transformations": [
         {
@@ -1599,7 +1645,9 @@
     },
     {
       "collapsed": false,
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1608,21 +1656,29 @@
       },
       "id": 58,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "uid": "$redis"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Redis Cluster",
       "type": "row"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
-                "value": null
+                "color": "dark-blue"
               }
             ]
           }
@@ -1651,17 +1707,18 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.1.5",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "command": "clusterInfo",
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "",
           "refId": "A",
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "State",
       "transformations": [
         {
@@ -1678,17 +1735,17 @@
       "type": "stat"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
-                "value": null
+                "color": "dark-blue"
               }
             ]
           }
@@ -1717,18 +1774,19 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.1.5",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "command": "info",
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "",
           "refId": "A",
           "section": "replication",
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Role",
       "transformations": [
         {
@@ -1745,18 +1803,19 @@
       "type": "stat"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               }
             ]
           },
@@ -1773,6 +1832,8 @@
       "id": 61,
       "options": {
         "displayMode": "lcd",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
@@ -1784,15 +1845,17 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "7.1.5",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
           "panelId": 60,
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "transformations": [
         {
           "id": "filterFieldsByName",
@@ -1820,20 +1883,22 @@
       "type": "bargauge"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null,
-            "filterable": false
+            "displayMode": "auto",
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               }
             ]
           }
@@ -1929,6 +1994,13 @@
       },
       "id": 62,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -1937,17 +2009,18 @@
           }
         ]
       },
-      "pluginVersion": "7.1.5",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "command": "clusterNodes",
+          "datasource": {
+            "uid": "$redis"
+          },
           "query": "",
           "refId": "A",
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Nodes",
       "transformations": [
         {
@@ -1972,7 +2045,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 26,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -1983,8 +2056,6 @@
           "text": "Redis-Cache",
           "value": "Redis-Cache"
         },
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Redis",
@@ -2001,8 +2072,8 @@
     ]
   },
   "time": {
-    "from": "2022-06-12T05:35:43.366Z",
-    "to": "2022-06-12T17:35:43.366Z"
+    "from": "2022-06-30T15:24:04.504Z",
+    "to": "2022-06-30T15:25:00.499Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -2020,5 +2091,6 @@
   "timezone": "",
   "title": "SABD - Project 2",
   "uid": "2J8ln097k",
-  "version": 5
+  "version": 6,
+  "weekStart": ""
 }

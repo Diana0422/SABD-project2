@@ -82,7 +82,10 @@ public class Query1 extends Query<Query1Record, Query1Result> {
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream) {
         /* Set up the sink */
         var conf = new FlinkJedisPoolConfig.Builder().setHost("redis-cache").setPort(6379).build();
-        resultStream.addSink(new RedisSink<>(conf, new TrueRedisMapper1("query1")));
+        resultStream.addSink(new RedisSink<>(conf, new TrueRedisMapper1("query1", "timestamp", "getTimestamp")));
+        resultStream.addSink(new RedisSink<>(conf, new TrueRedisMapper1("query1", "sensorId", "getSensorId")));
+        resultStream.addSink(new RedisSink<>(conf, new TrueRedisMapper1("query1", "count", "getCount")));
+        resultStream.addSink(new RedisSink<>(conf, new TrueRedisMapper1("query1", "averageTemperature", "getAvgTemperature")));
         // resultStream.addSink(new RedisTSink<>("redis-cache", 6379, new TrueRedisMapper1("query1")));
         /* Set up stdOut Sink */
         resultStream.print();

@@ -77,35 +77,22 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       # - ./prometheus/flink.rules.yml:/etc/prometheus/flink.rules.yml
 
-#  graphite:
-#    image: graphiteapp/graphite-statsd:latest
-#    container_name: graphite
-#    ports:
-#      - '80:80' # ui graphite
-#      - "8080:8080" #ui graphite
-#      - "2003:2003"
-#      - "2004:2004"
-#      - "8125:8125/udp"
-#      - "8126:8126"
-#    depends_on:
-#      - jobmanager
+    # SERVICE4: REDIS ---------------------------------------------
+  redis:
+    image: redislabs/redisearch
+    container_name: redis-cache
+    ports:
+      - '6379:6379'
 
-  #  # SERVICE4: REDIS ---------------------------------------------
-  #  redis:
-  #    image: redislabs/redisearch
-  #    container_name: redis-cache
-  #    ports:
-  #      - '6379:6379'
-
-  # SERVICE5: GRAFANA -------------------------------------------
-  #  grafana:
-  #    build:
-  #      context: ./grafana
-  #    container_name: grafana
-  #    ports:
-  #      - '8000:3000'
-  #    volumes:
-  #      - grafana-data:/var/lib/grafana
+#   SERVICE5: GRAFANA -------------------------------------------
+  grafana:
+    build:
+      context: ./grafana
+    container_name: grafana
+    ports:
+      - '8001:3000'
+    volumes:
+      - grafana-data:/var/lib/grafana
 
 volumes:
   grafana-data:

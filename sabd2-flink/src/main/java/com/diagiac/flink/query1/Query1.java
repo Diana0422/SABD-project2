@@ -2,6 +2,7 @@ package com.diagiac.flink.query1;
 
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
+import com.diagiac.flink.RedisTSink;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.bean.Query1Result;
@@ -13,8 +14,11 @@ import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
+import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.streaming.connectors.redis.RedisSink;
 import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolConfig;
+import redis.clients.jedis.Jedis;
 
 import java.time.Duration;
 
@@ -80,11 +84,10 @@ public class Query1 extends Query<Query1Record, Query1Result> {
     @Override
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream) {
         /* Set up the Redis sink */
-        FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig.Builder().setHost("redis-cache").setPort(6379).build();
-        var d = (SingleOutputStreamOperator<Query1Result>) resultStream;
-        d.addSink(new RedisSink<Query1Result>(conf, new RedisMapper1()));
-
+//        FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig.Builder().setHost("redis-cache").setPort(6379).build();
+//        resultStream.addSink(new RedisSink<>(conf, new RedisMapper1()));
+        resultStream.addSink(new RedisTSink<>("redis-cache", 6379, new RedisMapper1()));
         /* Set up stdOut Sink */
-        d.print();
+        resultStream.print();
     }
 }

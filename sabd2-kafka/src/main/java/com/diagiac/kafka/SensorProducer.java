@@ -47,7 +47,7 @@ public class SensorProducer {
             ReadCsv readCsv = new ReadCsv(dataset);
             List<SensorDataModel> recordList = readCsv.readCSVFile();
             List<SensorDataModel> orderedList = orderByTimestamp(recordList);
-
+            System.out.println("Start publishing");
             //send messages to my-topic
             int j = 1;
             for (int i = 1; i < orderedList.size(); i++) {
@@ -60,7 +60,9 @@ public class SensorProducer {
                 // send data1 and wait diff time to continue the loop
                 var producerRecord = new ProducerRecord<>("input-records", j, data1);
                 producer.send(producerRecord);
-                System.out.printf("Send: %d - %s%n", j, data1);
+                if (j % 10000 == 0){
+                    System.out.printf("Sent %d: %s%n", j, data1);
+                }
                 producer.flush();
                 Thread.sleep(timeDiff / speedup); // weighted to speed up the producer
                 j++;
@@ -68,6 +70,7 @@ public class SensorProducer {
         } catch (NullPointerException n) {
             n.printStackTrace();
         }
+        System.out.println("FINISHED PUBLISHING");
     }
 
 

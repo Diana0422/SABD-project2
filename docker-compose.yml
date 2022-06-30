@@ -79,7 +79,7 @@ services:
 
     # SERVICE4: REDIS ---------------------------------------------
   redis:
-    image: redislabs/redisearch
+    image: redis:latest
     container_name: redis-cache
     ports:
       - '6379:6379'

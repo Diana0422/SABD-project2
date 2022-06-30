@@ -2,23 +2,20 @@ package com.diagiac.flink.query1;
 
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
-import com.diagiac.flink.RedisTSink;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.bean.Query1Result;
 import com.diagiac.flink.query1.serialize.QueryRecordDeserializer1;
 import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter1;
+import com.diagiac.flink.redis.TrueRedisMapper1;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
-import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.streaming.connectors.redis.RedisSink;
 import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolConfig;
-import redis.clients.jedis.Jedis;
 
 import java.time.Duration;
 
@@ -83,10 +80,10 @@ public class Query1 extends Query<Query1Record, Query1Result> {
 
     @Override
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream) {
-        /* Set up the Redis sink */
-//        FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig.Builder().setHost("redis-cache").setPort(6379).build();
-//        resultStream.addSink(new RedisSink<>(conf, new RedisMapper1()));
-        resultStream.addSink(new RedisTSink<>("redis-cache", 6379, new RedisMapper1()));
+        /* Set up the sink */
+        var conf = new FlinkJedisPoolConfig.Builder().setHost("redis-cache").setPort(6379).build();
+        resultStream.addSink(new RedisSink<>(conf, new TrueRedisMapper1("query1")));
+        // resultStream.addSink(new RedisTSink<>("redis-cache", 6379, new TrueRedisMapper1("query1")));
         /* Set up stdOut Sink */
         resultStream.print();
     }

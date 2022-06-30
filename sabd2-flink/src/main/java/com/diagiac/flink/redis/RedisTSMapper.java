@@ -1,8 +1,6 @@
-package com.diagiac.flink;
+package com.diagiac.flink.redis;
 
 import org.apache.flink.api.common.functions.Function;
-import org.apache.flink.streaming.connectors.redis.common.mapper.RedisCommandDescription;
-import org.apache.flink.streaming.connectors.redis.common.mapper.RedisMapper;
 
 import java.io.Serializable;
 

@@ -15,13 +15,27 @@
         <module>sabd2-flink</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <!-- This should be at top, it makes maven try the central repo first and then others and hence faster dep resolution -->
+            <name>Maven Repository</name>
+            <url>https://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <scala.binary.version>2.11</scala.binary.version>
-        <flink.version>1.14.4</flink.version>
-        <redis.version>2.10</redis.version>
+        <flink.version>1.15.0</flink.version>
+        <redis.version>2.11</redis.version>
         <log4j.version>2.17.1</log4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

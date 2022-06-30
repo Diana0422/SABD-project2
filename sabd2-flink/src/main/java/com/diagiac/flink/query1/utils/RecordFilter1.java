@@ -7,7 +7,6 @@ public class RecordFilter1 implements FilterFunction<Query1Record> {
     private static final long serialVersionUID = 1111111111111111L;
     @Override
     public boolean filter(Query1Record value) throws Exception {
-        System.out.println("SONO NEL FILTRO");
         Double temperature = value.getTemperature();
         Long sensorId = value.getSensorId();
         boolean temperatureIsPresent = temperature != null;

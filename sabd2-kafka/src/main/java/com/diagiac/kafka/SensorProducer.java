@@ -5,6 +5,7 @@ import com.diagiac.kafka.serialize.JsonSerializer;
 import com.diagiac.kafka.utils.ReadCsv;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.io.File;
@@ -37,6 +38,7 @@ public class SensorProducer {
         props.put("bootstrap.servers", url);
         props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer"); // TODO forse cambio
         props.put("value.serializer", JsonSerializer.class); // TODO forse cambio
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
 
         //create producer
         try (Producer<Integer, SensorDataModel> producer = new KafkaProducer<>(props)) {

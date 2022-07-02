@@ -47,6 +47,7 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         var windowAssigner = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
         var q1 = new Query1(url, windowAssigner);
         SingleOutputStreamOperator<Query1Record> d = q1.sourceConfigurationAndFiltering();
+        System.out.println("Filtered Data");
         var resultStream = q1.queryConfiguration(d); // TODO: testare
         q1.sinkConfiguration(resultStream);
         q1.execute();
@@ -65,28 +66,40 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query1Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
                         .withTimestampAssigner((queryRecord1, l) -> queryRecord1.getTimestamp().getTime()), "Kafka Source")
                 .setParallelism(1);
+        System.out.println("Consumed data from Kafka");
         return kafkaSource.filter(new RecordFilter1());
     }
 
     @Override
     public SingleOutputStreamOperator<Query1Result> queryConfiguration(SingleOutputStreamOperator<Query1Record> d) {
         // Query1Record -> (sensorId, resto di Query1Record)
+        System.out.println("Query1 start processing");
         var sensorKeyed = d.keyBy(Query1Record::getSensorId); // Set the sensorid as the record's key
+        System.out.println("after: keyBy sensor id");
         var windowed = sensorKeyed.window(windowEnum.getWindowStrategy());
+        System.out.println("Selected Window: "+windowEnum.getWindowStrategy());
         var aggregated = windowed.aggregate(new AverageAggregator());
-        aggregated.map(new MetricRichMapFunction<>()); // just for metrics
+        System.out.println("After aggregated");
+//        aggregated.map(new MetricRichMapFunction<>()); // just for metrics
+//        System.out.println("After metrics map");
         return aggregated;
     }
 
     @Override
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream) {
         /* Set up the redis sink */
-        var conf = new FlinkJedisPoolConfig.Builder().setHost("redis-cache").setPort(6379).build();
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "timestamp", "getTimestamp")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "sensorId", "getSensorId")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "count", "getCount")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "averageTemperature", "getAvgTemperature")));
+        System.out.println("Setting sinks:");
+//        var conf = new FlinkJedisPoolConfig.Builder().setHost("redis-cache").setPort(6379).build();
+//        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "timestamp", "getTimestamp")));
+//        System.out.println("Setting sinks: sink1 redis");
+//        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "sensorId", "getSensorId")));
+//        System.out.println("Setting sinks: sink2 redis");
+//        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "count", "getCount")));
+//        System.out.println("Setting sinks: sink3 redis");
+//        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "averageTemperature", "getAvgTemperature")));
+//        System.out.println("Setting sinks: sink4 redis");
         /* Set up stdOut Sink */
+        System.out.println("Setting sinks: sink stdout");
         resultStream.print();
     }
 }

@@ -12,5 +12,6 @@ COPY 2022-05_bmp180.csv.gz .
 RUN gzip -d 2022-05_bmp180.csv.gz
 
 COPY ./target/sabd2-kafka-1.0-jar-with-dependencies.jar .
+RUN docker exec kafka kafka-topics --delete --zookeeper zookeeper:2181 --topic input-records
 # compile and run
 CMD ["java", "-jar", "sabd2-kafka-1.0-jar-with-dependencies.jar", "2022-05_bmp180.csv", "kafka://kafka:9092", "5000000"]

@@ -8,7 +8,7 @@ import com.diagiac.flink.query1.bean.Query1Result;
 import com.diagiac.flink.query1.serialize.QueryRecordDeserializer1;
 import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter1;
-import com.diagiac.flink.redis.TrueRedisMapper1;
+import com.diagiac.flink.redis.TheRedisMapper;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
@@ -80,13 +80,12 @@ public class Query1 extends Query<Query1Record, Query1Result> {
 
     @Override
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream) {
-        /* Set up the sink */
+        /* Set up the redis sink */
         var conf = new FlinkJedisPoolConfig.Builder().setHost("redis-cache").setPort(6379).build();
-        resultStream.addSink(new RedisSink<>(conf, new TrueRedisMapper1("query1", "timestamp", "getTimestamp")));
-        resultStream.addSink(new RedisSink<>(conf, new TrueRedisMapper1("query1", "sensorId", "getSensorId")));
-        resultStream.addSink(new RedisSink<>(conf, new TrueRedisMapper1("query1", "count", "getCount")));
-        resultStream.addSink(new RedisSink<>(conf, new TrueRedisMapper1("query1", "averageTemperature", "getAvgTemperature")));
-        // resultStream.addSink(new RedisTSink<>("redis-cache", 6379, new TrueRedisMapper1("query1")));
+        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "timestamp", "getTimestamp")));
+        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "sensorId", "getSensorId")));
+        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "count", "getCount")));
+        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "averageTemperature", "getAvgTemperature")));
         /* Set up stdOut Sink */
         resultStream.print();
     }

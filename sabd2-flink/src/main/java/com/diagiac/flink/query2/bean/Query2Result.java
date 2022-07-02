@@ -1,24 +1,26 @@
 package com.diagiac.flink.query2.bean;
 
 import com.diagiac.flink.FlinkResult;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class Query2Result implements FlinkResult {
     private Timestamp timestamp;
-    private Long locations1;
-    private Long locations2;
-    private Long locations3;
-    private Long locations4;
-    private Long locations5;
-    private Long locations6;
-    private Long locations7;
-    private Long locations8;
-    private Long locations9;
-    private Long locations10;
+    private Long location1;
+    private Long location2;
+    private Long location3;
+    private Long location4;
+    private Long location5;
+    private Long location6;
+    private Long location7;
+    private Long location8;
+    private Long location9;
+    private Long location10;
 
     private Double temperature1;
     private Double temperature2;
@@ -33,17 +35,17 @@ public class Query2Result implements FlinkResult {
 
     public Query2Result(Timestamp timestamp, List<LocationTemperature> maxTemperatures, List<LocationTemperature> minTemperatures) {
         this.timestamp = timestamp;
-        locations1 = maxTemperatures.get(4).getLocation();
-        locations2 = maxTemperatures.get(3).getLocation();
-        locations3 = maxTemperatures.get(2).getLocation();
-        locations4 = maxTemperatures.get(1).getLocation();
-        locations5 = maxTemperatures.get(0).getLocation();
+        location1 = maxTemperatures.get(4).getLocation();
+        location2 = maxTemperatures.get(3).getLocation();
+        location3 = maxTemperatures.get(2).getLocation();
+        location4 = maxTemperatures.get(1).getLocation();
+        location5 = maxTemperatures.get(0).getLocation();
 
-        locations6 = minTemperatures.get(0).getLocation();
-        locations7 = minTemperatures.get(1).getLocation();
-        locations8 = minTemperatures.get(2).getLocation();
-        locations9 = minTemperatures.get(3).getLocation();
-        locations10 = minTemperatures.get(4).getLocation();
+        location6 = minTemperatures.get(0).getLocation();
+        location7 = minTemperatures.get(1).getLocation();
+        location8 = minTemperatures.get(2).getLocation();
+        location9 = minTemperatures.get(3).getLocation();
+        location10 = minTemperatures.get(4).getLocation();
 
         temperature1 = maxTemperatures.get(4).getAvgTemperature();
         temperature2 = maxTemperatures.get(3).getAvgTemperature();
@@ -61,27 +63,27 @@ public class Query2Result implements FlinkResult {
     @Override
     public String toString() {
         return "Query2Result{" +
-                "timestamp=" + timestamp +
-                ", locations1=" + locations1 +
-                ", locations2=" + locations2 +
-                ", locations3=" + locations3 +
-                ", locations4=" + locations4 +
-                ", locations5=" + locations5 +
-                ", locations6=" + locations6 +
-                ", locations7=" + locations7 +
-                ", locations8=" + locations8 +
-                ", locations9=" + locations9 +
-                ", locations10=" + locations10 +
-                ", temperature1=" + temperature1 +
-                ", temperature2=" + temperature2 +
-                ", temperature3=" + temperature3 +
-                ", temperature4=" + temperature4 +
-                ", temperature5=" + temperature5 +
-                ", temperature6=" + temperature6 +
-                ", temperature7=" + temperature7 +
-                ", temperature8=" + temperature8 +
-                ", temperature9=" + temperature9 +
-                ", temperature10=" + temperature10 +
-                '}';
+               "timestamp=" + timestamp +
+               ", locations1=" + location1 +
+               ", locations2=" + location2 +
+               ", locations3=" + location3 +
+               ", locations4=" + location4 +
+               ", locations5=" + location5 +
+               ", locations6=" + location6 +
+               ", locations7=" + location7 +
+               ", locations8=" + location8 +
+               ", locations9=" + location9 +
+               ", locations10=" + location10 +
+               ", temperature1=" + temperature1 +
+               ", temperature2=" + temperature2 +
+               ", temperature3=" + temperature3 +
+               ", temperature4=" + temperature4 +
+               ", temperature5=" + temperature5 +
+               ", temperature6=" + temperature6 +
+               ", temperature7=" + temperature7 +
+               ", temperature8=" + temperature8 +
+               ", temperature9=" + temperature9 +
+               ", temperature10=" + temperature10 +
+               '}';
     }
 }

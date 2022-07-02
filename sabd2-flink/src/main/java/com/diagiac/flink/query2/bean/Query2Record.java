@@ -16,29 +16,29 @@ public class Query2Record implements FlinkRecord {
     private long count;
 
 
-    public static Query2Record create(String valueRecord) {
-        JSONObject jsonObject = new JSONObject(valueRecord);
-        Query2Record record = new Query2Record();
+    public static Query2Record create(String jsonRecord) {
+        JSONObject jsonObject = new JSONObject(jsonRecord);
+        Query2Record query2Record = new Query2Record();
         String location = jsonObject.getString("location");
         String timestamp = jsonObject.getString("timestamp").replace("T", " ");
         String temperature = jsonObject.getString("temperature");
 
         if (location.isEmpty()) {
-            record.setLocation(null);
+            query2Record.setLocation(null);
         } else {
-            record.setLocation(Long.parseLong(jsonObject.getString("location")));
+            query2Record.setLocation(Long.parseLong(location));
         }
         if (timestamp.isEmpty()) {
-            record.setTimestamp(null);
+            query2Record.setTimestamp(null);
         } else {
-            record.setTimestamp(Timestamp.valueOf(jsonObject.getString("timestamp").replace("T", " ")));
+            query2Record.setTimestamp(Timestamp.valueOf(timestamp));
         }
         if (temperature.isEmpty()) {
-            record.setTemperature(null);
+            query2Record.setTemperature(null);
         } else {
-            record.setTemperature(Double.parseDouble(jsonObject.getString("temperature")));
+            query2Record.setTemperature(Double.parseDouble(temperature));
         }
-        record.setCount(1);
-        return record;
+        query2Record.setCount(1);
+        return query2Record;
     }
 }

@@ -1,6 +1,5 @@
 package com.diagiac.flink.query1.bean;
 
-import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.FlinkResult;
 import lombok.AllArgsConstructor;
 import lombok.Data;

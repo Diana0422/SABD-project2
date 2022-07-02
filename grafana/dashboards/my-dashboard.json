@@ -26,7 +26,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1656696503136,
+  "iteration": 1656754918550,
   "links": [
     {
       "icon": "external link",
@@ -213,7 +213,7 @@
           "type": "command"
         }
       ],
-      "title": "Panel Title",
+      "title": "Sensors",
       "transformations": [],
       "type": "gauge"
     },
@@ -230,77 +230,7 @@
         "y": 9
       },
       "id": 69,
-      "panels": [
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "-- Dashboard --"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-blue"
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 21,
-            "y": 10
-          },
-          "id": 34,
-          "options": {
-            "colorMode": "background",
-            "graphMode": "area",
-            "justifyMode": "center",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "mean"
-              ],
-              "fields": "/.*/",
-              "values": true
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "7.1.5",
-          "targets": [
-            {
-              "datasource": {
-                "type": "datasource",
-                "uid": "-- Dashboard --"
-              },
-              "panelId": 8,
-              "refId": "A"
-            }
-          ],
-          "title": "Eviction Policy",
-          "transformations": [
-            {
-              "id": "filterFieldsByName",
-              "options": {
-                "include": {
-                  "names": [
-                    "maxmemory_policy"
-                  ]
-                }
-              }
-            }
-          ],
-          "type": "stat"
-        }
-      ],
+      "panels": [],
       "targets": [
         {
           "datasource": {
@@ -314,7 +244,148 @@
       "type": "row"
     },
     {
-      "collapsed": true,
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "91uRl93nz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 76,
+      "maxPerRow": 3,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.0.2",
+      "repeat": "redis",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "command": "hmget",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "91uRl93nz"
+          },
+          "field": "location1 temperature1 location2 temperature2 location3 temperature3 location4 temperature4 location5 temperature5",
+          "keyName": "query2",
+          "query": "",
+          "refId": "A",
+          "streaming": false,
+          "type": "command"
+        }
+      ],
+      "title": "Most High temperatures",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "91uRl93nz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 77,
+      "maxPerRow": 3,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.0.2",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "command": "hmget",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "91uRl93nz"
+          },
+          "field": "location6 temperature6 location7 temperature7 location8 temperature8 location9 temperature9 location10 temperature10",
+          "keyName": "query2",
+          "query": "",
+          "refId": "A",
+          "streaming": false,
+          "type": "command"
+        }
+      ],
+      "title": "Least High temperatures",
+      "type": "table"
+    },
+    {
+      "collapsed": false,
       "datasource": {
         "type": "redis-datasource",
         "uid": "91uRl93nz"
@@ -323,151 +394,10 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 26
       },
       "id": 66,
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "fieldConfig": {
-            "defaults": {
-              "custom": {}
-            },
-            "overrides": []
-          },
-          "fill": 1,
-          "fillGradient": 0,
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 14
-          },
-          "hiddenSeries": false,
-          "id": 74,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "nullPointMode": "null",
-          "percentage": false,
-          "pluginVersion": "7.1.5",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "thresholds": [],
-          "timeRegions": [],
-          "title": "Panel Title",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "logBase": 1,
-              "show": true
-            },
-            {
-              "format": "short",
-              "logBase": 1,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false
-          }
-        },
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "-- Dashboard --"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-blue"
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 21,
-            "y": 14
-          },
-          "id": 6,
-          "options": {
-            "colorMode": "background",
-            "graphMode": "area",
-            "justifyMode": "center",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "mean"
-              ],
-              "fields": "/.*/",
-              "values": true
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "7.1.5",
-          "targets": [
-            {
-              "datasource": {
-                "type": "datasource",
-                "uid": "-- Dashboard --"
-              },
-              "panelId": 19,
-              "refId": "A"
-            }
-          ],
-          "title": "Version",
-          "transformations": [
-            {
-              "id": "filterFieldsByName",
-              "options": {
-                "include": {
-                  "names": [
-                    "redis_version"
-                  ]
-                }
-              }
-            }
-          ],
-          "type": "stat"
-        }
-      ],
+      "panels": [],
       "targets": [
         {
           "datasource": {
@@ -481,6 +411,210 @@
       "type": "row"
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "hiddenSeries": false,
+      "id": 74,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "9.0.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Panel Title",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue"
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 21,
+        "y": 27
+      },
+      "id": 34,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 8,
+          "refId": "A"
+        }
+      ],
+      "title": "Eviction Policy",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "maxmemory_policy"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 21,
+        "y": 30
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 19,
+          "refId": "A"
+        }
+      ],
+      "title": "Version",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "redis_version"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
       "collapsed": false,
       "datasource": {
         "type": "redis-datasource",
@@ -490,7 +624,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 35
       },
       "id": 56,
       "panels": [],
@@ -519,8 +653,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "dark-yellow",
@@ -540,7 +673,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 12
+        "y": 36
       },
       "id": 24,
       "options": {
@@ -601,8 +734,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "dark-yellow",
@@ -622,7 +754,7 @@
         "h": 6,
         "w": 8,
         "x": 3,
-        "y": 12
+        "y": 36
       },
       "id": 25,
       "options": {
@@ -688,8 +820,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               }
             ]
           },
@@ -762,7 +893,7 @@
         "h": 6,
         "w": 10,
         "x": 11,
-        "y": 12
+        "y": 36
       },
       "id": 8,
       "options": {
@@ -844,8 +975,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
-                "value": null
+                "color": "dark-blue"
               }
             ]
           },
@@ -857,7 +987,7 @@
         "h": 3,
         "w": 3,
         "x": 21,
-        "y": 12
+        "y": 36
       },
       "id": 19,
       "options": {
@@ -915,8 +1045,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
-                "value": null
+                "color": "dark-blue"
               }
             ]
           },
@@ -928,7 +1057,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 15
+        "y": 39
       },
       "id": 22,
       "options": {
@@ -985,8 +1114,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
-                "value": null
+                "color": "dark-blue"
               }
             ]
           },
@@ -998,7 +1126,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 18
+        "y": 42
       },
       "id": 2,
       "options": {
@@ -1044,8 +1172,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               }
             ]
           },
@@ -1057,7 +1184,7 @@
         "h": 3,
         "w": 8,
         "x": 3,
-        "y": 18
+        "y": 42
       },
       "id": 36,
       "options": {
@@ -1127,8 +1254,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               }
             ]
           },
@@ -1140,7 +1266,7 @@
         "h": 3,
         "w": 10,
         "x": 11,
-        "y": 18
+        "y": 42
       },
       "id": 38,
       "options": {
@@ -1206,7 +1332,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 45
       },
       "id": 32,
       "panels": [],
@@ -1240,8 +1366,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -1305,7 +1430,7 @@
         "h": 15,
         "w": 6,
         "x": 0,
-        "y": 22
+        "y": 46
       },
       "id": 4,
       "options": {
@@ -1385,8 +1510,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -1474,7 +1598,7 @@
         "h": 15,
         "w": 7,
         "x": 6,
-        "y": 22
+        "y": 46
       },
       "id": 41,
       "options": {
@@ -1541,8 +1665,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -1606,7 +1729,7 @@
         "h": 15,
         "w": 11,
         "x": 13,
-        "y": 22
+        "y": 46
       },
       "id": 11,
       "options": {
@@ -1667,7 +1790,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 37
+        "y": 61
       },
       "id": 58,
       "panels": [],
@@ -1704,7 +1827,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 38
+        "y": 62
       },
       "id": 60,
       "options": {
@@ -1771,7 +1894,7 @@
         "h": 3,
         "w": 3,
         "x": 3,
-        "y": 38
+        "y": 62
       },
       "id": 64,
       "options": {
@@ -1842,7 +1965,7 @@
         "h": 3,
         "w": 18,
         "x": 6,
-        "y": 38
+        "y": 62
       },
       "id": 61,
       "options": {
@@ -2005,7 +2128,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 65
       },
       "id": 62,
       "options": {
@@ -2106,6 +2229,6 @@
   "timezone": "",
   "title": "SABD - Project 2",
   "uid": "2J8ln097k",
-  "version": 7,
+  "version": 9,
   "weekStart": ""
 }

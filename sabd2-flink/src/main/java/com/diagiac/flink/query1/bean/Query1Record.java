@@ -13,29 +13,29 @@ public class Query1Record  implements FlinkRecord {
     private Double temperature;
     private long count;
 
-    public static Query1Record create(String rawMessage){
-        JSONObject jsonObject = new JSONObject(rawMessage);
-        Query1Record record = new Query1Record();
+    public static Query1Record create(String jsonRecord){
+        JSONObject jsonObject = new JSONObject(jsonRecord);
+        Query1Record query1Record = new Query1Record();
         String sensor = jsonObject.getString("sensor_id");
         String timestamp = jsonObject.getString("timestamp").replace("T", " ");
         String temperature = jsonObject.getString("temperature");
 
         if (sensor.isEmpty()) {
-            record.setSensorId(null);
+            query1Record.setSensorId(null);
         } else {
-            record.setSensorId(Long.parseLong(sensor));
+            query1Record.setSensorId(Long.parseLong(sensor));
         }
         if (timestamp.isEmpty()) {
-            record.setTimestamp(null);
+            query1Record.setTimestamp(null);
         } else {
-            record.setTimestamp(Timestamp.valueOf(timestamp));
+            query1Record.setTimestamp(Timestamp.valueOf(timestamp));
         }
         if (temperature.isEmpty()) {
-            record.setTemperature(null);
+            query1Record.setTemperature(null);
         } else {
-            record.setTemperature(Double.parseDouble(temperature));
+            query1Record.setTemperature(Double.parseDouble(temperature));
         }
-        record.setCount(1);
-        return record;
+        query1Record.setCount(1);
+        return query1Record;
     }
 }

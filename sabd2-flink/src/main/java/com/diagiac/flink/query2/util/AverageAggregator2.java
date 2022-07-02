@@ -6,7 +6,7 @@ import com.diagiac.flink.query2.bean.Query2Aggregator;
 import org.apache.flink.api.common.functions.AggregateFunction;
 
 public class AverageAggregator2 implements AggregateFunction<Query2Record, Query2Aggregator, LocationTemperature> {
-
+    public static final long serialVersionUID = 222141441412L;
 
     @Override
     public Query2Aggregator createAccumulator() {

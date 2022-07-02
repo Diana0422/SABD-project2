@@ -5,8 +5,9 @@ import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.bean.Query1Result;
 import org.apache.flink.api.common.functions.AggregateFunction;
 
-public class AverageAggregator implements AggregateFunction <Query1Record, Query1Aggregator, Query1Result> {
+public class AverageAggregator implements AggregateFunction<Query1Record, Query1Aggregator, Query1Result> {
     private static final long serialVersionUID = 33333333333333L;
+
     @Override
     public Query1Aggregator createAccumulator() {
         return new Query1Aggregator(null, 0L, 0L, 0.0);
@@ -28,13 +29,11 @@ public class AverageAggregator implements AggregateFunction <Query1Record, Query
 
     @Override
     public Query1Aggregator merge(Query1Aggregator acc1, Query1Aggregator acc2) {
-        System.out.println("Timestamp1 = " + acc1.getTimestamp() + ", Timestamp2 = " + acc2.getTimestamp());
-        System.out.println(" Sensor1= " + acc1.getSensorId() + ", Sensor2 = " + acc2.getSensorId());
         return new Query1Aggregator(
                 acc1.getTimestamp(),
                 acc1.getSensorId(),
-                acc1.getCount()+acc2.getCount(),
-                acc1.getTemperatureSum()+acc2.getTemperatureSum()
+                acc1.getCount() + acc2.getCount(),
+                acc1.getTemperatureSum() + acc2.getTemperatureSum()
         );
     }
 }

@@ -1,19 +1,19 @@
 package com.diagiac.flink.redis;
 
-import com.diagiac.flink.query1.bean.Query1Result;
+import com.diagiac.flink.FlinkResult;
 import org.apache.flink.streaming.connectors.redis.common.mapper.RedisCommand;
 import org.apache.flink.streaming.connectors.redis.common.mapper.RedisCommandDescription;
 import org.apache.flink.streaming.connectors.redis.common.mapper.RedisMapper;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class TrueRedisMapper1 implements RedisMapper<Query1Result> {
+public class TheRedisMapper<T extends FlinkResult> implements RedisMapper<T> {
 
     private final String key; // HSET's key
     private final String field; // HSET's field
     private final String getter; // getter of the object to get HSET's value
 
-    public  TrueRedisMapper1(String key, String field, String getter) {
+    public TheRedisMapper(String key, String field, String getter) {
         this.key = key;
         this.field = field;
         this.getter = getter;
@@ -36,7 +36,7 @@ public class TrueRedisMapper1 implements RedisMapper<Query1Result> {
      * @return
      */
     @Override
-    public String getKeyFromData(Query1Result data) {
+    public String getKeyFromData(T data) {
         return field;
     }
 
@@ -47,7 +47,7 @@ public class TrueRedisMapper1 implements RedisMapper<Query1Result> {
      * @return
      */
     @Override
-    public String getValueFromData(Query1Result data) {
+    public String getValueFromData(T data) {
         try {
             return data.getClass().getMethod(getter).invoke(data).toString();
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MedianCalculator {
-    public static Double medianOfMedians(List<Double> doubles) {
+    public static Double medianOfMediansApproximate(List<Double> doubles) {
         List<List<Double>> subLists = new ArrayList<>();
         // 1. SubLists of 5 elements
         if (doubles.size() < 5) {
@@ -33,7 +33,7 @@ public class MedianCalculator {
         }
         Double approxMedian;
         if (subLists.size() > 1)
-            approxMedian = medianOfMedians(medians);
+            approxMedian = medianOfMediansApproximate(medians);
         else
             approxMedian = subLists.get(0).get(subLists.get(0).size() / 2);
         return approxMedian;

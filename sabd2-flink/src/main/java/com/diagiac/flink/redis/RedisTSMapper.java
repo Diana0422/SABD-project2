@@ -3,7 +3,7 @@ package com.diagiac.flink.redis;
 import org.apache.flink.api.common.functions.Function;
 
 import java.io.Serializable;
-
+@Deprecated(since = "non va")
 public interface RedisTSMapper<T> extends Function, Serializable {
 
 

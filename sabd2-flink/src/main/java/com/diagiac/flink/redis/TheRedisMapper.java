@@ -7,6 +7,7 @@ import org.apache.flink.streaming.connectors.redis.common.mapper.RedisMapper;
 
 import java.lang.reflect.InvocationTargetException;
 
+@Deprecated(since = "Estendi ExperimentalRedisSink invece di usare questa classe N volte")
 public class TheRedisMapper<T extends FlinkResult> implements RedisMapper<T> {
 
     private final String key; // HSET's key

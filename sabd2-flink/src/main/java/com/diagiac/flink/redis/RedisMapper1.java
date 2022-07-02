@@ -1,7 +1,7 @@
 package com.diagiac.flink.redis;
 
 import com.diagiac.flink.query1.bean.Query1Result;
-
+@Deprecated(since = "Non funziona")
 public class RedisMapper1 implements RedisTSMapper<Query1Result> {
 
     @Override

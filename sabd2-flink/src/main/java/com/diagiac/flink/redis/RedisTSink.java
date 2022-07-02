@@ -6,7 +6,7 @@ import org.apache.flink.util.Preconditions;
 
 import java.io.IOException;
 import java.util.HashMap;
-
+@Deprecated(since = "Redis TimeSeries non funziona con Flink")
 public class RedisTSink<IN> extends RichSinkFunction<IN> {
 
     //private static final Logger LOG = LoggerFactory.getLogger(RedisTSink.class);

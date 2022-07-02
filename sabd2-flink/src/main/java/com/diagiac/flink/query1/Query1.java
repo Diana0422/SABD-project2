@@ -1,6 +1,5 @@
 package com.diagiac.flink.query1;
 
-import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query1.bean.Query1Record;
@@ -8,14 +7,12 @@ import com.diagiac.flink.query1.bean.Query1Result;
 import com.diagiac.flink.query1.serialize.QueryRecordDeserializer1;
 import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter1;
-import com.diagiac.flink.redis.TheRedisMapper;
+import com.diagiac.flink.redis.ExperimentalRedisSink;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.connectors.redis.RedisSink;
-import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolConfig;
 
 import java.time.Duration;
 
@@ -79,6 +76,7 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         var windowed = sensorKeyed.window(windowEnum.getWindowStrategy());
         System.out.println("Selected Window: "+windowEnum.getWindowStrategy());
         var aggregated = windowed.aggregate(new AverageAggregator());
+
         System.out.println("After aggregated");
 //        aggregated.map(new MetricRichMapFunction<>()); // just for metrics
 //        System.out.println("After metrics map");
@@ -89,15 +87,14 @@ public class Query1 extends Query<Query1Record, Query1Result> {
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream) {
         /* Set up the redis sink */
         System.out.println("Setting sinks:");
-//        var conf = new FlinkJedisPoolConfig.Builder().setHost("redis-cache").setPort(6379).build();
-//        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "timestamp", "getTimestamp")));
-//        System.out.println("Setting sinks: sink1 redis");
-//        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "sensorId", "getSensorId")));
-//        System.out.println("Setting sinks: sink2 redis");
-//        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "count", "getCount")));
-//        System.out.println("Setting sinks: sink3 redis");
-//        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query1", "averageTemperature", "getAvgTemperature")));
-//        System.out.println("Setting sinks: sink4 redis");
+        resultStream.addSink(new ExperimentalRedisSink<>() {
+            @Override
+            public void setHashFieldsFrom(Query1Result flinkResult) {
+                setHashField(flinkResult.getSensorId(), "timestamp", flinkResult.getTimestamp());
+                setHashField(flinkResult.getSensorId(), "count", flinkResult.getCount());
+                setHashField(flinkResult.getSensorId(), "averageTemperature", flinkResult.getAvgTemperature());
+            }
+        });
         /* Set up stdOut Sink */
         System.out.println("Setting sinks: sink stdout");
         resultStream.print();

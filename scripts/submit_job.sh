@@ -1,7 +1,3 @@
-# PREPARE ENVIRONMENT
-#mvn -pl sabd2-flink clean package
-# EXECUTE QUERIES (MANDATORY)
-
 if [[ $1 -eq 1 ]]
 then
   echo "Submitting query 1 to Flink"

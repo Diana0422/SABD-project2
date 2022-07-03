@@ -1,4 +1,5 @@
 version: '2.2'
+
 services:
   ## SERVICE1: APACHE KAFKA + ZOOKEEPER
   zookeeper:

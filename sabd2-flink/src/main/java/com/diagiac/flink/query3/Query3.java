@@ -6,7 +6,7 @@ import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query3.bean.Query3Record;
 import com.diagiac.flink.query3.bean.Query3Result;
 import com.diagiac.flink.query3.serialize.QueryRecordDeserializer3;
-import com.diagiac.flink.query3.util.AvgMedianAggregator3;
+import com.diagiac.flink.query3.util.AvgMedianAggregate3;
 import com.diagiac.flink.query3.util.CellMapper;
 import com.diagiac.flink.query3.util.FinalProcessWindowFunction;
 import com.diagiac.flink.query3.util.RecordFilter3;
@@ -81,13 +81,13 @@ public class Query3 extends Query<Query3Record, Query3Result> {
 
     @Override
     public SingleOutputStreamOperator<Query3Result> queryConfiguration(SingleOutputStreamOperator<Query3Record> d) {
-        return d.map(new CellMapper())
-                .filter(a -> a.getCell() != null)
-                .keyBy(query3Cell -> query3Cell.getCell().getId())
-                .window(windowEnum.getWindowStrategy())
-                .aggregate(new AvgMedianAggregator3())
-                .windowAll(windowEnum.getWindowStrategy())
-                .process(new FinalProcessWindowFunction())
+        return d.map(new CellMapper()) // we map every value to a Query3Cell. The cell that contains the sensor is calculated inside this mapper
+                .filter(a -> a.getCell() != null)// we filter out all records with null cell
+                .keyBy(query3Cell -> query3Cell.getCell().getId()) // grouping by id of cell
+                .window(windowEnum.getWindowStrategy()) //setting the desired window strategy
+                .aggregate(new AvgMedianAggregate3()) // aggregating averages and medians. This is parallelizable
+                .windowAll(windowEnum.getWindowStrategy()) // this is not parallelizable, but is needed to put all Cell avg/medians in the same window
+                .process(new FinalProcessWindowFunction()) // only changes the timestamp to the start of the window!
                 .map(new MetricRichMapFunction<>()); // just for metrics
     }
 

@@ -76,7 +76,7 @@ public class Query2 extends Query<Query2Record, Query2Result> {
     public SingleOutputStreamOperator<Query2Result> queryConfiguration(SingleOutputStreamOperator<Query2Record> stream) {
         return stream.keyBy(Query2Record::getLocation) // group by location
                 .window(windowEnum.getWindowStrategy())// setting window strategy (hour, day, week)
-                .aggregate(new AverageAggregator2(), new Query2ProcessWindowFunction()) // compute mean incrementally for elements that arrive
+                .aggregate(new AverageAggregate2(), new Query2ProcessWindowFunction()) // compute mean incrementally for elements that arrive
                 .keyBy(LocationTemperature::getTimestamp) // group by timestamp, which is the same for all the element of the window
                 .window(windowEnum.getWindowStrategy()) // conceptually like windowAll, so it is parallelizable !!!
                 .aggregate(new RankAggregate(), new RankingProcessWindowFunction()) // compute the top5 and bottom5 for the single window, for each partition

@@ -8,6 +8,7 @@ import com.diagiac.flink.query1.bean.Query1Result;
 import com.diagiac.flink.query1.serialize.QueryRecordDeserializer1;
 import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter1;
+import com.diagiac.flink.query1.utils.TimestampWindowFunction1;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;

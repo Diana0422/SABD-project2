@@ -18,7 +18,7 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
 import java.time.Duration;
 
-public class Query3 extends Query<Query3Record,Query3Result> {
+public class Query3 extends Query<Query3Record, Query3Result> {
 
     public Query3(String url, WindowEnum w) {
         this.url = url;
@@ -29,27 +29,28 @@ public class Query3 extends Query<Query3Record,Query3Result> {
     /**
      * Consider the latitude and longitude coordinates within the geographic area
      * which is identified from the latitude and longitude coordinates (38°, 2°) and (58°, 30°).
-     *
+     * <p>
      * Divide this area using a 4x4 grid and identify each grid cell from the top-left to bottom-right corners
      * using the name "cell_X", where X is the cell id from 0 to 15. For each cell, find
-     *
+     * <p>
      * - the average temperature, taking into account the values emitted from the sensors which are located inside that cell
      * - the median temperature, taking into account the values emitted from the sensors which are located inside that cell
-     *
+     * <p>
      * Q3 output:
      * ts, cell_0, avg_temp0, med_temp0, ... cell_15, avg_temp15, med_temp15
-     *
+     * <p>
      * Using a tumbling window, calculate this query:
      * – every 1 hour (event time)
      * – every 1 day (event time)
      * – every 1 week (event time)
+     *
      * @param args
      */
     public static void main(String[] args) {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
         var w = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
         var q3 = new Query3(url, w);
-        SingleOutputStreamOperator<Query3Record> d =  q3.sourceConfigurationAndFiltering();
+        SingleOutputStreamOperator<Query3Record> d = q3.sourceConfigurationAndFiltering();
         var resultStream = q3.queryConfiguration(d); // TODO: testare
         q3.sinkConfiguration(resultStream);
         q3.execute();
@@ -73,22 +74,21 @@ public class Query3 extends Query<Query3Record,Query3Result> {
         */
 
         var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query3Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
-                .withTimestampAssigner((query3Record, l) -> query3Record.getTimestamp().getTime()), "Kafka Source")
+                        .withTimestampAssigner((query3Record, l) -> query3Record.getTimestamp().getTime()), "Kafka Source")
                 .setParallelism(1);
         return kafkaSource.filter(new RecordFilter3());
     }
 
     @Override
     public SingleOutputStreamOperator<Query3Result> queryConfiguration(SingleOutputStreamOperator<Query3Record> d) {
-        var mapped = d.map(new CellMapper());
-        var filtered = mapped.filter(a -> a.getCell() != null);
-        var keyed = filtered.keyBy(query3Cell -> query3Cell.getCell().getId());
-        var windowed = keyed.window(windowEnum.getWindowStrategy());
-        var aggregated = windowed.aggregate(new AvgMedianAggregator3());
-        var windowedAll = aggregated.windowAll(windowEnum.getWindowStrategy());
-        var finalProcess = windowedAll.process(new FinalProcessWindowFunction());
-        finalProcess.map(new MetricRichMapFunction<>()); // just for metrics
-        return finalProcess;
+        return d.map(new CellMapper())
+                .filter(a -> a.getCell() != null)
+                .keyBy(query3Cell -> query3Cell.getCell().getId())
+                .window(windowEnum.getWindowStrategy())
+                .aggregate(new AvgMedianAggregator3())
+                .windowAll(windowEnum.getWindowStrategy())
+                .process(new FinalProcessWindowFunction())
+                .map(new MetricRichMapFunction<>()); // just for metrics
     }
 
     @Override

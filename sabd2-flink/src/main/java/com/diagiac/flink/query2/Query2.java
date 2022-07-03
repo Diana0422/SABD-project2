@@ -74,24 +74,13 @@ public class Query2 extends Query<Query2Record, Query2Result> {
 
     @Override
     public SingleOutputStreamOperator<Query2Result> queryConfiguration(SingleOutputStreamOperator<Query2Record> stream) {
-        // Query2Record -> (Location, resto di query2Record)
-//        var locationKeyed = d.keyBy(Query2Record::getLocation);
-//        var windowed = locationKeyed.window(windowEnum.getWindowStrategy());
-//
-//        // (Location, resto di query2Record) -> (Location, avgTemperature) nella finestra
-//        var aggregated = windowed.aggregate(new AverageAggregator2());
-//        var windowedAll = aggregated.windowAll(windowEnum.getWindowStrategy());
-//        var processed = windowedAll.process(new SortKeyedProcessFunction());
-//        processed.map(new MetricRichMapFunction<>()); // just for metrics
-//        return processed;
-        return stream
-                .keyBy(Query2Record::getLocation)
-                .window(windowEnum.getWindowStrategy())
-                .aggregate(new AverageAggregator2(), new Query2ProcessWindowFunction())
-                .keyBy(LocationTemperature::getTimestamp)
-                .window(windowEnum.getWindowStrategy())
-                .aggregate(new RankAggregate(), new RankingProcessWindowFunction())
-                .map(new MetricRichMapFunction<>());
+        return stream.keyBy(Query2Record::getLocation) // group by location
+                .window(windowEnum.getWindowStrategy())// setting window strategy (hour, day, week)
+                .aggregate(new AverageAggregator2(), new Query2ProcessWindowFunction()) // compute mean incrementally for elements that arrive
+                .keyBy(LocationTemperature::getTimestamp) // group by timestamp, which is the same for all the element of the window
+                .window(windowEnum.getWindowStrategy()) // conceptually like windowAll, so it is parallelizable !!!
+                .aggregate(new RankAggregate(), new RankingProcessWindowFunction()) // compute the top5 and bottom5 for the single window, for each partition
+                .map(new MetricRichMapFunction<>()); // metrics (throughput and latency)
     }
 
     @Override

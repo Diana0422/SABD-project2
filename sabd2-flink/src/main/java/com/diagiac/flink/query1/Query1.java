@@ -1,5 +1,6 @@
 package com.diagiac.flink.query1;
 
+import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query1.bean.Query1Record;
@@ -7,6 +8,7 @@ import com.diagiac.flink.query1.bean.Query1Result;
 import com.diagiac.flink.query1.serialize.QueryRecordDeserializer1;
 import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter1;
+import com.diagiac.flink.query1.utils.TimestampWindowFunction1;
 import com.diagiac.flink.redis.ExperimentalRedisSink;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
@@ -63,24 +65,17 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query1Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
                         .withTimestampAssigner((queryRecord1, l) -> queryRecord1.getTimestamp().getTime()), "Kafka Source")
                 .setParallelism(1);
-        System.out.println("Consumed data from Kafka");
         return kafkaSource.filter(new RecordFilter1());
     }
 
     @Override
-    public SingleOutputStreamOperator<Query1Result> queryConfiguration(SingleOutputStreamOperator<Query1Record> d) {
+    public SingleOutputStreamOperator<Query1Result> queryConfiguration(SingleOutputStreamOperator<Query1Record> stream) {
         // Query1Record -> (sensorId, resto di Query1Record)
-        System.out.println("Query1 start processing");
-        var sensorKeyed = d.keyBy(Query1Record::getSensorId); // Set the sensorid as the record's key
-        System.out.println("after: keyBy sensor id");
-        var windowed = sensorKeyed.window(windowEnum.getWindowStrategy());
-        System.out.println("Selected Window: "+windowEnum.getWindowStrategy());
-        var aggregated = windowed.aggregate(new AverageAggregator());
-
-        System.out.println("After aggregated");
-//        aggregated.map(new MetricRichMapFunction<>()); // just for metrics
-//        System.out.println("After metrics map");
-        return aggregated;
+        return stream
+                .keyBy(Query1Record::getSensorId) // Set the sensorid as the record's key
+                .window(windowEnum.getWindowStrategy()) // Set the window strategy
+                .aggregate(new AverageAggregator(), new TimestampWindowFunction1()) // Aggregate function to calculate average, ProcessWindowFunction to unify timestamp
+                .map(new MetricRichMapFunction<>());
     }
 
     @Override

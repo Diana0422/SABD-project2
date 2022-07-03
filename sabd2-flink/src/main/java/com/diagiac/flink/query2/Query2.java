@@ -3,12 +3,11 @@ package com.diagiac.flink.query2;
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
+import com.diagiac.flink.query2.bean.LocationTemperature;
 import com.diagiac.flink.query2.bean.Query2Record;
 import com.diagiac.flink.query2.bean.Query2Result;
 import com.diagiac.flink.query2.serialize.QueryRecordDeserializer2;
-import com.diagiac.flink.query2.util.AverageAggregator2;
-import com.diagiac.flink.query2.util.RecordFilter2;
-import com.diagiac.flink.query2.util.SortKeyedProcessFunction;
+import com.diagiac.flink.query2.util.*;
 import com.diagiac.flink.redis.TheRedisMapper;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
@@ -20,7 +19,7 @@ import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolC
 
 import java.time.Duration;
 
-public class Query2 extends Query<Query2Record,Query2Result> {
+public class Query2 extends Query<Query2Record, Query2Result> {
 
     public Query2(String url, WindowEnum w) {
         this.url = url;
@@ -48,7 +47,7 @@ public class Query2 extends Query<Query2Record,Query2Result> {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
         var q2 = new Query2(url, window);
         SingleOutputStreamOperator<Query2Record> d =  q2.sourceConfigurationAndFiltering();
-        var resultStream = q2.queryConfiguration(d); // TODO: testare
+        SingleOutputStreamOperator<Query2Result> resultStream = q2.queryConfiguration(d); // TODO: testare
         q2.sinkConfiguration(resultStream);
         q2.execute();
     }
@@ -77,17 +76,25 @@ public class Query2 extends Query<Query2Record,Query2Result> {
     }
 
     @Override
-    public SingleOutputStreamOperator<Query2Result> queryConfiguration(SingleOutputStreamOperator<Query2Record> d) {
+    public SingleOutputStreamOperator<Query2Result> queryConfiguration(SingleOutputStreamOperator<Query2Record> stream) {
         // Query2Record -> (Location, resto di query2Record)
-        var locationKeyed = d.keyBy(Query2Record::getLocation);
-        var windowed = locationKeyed.window(windowEnum.getWindowStrategy());
-
-        // (Location, resto di query2Record) -> (Location, avgTemperature) nella finestra
-        var aggregated = windowed.aggregate(new AverageAggregator2());
-        var windowedAll = aggregated.windowAll(windowEnum.getWindowStrategy());
-        var processed = windowedAll.process(new SortKeyedProcessFunction());
-        processed.map(new MetricRichMapFunction<>()); // just for metrics
-        return processed;
+//        var locationKeyed = d.keyBy(Query2Record::getLocation);
+//        var windowed = locationKeyed.window(windowEnum.getWindowStrategy());
+//
+//        // (Location, resto di query2Record) -> (Location, avgTemperature) nella finestra
+//        var aggregated = windowed.aggregate(new AverageAggregator2());
+//        var windowedAll = aggregated.windowAll(windowEnum.getWindowStrategy());
+//        var processed = windowedAll.process(new SortKeyedProcessFunction());
+//        processed.map(new MetricRichMapFunction<>()); // just for metrics
+//        return processed;
+        return stream
+                .keyBy(Query2Record::getLocation)
+                .window(windowEnum.getWindowStrategy())
+                .aggregate(new AverageAggregator2(), new Query2ProcessWindowFunction())
+                .keyBy(LocationTemperature::getTimestamp)
+                .window(windowEnum.getWindowStrategy())
+                .aggregate(new RankAggregate(), new RankingProcessWindowFunction())
+                .map(new MetricRichMapFunction<>());
     }
 
     @Override

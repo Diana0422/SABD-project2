@@ -86,4 +86,9 @@ public class Query2Result implements FlinkResult {
                ", temperature10=" + temperature10 +
                '}';
     }
+
+    @Override
+    public String getKey() {
+        return "query2";
+    }
 }

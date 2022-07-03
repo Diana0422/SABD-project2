@@ -1,6 +1,5 @@
-package com.diagiac.flink.redis;
+package com.diagiac.flink;
 
-import com.diagiac.flink.FlinkResult;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 import redis.clients.jedis.Jedis;
@@ -10,7 +9,7 @@ import redis.clients.jedis.Jedis;
  *
  * @param <T> The specific FlinkResult
  */
-public abstract class ExperimentalRedisSink<T extends FlinkResult> extends RichSinkFunction<T> {
+public abstract class RedisHashSink<T extends FlinkResult> extends RichSinkFunction<T> {
 
     private transient Jedis jedis; // must not be serialized.
 
@@ -42,8 +41,8 @@ public abstract class ExperimentalRedisSink<T extends FlinkResult> extends RichS
     public abstract void setHashFieldsFrom(T flinkResult);
 
 
-    public void setHashField(Object key, Object field, Object value) {
-        jedis.hset(key.toString(), field.toString(), value.toString());
+    public void setHashField(String key, String field, Object value) {
+        jedis.hset(key, field, value.toString());
     }
 
     /**

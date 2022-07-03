@@ -176,4 +176,9 @@ public class Query3Result implements FlinkResult {
                ", medianTemp15=" + medianTemp15 +
                '}';
     }
+
+    @Override
+    public String getKey() {
+        return "query3";
+    }
 }

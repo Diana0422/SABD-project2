@@ -7,7 +7,6 @@ import com.diagiac.flink.query1.bean.Query1Result;
 import com.diagiac.flink.query1.serialize.QueryRecordDeserializer1;
 import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter1;
-import com.diagiac.flink.redis.ExperimentalRedisSink;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
@@ -87,14 +86,7 @@ public class Query1 extends Query<Query1Record, Query1Result> {
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream) {
         /* Set up the redis sink */
         System.out.println("Setting sinks:");
-        resultStream.addSink(new ExperimentalRedisSink<>() {
-            @Override
-            public void setHashFieldsFrom(Query1Result flinkResult) {
-                setHashField(flinkResult.getSensorId(), "timestamp", flinkResult.getTimestamp());
-                setHashField(flinkResult.getSensorId(), "count", flinkResult.getCount());
-                setHashField(flinkResult.getSensorId(), "averageTemperature", flinkResult.getAvgTemperature());
-            }
-        });
+        resultStream.addSink(new RedisHashSink1());
         /* Set up stdOut Sink */
         System.out.println("Setting sinks: sink stdout");
         resultStream.print();

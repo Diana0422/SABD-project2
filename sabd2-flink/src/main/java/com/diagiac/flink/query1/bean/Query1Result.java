@@ -23,4 +23,9 @@ public class Query1Result implements FlinkResult {
                 ", avgTemperature=" + avgTemperature +
                 '}';
     }
+
+    @Override
+    public String getKey() {
+        return this.sensorId.toString();
+    }
 }

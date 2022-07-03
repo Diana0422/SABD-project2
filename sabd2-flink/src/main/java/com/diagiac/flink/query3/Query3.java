@@ -10,14 +10,11 @@ import com.diagiac.flink.query3.util.AvgMedianAggregator3;
 import com.diagiac.flink.query3.util.CellMapper;
 import com.diagiac.flink.query3.util.FinalProcessWindowFunction;
 import com.diagiac.flink.query3.util.RecordFilter3;
-import com.diagiac.flink.redis.TheRedisMapper;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.connectors.redis.RedisSink;
-import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolConfig;
 
 import java.time.Duration;
 
@@ -97,40 +94,7 @@ public class Query3 extends Query<Query3Record,Query3Result> {
     @Override
     public void sinkConfiguration(SingleOutputStreamOperator<Query3Result> resultStream) {
         /* Set up the redis sink */
-        var conf = new FlinkJedisPoolConfig.Builder().setHost("redis-cache").setPort(6379).build();
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "timestamp", "getTimestamp")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp0", "getAvgTemp0")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp1", "getAvgTemp1")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp2", "getAvgTemp2")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp3", "getAvgTemp3")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp4", "getAvgTemp4")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp5", "getAvgTemp5")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp6", "getAvgTemp6")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp7", "getAvgTemp7")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp8", "getAvgTemp8")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp9", "getAvgTemp9")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp10", "getAvgTemp10")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp11", "getAvgTemp11")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp12", "getAvgTemp12")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp13", "getAvgTemp13")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp14", "getAvgTemp14")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "avgTemp15", "getAvgTemp15")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp0", "getMedianTemp0")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp1", "getMedianTemp1")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp2", "getMedianTemp2")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp3", "getMedianTemp3")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp4", "getMedianTemp4")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp5", "getMedianTemp5")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp6", "getMedianTemp6")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp7", "getMedianTemp7")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp8", "getMedianTemp8")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp9", "getMedianTemp9")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp10", "getMedianTemp10")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp11", "getMedianTemp11")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp12", "getMedianTemp12")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp13", "getMedianTemp13")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp14", "getMedianTemp14")));
-        resultStream.addSink(new RedisSink<>(conf, new TheRedisMapper<>("query3", "medianTemp15", "getMedianTemp15")));
+        resultStream.addSink(new RedisHashSink3());
         /* Set up stdOut Sink */
         resultStream.print();
     }

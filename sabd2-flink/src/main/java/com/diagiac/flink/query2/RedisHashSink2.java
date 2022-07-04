@@ -1,13 +1,20 @@
 package com.diagiac.flink.query2;
 
+import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query2.bean.Query2Result;
 import com.diagiac.flink.RedisHashSink;
 
 public class RedisHashSink2 extends RedisHashSink<Query2Result> {
 
+    private WindowEnum windowType;
+
+    public RedisHashSink2(WindowEnum windowType) {
+        this.windowType = windowType;
+    }
+
     @Override
     public void setHashFieldsFrom(Query2Result flinkResult) {
-        String key = flinkResult.getKey();
+        String key = flinkResult.getKey(windowType);
         setHashField(key, "timestamp", flinkResult.getTimestamp());
         setHashField(key, "location1", flinkResult.getLocation1());
         setHashField(key, "location2", flinkResult.getLocation2());

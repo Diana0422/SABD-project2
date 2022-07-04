@@ -47,9 +47,9 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         var resultStream = q1.queryConfiguration(d, WindowEnum.Hour, "query1-hour"); // TODO: testare
         var resultStream2 = q1.queryConfiguration(d, WindowEnum.Week, "query1-week"); // TODO: testare
         var resultStream3 = q1.queryConfiguration(d, WindowEnum.FromStart, "query1-start");
-        q1.sinkConfiguration(resultStream);
-        q1.sinkConfiguration(resultStream2);
-        q1.sinkConfiguration(resultStream3);
+        q1.sinkConfiguration(resultStream, WindowEnum.Hour);
+        q1.sinkConfiguration(resultStream2, WindowEnum.Week);
+        q1.sinkConfiguration(resultStream3, WindowEnum.FromStart);
         q1.execute();
     }
 
@@ -82,10 +82,10 @@ public class Query1 extends Query<Query1Record, Query1Result> {
     }
 
     @Override
-    public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream) {
+    public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream, WindowEnum windowType) {
         /* Set up the redis sink */
         System.out.println("Setting sinks:");
-        resultStream.addSink(new RedisHashSink1());
+        resultStream.addSink(new RedisHashSink1(windowType));
         /* Set up stdOut Sink */
         System.out.println("Setting sinks: sink stdout");
         resultStream.print();

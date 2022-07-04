@@ -4,5 +4,5 @@ public interface FlinkResult {
     /**
      * @return the key for redis hash
      */
-    String getKey();
+    String getKey(WindowEnum windowType);
 }

@@ -1,6 +1,7 @@
 package com.diagiac.flink.query2.bean;
 
 import com.diagiac.flink.FlinkResult;
+import com.diagiac.flink.WindowEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -88,7 +89,7 @@ public class Query2Result implements FlinkResult {
     }
 
     @Override
-    public String getKey() {
-        return "query2";
+    public String getKey(WindowEnum windowType) {
+        return windowType.name() + ":" + "query2";
     }
 }

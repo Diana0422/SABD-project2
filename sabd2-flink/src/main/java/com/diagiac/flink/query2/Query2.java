@@ -46,9 +46,9 @@ public class Query2 extends Query<Query2Record, Query2Result> {
         var resultStream = q2.queryConfiguration(d, WindowEnum.Hour, "query2-hour"); // TODO: testare
         var resultStream2 = q2.queryConfiguration(d, WindowEnum.Day, "query2-day"); // TODO: testare
         var resultStream3 = q2.queryConfiguration(d, WindowEnum.Week, "query2-week"); // TODO: testare
-        q2.sinkConfiguration(resultStream);
-        q2.sinkConfiguration(resultStream2);
-        q2.sinkConfiguration(resultStream3);
+        q2.sinkConfiguration(resultStream, WindowEnum.Hour);
+        q2.sinkConfiguration(resultStream2, WindowEnum.Day);
+        q2.sinkConfiguration(resultStream3, WindowEnum.Week);
         q2.execute();
     }
 
@@ -88,9 +88,9 @@ public class Query2 extends Query<Query2Record, Query2Result> {
     }
 
     @Override
-    public void sinkConfiguration(SingleOutputStreamOperator<Query2Result> resultStream) {
+    public void sinkConfiguration(SingleOutputStreamOperator<Query2Result> resultStream, WindowEnum windowType) {
         /* Set up the redis sink */
-        resultStream.addSink(new RedisHashSink2());
+        resultStream.addSink(new RedisHashSink2(windowType));
         /* Set up stdOut Sink */
         resultStream.print();
     }

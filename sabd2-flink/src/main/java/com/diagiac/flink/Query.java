@@ -30,7 +30,7 @@ public abstract class Query<T extends FlinkRecord, R extends FlinkResult> {
     /**
      * Settings for the sink that consumes the output of the queries
      */
-    public abstract void sinkConfiguration(SingleOutputStreamOperator<R> resultsStream);
+    public abstract void sinkConfiguration(SingleOutputStreamOperator<R> resultsStream, WindowEnum windowType);
 
     /**
      * Runs the Flink job

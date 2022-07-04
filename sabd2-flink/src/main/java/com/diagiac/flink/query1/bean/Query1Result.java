@@ -1,6 +1,7 @@
 package com.diagiac.flink.query1.bean;
 
 import com.diagiac.flink.FlinkResult;
+import com.diagiac.flink.WindowEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -25,7 +26,8 @@ public class Query1Result implements FlinkResult {
     }
 
     @Override
-    public String getKey() {
-        return this.sensorId.toString();
+    public String getKey(WindowEnum windowType) {
+        return windowType.name() + ":" + sensorId.toString();
+
     }
 }

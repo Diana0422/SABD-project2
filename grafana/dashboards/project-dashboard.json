@@ -25,8 +25,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1656861334170,
+  "id": 1,
+  "iteration": 1656943224319,
   "links": [
     {
       "icon": "external link",
@@ -179,7 +179,7 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 24,
+        "w": 22,
         "x": 0,
         "y": 1
       },
@@ -204,7 +204,7 @@
             "type": "redis-datasource",
             "uid": "91uRl93nz"
           },
-          "keyName": "7830",
+          "keyName": "${window}:${sensor}",
           "query": "",
           "refId": "A",
           "streaming": true,
@@ -218,7 +218,7 @@
       "type": "gauge"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": {
         "type": "redis-datasource",
         "uid": "91uRl93nz"
@@ -278,7 +278,7 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 9
       },
@@ -308,7 +308,7 @@
             "uid": "91uRl93nz"
           },
           "field": "temperature1 temperature2 temperature3 temperature4 temperature5",
-          "keyName": "query2",
+          "keyName": "${window}:query2",
           "query": "",
           "refId": "A",
           "streaming": true,
@@ -350,9 +350,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 9
+        "w": 11,
+        "x": 11,
+        "y": 16
       },
       "id": 77,
       "options": {
@@ -379,7 +379,7 @@
             "uid": "91uRl93nz"
           },
           "field": "temperature6 temperature7 temperature8 temperature9 temperature10",
-          "keyName": "query2",
+          "keyName": "${window}:query2",
           "query": "",
           "refId": "A",
           "streaming": true,
@@ -400,7 +400,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 23
       },
       "id": 66,
       "panels": [],
@@ -451,7 +451,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 17
+        "y": 24
       },
       "id": 74,
       "options": {
@@ -476,7 +476,7 @@
             "uid": "PE334E3EDC3C079E4"
           },
           "field": "avgTemp0 avgTemp1 avgTemp2 avgTemp3 avgTemp4 avgTemp5 avgTemp6 avgTemp7 avgTemp8 avgTemp9 avgTemp10 avgTemp11 avgTemp12 avgTemp13 avgTemp14 avgTemp15",
-          "keyName": "query3",
+          "keyName": "${window}:query3",
           "query": "",
           "refId": "A",
           "streaming": true,
@@ -565,7 +565,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 17
+        "y": 24
       },
       "id": 78,
       "options": {
@@ -590,7 +590,7 @@
             "uid": "PE334E3EDC3C079E4"
           },
           "field": "medianTemp0 medianTemp1 medianTemp2 medianTemp3 medianTemp4 medianTemp5 medianTemp6 medianTemp7 medianTemp8 medianTemp9 medianTemp10 medianTemp11 medianTemp12 medianTemp13 medianTemp14 medianTemp15",
-          "keyName": "query3",
+          "keyName": "${window}:query3",
           "query": "",
           "refId": "A",
           "streaming": true,
@@ -654,7 +654,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 34
       },
       "id": 56,
       "panels": [
@@ -1513,6 +1513,953 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "9119",
+          "value": "9119"
+        },
+        "description": "defines the id of the sensor to visualize",
+        "hide": 0,
+        "includeAll": false,
+        "label": "sensor id",
+        "multi": false,
+        "name": "sensor",
+        "options": [
+          {
+            "selected": false,
+            "text": "10058",
+            "value": "10058"
+          },
+          {
+            "selected": false,
+            "text": "10598",
+            "value": "10598"
+          },
+          {
+            "selected": false,
+            "text": "10869",
+            "value": "10869"
+          },
+          {
+            "selected": false,
+            "text": "11240",
+            "value": "11240"
+          },
+          {
+            "selected": false,
+            "text": "11321",
+            "value": "11321"
+          },
+          {
+            "selected": false,
+            "text": "11424",
+            "value": "11424"
+          },
+          {
+            "selected": false,
+            "text": "11728",
+            "value": "11728"
+          },
+          {
+            "selected": false,
+            "text": "11792",
+            "value": "11792"
+          },
+          {
+            "selected": false,
+            "text": "11849",
+            "value": "11849"
+          },
+          {
+            "selected": false,
+            "text": "11926",
+            "value": "11926"
+          },
+          {
+            "selected": false,
+            "text": "12007",
+            "value": "12007"
+          },
+          {
+            "selected": false,
+            "text": "12061",
+            "value": "12061"
+          },
+          {
+            "selected": false,
+            "text": "12126",
+            "value": "12126"
+          },
+          {
+            "selected": false,
+            "text": "12234",
+            "value": "12234"
+          },
+          {
+            "selected": false,
+            "text": "12409",
+            "value": "12409"
+          },
+          {
+            "selected": false,
+            "text": "12422",
+            "value": "12422"
+          },
+          {
+            "selected": false,
+            "text": "12753",
+            "value": "12753"
+          },
+          {
+            "selected": false,
+            "text": "12854",
+            "value": "12854"
+          },
+          {
+            "selected": false,
+            "text": "12875",
+            "value": "12875"
+          },
+          {
+            "selected": false,
+            "text": "12918",
+            "value": "12918"
+          },
+          {
+            "selected": false,
+            "text": "12938",
+            "value": "12938"
+          },
+          {
+            "selected": false,
+            "text": "13219",
+            "value": "13219"
+          },
+          {
+            "selected": false,
+            "text": "13410",
+            "value": "13410"
+          },
+          {
+            "selected": false,
+            "text": "13497",
+            "value": "13497"
+          },
+          {
+            "selected": false,
+            "text": "13570",
+            "value": "13570"
+          },
+          {
+            "selected": false,
+            "text": "14023",
+            "value": "14023"
+          },
+          {
+            "selected": false,
+            "text": "14784",
+            "value": "14784"
+          },
+          {
+            "selected": false,
+            "text": "14851",
+            "value": "14851"
+          },
+          {
+            "selected": false,
+            "text": "15062",
+            "value": "15062"
+          },
+          {
+            "selected": false,
+            "text": "15079",
+            "value": "15079"
+          },
+          {
+            "selected": false,
+            "text": "15144",
+            "value": "15144"
+          },
+          {
+            "selected": false,
+            "text": "15544",
+            "value": "15544"
+          },
+          {
+            "selected": false,
+            "text": "15575",
+            "value": "15575"
+          },
+          {
+            "selected": false,
+            "text": "15607",
+            "value": "15607"
+          },
+          {
+            "selected": false,
+            "text": "15626",
+            "value": "15626"
+          },
+          {
+            "selected": false,
+            "text": "15680",
+            "value": "15680"
+          },
+          {
+            "selected": false,
+            "text": "15701",
+            "value": "15701"
+          },
+          {
+            "selected": false,
+            "text": "15709",
+            "value": "15709"
+          },
+          {
+            "selected": false,
+            "text": "15845",
+            "value": "15845"
+          },
+          {
+            "selected": false,
+            "text": "15935",
+            "value": "15935"
+          },
+          {
+            "selected": false,
+            "text": "16956",
+            "value": "16956"
+          },
+          {
+            "selected": false,
+            "text": "17142",
+            "value": "17142"
+          },
+          {
+            "selected": false,
+            "text": "18474",
+            "value": "18474"
+          },
+          {
+            "selected": false,
+            "text": "18704",
+            "value": "18704"
+          },
+          {
+            "selected": false,
+            "text": "18782",
+            "value": "18782"
+          },
+          {
+            "selected": false,
+            "text": "19040",
+            "value": "19040"
+          },
+          {
+            "selected": false,
+            "text": "19282",
+            "value": "19282"
+          },
+          {
+            "selected": false,
+            "text": "19644",
+            "value": "19644"
+          },
+          {
+            "selected": false,
+            "text": "19666",
+            "value": "19666"
+          },
+          {
+            "selected": false,
+            "text": "19948",
+            "value": "19948"
+          },
+          {
+            "selected": false,
+            "text": "20058",
+            "value": "20058"
+          },
+          {
+            "selected": false,
+            "text": "20092",
+            "value": "20092"
+          },
+          {
+            "selected": false,
+            "text": "20103",
+            "value": "20103"
+          },
+          {
+            "selected": false,
+            "text": "20289",
+            "value": "20289"
+          },
+          {
+            "selected": false,
+            "text": "20733",
+            "value": "20733"
+          },
+          {
+            "selected": false,
+            "text": "20736",
+            "value": "20736"
+          },
+          {
+            "selected": false,
+            "text": "20848",
+            "value": "20848"
+          },
+          {
+            "selected": false,
+            "text": "21210",
+            "value": "21210"
+          },
+          {
+            "selected": false,
+            "text": "21336",
+            "value": "21336"
+          },
+          {
+            "selected": false,
+            "text": "22322",
+            "value": "22322"
+          },
+          {
+            "selected": false,
+            "text": "22828",
+            "value": "22828"
+          },
+          {
+            "selected": false,
+            "text": "23094",
+            "value": "23094"
+          },
+          {
+            "selected": false,
+            "text": "23208",
+            "value": "23208"
+          },
+          {
+            "selected": false,
+            "text": "24639",
+            "value": "24639"
+          },
+          {
+            "selected": false,
+            "text": "25514",
+            "value": "25514"
+          },
+          {
+            "selected": false,
+            "text": "25530",
+            "value": "25530"
+          },
+          {
+            "selected": false,
+            "text": "28574",
+            "value": "28574"
+          },
+          {
+            "selected": false,
+            "text": "29423",
+            "value": "29423"
+          },
+          {
+            "selected": false,
+            "text": "30765",
+            "value": "30765"
+          },
+          {
+            "selected": false,
+            "text": "31105",
+            "value": "31105"
+          },
+          {
+            "selected": false,
+            "text": "33267",
+            "value": "33267"
+          },
+          {
+            "selected": false,
+            "text": "33877",
+            "value": "33877"
+          },
+          {
+            "selected": false,
+            "text": "34388",
+            "value": "34388"
+          },
+          {
+            "selected": false,
+            "text": "34807",
+            "value": "34807"
+          },
+          {
+            "selected": false,
+            "text": "35582",
+            "value": "35582"
+          },
+          {
+            "selected": false,
+            "text": "37536",
+            "value": "37536"
+          },
+          {
+            "selected": false,
+            "text": "38114",
+            "value": "38114"
+          },
+          {
+            "selected": false,
+            "text": "41593",
+            "value": "41593"
+          },
+          {
+            "selected": false,
+            "text": "41940",
+            "value": "41940"
+          },
+          {
+            "selected": false,
+            "text": "44429",
+            "value": "44429"
+          },
+          {
+            "selected": false,
+            "text": "45850",
+            "value": "45850"
+          },
+          {
+            "selected": false,
+            "text": "47352",
+            "value": "47352"
+          },
+          {
+            "selected": false,
+            "text": "51547",
+            "value": "51547"
+          },
+          {
+            "selected": false,
+            "text": "54746",
+            "value": "54746"
+          },
+          {
+            "selected": false,
+            "text": "54940",
+            "value": "54940"
+          },
+          {
+            "selected": false,
+            "text": "5571",
+            "value": "5571"
+          },
+          {
+            "selected": false,
+            "text": "56286",
+            "value": "56286"
+          },
+          {
+            "selected": false,
+            "text": "58929",
+            "value": "58929"
+          },
+          {
+            "selected": false,
+            "text": "60966",
+            "value": "60966"
+          },
+          {
+            "selected": false,
+            "text": "62448",
+            "value": "62448"
+          },
+          {
+            "selected": false,
+            "text": "62801",
+            "value": "62801"
+          },
+          {
+            "selected": false,
+            "text": "62898",
+            "value": "62898"
+          },
+          {
+            "selected": false,
+            "text": "63220",
+            "value": "63220"
+          },
+          {
+            "selected": false,
+            "text": "64455",
+            "value": "64455"
+          },
+          {
+            "selected": false,
+            "text": "6454",
+            "value": "6454"
+          },
+          {
+            "selected": false,
+            "text": "64960",
+            "value": "64960"
+          },
+          {
+            "selected": false,
+            "text": "65443",
+            "value": "65443"
+          },
+          {
+            "selected": false,
+            "text": "65569",
+            "value": "65569"
+          },
+          {
+            "selected": false,
+            "text": "65697",
+            "value": "65697"
+          },
+          {
+            "selected": false,
+            "text": "65740",
+            "value": "65740"
+          },
+          {
+            "selected": false,
+            "text": "65765",
+            "value": "65765"
+          },
+          {
+            "selected": false,
+            "text": "65823",
+            "value": "65823"
+          },
+          {
+            "selected": false,
+            "text": "66299",
+            "value": "66299"
+          },
+          {
+            "selected": false,
+            "text": "66372",
+            "value": "66372"
+          },
+          {
+            "selected": false,
+            "text": "66403",
+            "value": "66403"
+          },
+          {
+            "selected": false,
+            "text": "66564",
+            "value": "66564"
+          },
+          {
+            "selected": false,
+            "text": "67353",
+            "value": "67353"
+          },
+          {
+            "selected": false,
+            "text": "67385",
+            "value": "67385"
+          },
+          {
+            "selected": false,
+            "text": "67501",
+            "value": "67501"
+          },
+          {
+            "selected": false,
+            "text": "67758",
+            "value": "67758"
+          },
+          {
+            "selected": false,
+            "text": "67809",
+            "value": "67809"
+          },
+          {
+            "selected": false,
+            "text": "67822",
+            "value": "67822"
+          },
+          {
+            "selected": false,
+            "text": "67933",
+            "value": "67933"
+          },
+          {
+            "selected": false,
+            "text": "67950",
+            "value": "67950"
+          },
+          {
+            "selected": false,
+            "text": "68012",
+            "value": "68012"
+          },
+          {
+            "selected": false,
+            "text": "68027",
+            "value": "68027"
+          },
+          {
+            "selected": false,
+            "text": "68067",
+            "value": "68067"
+          },
+          {
+            "selected": false,
+            "text": "68070",
+            "value": "68070"
+          },
+          {
+            "selected": false,
+            "text": "68088",
+            "value": "68088"
+          },
+          {
+            "selected": false,
+            "text": "68127",
+            "value": "68127"
+          },
+          {
+            "selected": false,
+            "text": "68221",
+            "value": "68221"
+          },
+          {
+            "selected": false,
+            "text": "68337",
+            "value": "68337"
+          },
+          {
+            "selected": false,
+            "text": "68440",
+            "value": "68440"
+          },
+          {
+            "selected": false,
+            "text": "68510",
+            "value": "68510"
+          },
+          {
+            "selected": false,
+            "text": "68518",
+            "value": "68518"
+          },
+          {
+            "selected": false,
+            "text": "68588",
+            "value": "68588"
+          },
+          {
+            "selected": false,
+            "text": "68734",
+            "value": "68734"
+          },
+          {
+            "selected": false,
+            "text": "68743",
+            "value": "68743"
+          },
+          {
+            "selected": false,
+            "text": "68745",
+            "value": "68745"
+          },
+          {
+            "selected": false,
+            "text": "68911",
+            "value": "68911"
+          },
+          {
+            "selected": false,
+            "text": "68939",
+            "value": "68939"
+          },
+          {
+            "selected": false,
+            "text": "68952",
+            "value": "68952"
+          },
+          {
+            "selected": false,
+            "text": "68975",
+            "value": "68975"
+          },
+          {
+            "selected": false,
+            "text": "69007",
+            "value": "69007"
+          },
+          {
+            "selected": false,
+            "text": "69116",
+            "value": "69116"
+          },
+          {
+            "selected": false,
+            "text": "69141",
+            "value": "69141"
+          },
+          {
+            "selected": false,
+            "text": "69235",
+            "value": "69235"
+          },
+          {
+            "selected": false,
+            "text": "69435",
+            "value": "69435"
+          },
+          {
+            "selected": false,
+            "text": "69545",
+            "value": "69545"
+          },
+          {
+            "selected": false,
+            "text": "69590",
+            "value": "69590"
+          },
+          {
+            "selected": false,
+            "text": "69597",
+            "value": "69597"
+          },
+          {
+            "selected": false,
+            "text": "69651",
+            "value": "69651"
+          },
+          {
+            "selected": false,
+            "text": "69701",
+            "value": "69701"
+          },
+          {
+            "selected": false,
+            "text": "69828",
+            "value": "69828"
+          },
+          {
+            "selected": false,
+            "text": "69852",
+            "value": "69852"
+          },
+          {
+            "selected": false,
+            "text": "69934",
+            "value": "69934"
+          },
+          {
+            "selected": false,
+            "text": "70050",
+            "value": "70050"
+          },
+          {
+            "selected": false,
+            "text": "70533",
+            "value": "70533"
+          },
+          {
+            "selected": false,
+            "text": "70831",
+            "value": "70831"
+          },
+          {
+            "selected": false,
+            "text": "70907",
+            "value": "70907"
+          },
+          {
+            "selected": false,
+            "text": "71054",
+            "value": "71054"
+          },
+          {
+            "selected": false,
+            "text": "71081",
+            "value": "71081"
+          },
+          {
+            "selected": false,
+            "text": "71205",
+            "value": "71205"
+          },
+          {
+            "selected": false,
+            "text": "71379",
+            "value": "71379"
+          },
+          {
+            "selected": false,
+            "text": "71463",
+            "value": "71463"
+          },
+          {
+            "selected": false,
+            "text": "71493",
+            "value": "71493"
+          },
+          {
+            "selected": false,
+            "text": "71506",
+            "value": "71506"
+          },
+          {
+            "selected": false,
+            "text": "71509",
+            "value": "71509"
+          },
+          {
+            "selected": false,
+            "text": "71564",
+            "value": "71564"
+          },
+          {
+            "selected": false,
+            "text": "71649",
+            "value": "71649"
+          },
+          {
+            "selected": false,
+            "text": "71929",
+            "value": "71929"
+          },
+          {
+            "selected": false,
+            "text": "72287",
+            "value": "72287"
+          },
+          {
+            "selected": false,
+            "text": "72440",
+            "value": "72440"
+          },
+          {
+            "selected": false,
+            "text": "72606",
+            "value": "72606"
+          },
+          {
+            "selected": false,
+            "text": "72696",
+            "value": "72696"
+          },
+          {
+            "selected": false,
+            "text": "72807",
+            "value": "72807"
+          },
+          {
+            "selected": false,
+            "text": "72860",
+            "value": "72860"
+          },
+          {
+            "selected": false,
+            "text": "72966",
+            "value": "72966"
+          },
+          {
+            "selected": false,
+            "text": "7389",
+            "value": "7389"
+          },
+          {
+            "selected": false,
+            "text": "7830",
+            "value": "7830"
+          },
+          {
+            "selected": false,
+            "text": "7882",
+            "value": "7882"
+          },
+          {
+            "selected": false,
+            "text": "8227",
+            "value": "8227"
+          },
+          {
+            "selected": false,
+            "text": "8362",
+            "value": "8362"
+          },
+          {
+            "selected": false,
+            "text": "8762",
+            "value": "8762"
+          },
+          {
+            "selected": true,
+            "text": "9119",
+            "value": "9119"
+          },
+          {
+            "selected": false,
+            "text": "9313",
+            "value": "9313"
+          },
+          {
+            "selected": false,
+            "text": "9798",
+            "value": "9798"
+          },
+          {
+            "selected": false,
+            "text": "9985",
+            "value": "9985"
+          }
+        ],
+        "query": "10058,\n10598,\n10869,\n11240,\n11321,\n11424,\n11728,\n11792,\n11849,\n11926,\n12007,\n12061,\n12126,\n12234,\n12409,\n12422,\n12753,\n12854,\n12875,\n12918,\n12938,\n13219,\n13410,\n13497,\n13570,\n14023,\n14784,\n14851,\n15062,\n15079,\n15144,\n15544,\n15575,\n15607,\n15626,\n15680,\n15701,\n15709,\n15845,\n15935,\n16956,\n17142,\n18474,\n18704,\n18782,\n19040,\n19282,\n19644,\n19666,\n19948,\n20058,\n20092,\n20103,\n20289,\n20733,\n20736,\n20848,\n21210,\n21336,\n22322,\n22828,\n23094,\n23208,\n24639,\n25514,\n25530,\n28574,\n29423,\n30765,\n31105,\n33267,\n33877,\n34388,\n34807,\n35582,\n37536,\n38114,\n41593,\n41940,\n44429,\n45850,\n47352,\n51547,\n54746,\n54940,\n5571,\n56286,\n58929,\n60966,\n62448,\n62801,\n62898,\n63220,\n64455,\n6454,\n64960,\n65443,\n65569,\n65697,\n65740,\n65765,\n65823,\n66299,\n66372,\n66403,\n66564,\n67353,\n67385,\n67501,\n67758,\n67809,\n67822,\n67933,\n67950,\n68012,\n68027,\n68067,\n68070,\n68088,\n68127,\n68221,\n68337,\n68440,\n68510,\n68518,\n68588,\n68734,\n68743,\n68745,\n68911,\n68939,\n68952,\n68975,\n69007,\n69116,\n69141,\n69235,\n69435,\n69545,\n69590,\n69597,\n69651,\n69701,\n69828,\n69852,\n69934,\n70050,\n70533,\n70831,\n70907,\n71054,\n71081,\n71205,\n71379,\n71463,\n71493,\n71506,\n71509,\n71564,\n71649,\n71929,\n72287,\n72440,\n72606,\n72696,\n72807,\n72860,\n72966,\n7389,\n7830,\n7882,\n8227,\n8362,\n8762,\n9119,\n9313,\n9798,\n9985",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "Hour",
+          "value": "Hour"
+        },
+        "description": "defines the type of tumbling window to consider",
+        "hide": 0,
+        "includeAll": false,
+        "label": "window type",
+        "multi": false,
+        "name": "window",
+        "options": [
+          {
+            "selected": true,
+            "text": "Hour",
+            "value": "Hour"
+          },
+          {
+            "selected": false,
+            "text": "Day",
+            "value": "Day"
+          },
+          {
+            "selected": false,
+            "text": "Week",
+            "value": "Week"
+          },
+          {
+            "selected": false,
+            "text": "FromStart",
+            "value": "FromStart"
+          }
+        ],
+        "query": "Hour, Day, Week, FromStart",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
       }
     ]
   },
@@ -1536,6 +2483,6 @@
   "timezone": "",
   "title": "SABD - Project 2",
   "uid": "2J8ln097k",
-  "version": 3,
+  "version": 7,
   "weekStart": ""
 }

@@ -53,9 +53,9 @@ public class Query3 extends Query<Query3Record, Query3Result> {
         var resultStream = q3.queryConfiguration(d, WindowEnum.Hour, "query3-hour"); // TODO: testare
         var resultStream2 = q3.queryConfiguration(d, WindowEnum.Day, "query3-day"); // TODO: testare
         var resultStream3 = q3.queryConfiguration(d, WindowEnum.Week, "query3-week"); // TODO: testare
-        q3.sinkConfiguration(resultStream);
-        q3.sinkConfiguration(resultStream2);
-        q3.sinkConfiguration(resultStream3);
+        q3.sinkConfiguration(resultStream, WindowEnum.Hour);
+        q3.sinkConfiguration(resultStream2, WindowEnum.Day);
+        q3.sinkConfiguration(resultStream3, WindowEnum.Week);
         q3.execute();
     }
 
@@ -96,9 +96,9 @@ public class Query3 extends Query<Query3Record, Query3Result> {
     }
 
     @Override
-    public void sinkConfiguration(SingleOutputStreamOperator<Query3Result> resultStream) {
+    public void sinkConfiguration(SingleOutputStreamOperator<Query3Result> resultStream, WindowEnum windowType) {
         /* Set up the redis sink */
-        resultStream.addSink(new RedisHashSink3());
+        resultStream.addSink(new RedisHashSink3(windowType));
         /* Set up stdOut Sink */
         resultStream.print();
     }

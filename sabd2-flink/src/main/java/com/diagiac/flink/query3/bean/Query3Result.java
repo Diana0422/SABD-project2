@@ -1,6 +1,7 @@
 package com.diagiac.flink.query3.bean;
 
 import com.diagiac.flink.FlinkResult;
+import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query3.model.GeoCell;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -176,7 +177,7 @@ public class Query3Result implements FlinkResult {
     }
 
     @Override
-    public String getKey() {
-        return "query3";
+    public String getKey(WindowEnum windowType) {
+        return windowType.name() + ":" + "query3";
     }
 }

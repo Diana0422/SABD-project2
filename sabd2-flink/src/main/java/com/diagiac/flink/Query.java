@@ -25,7 +25,7 @@ public abstract class Query<T extends FlinkRecord, R extends FlinkResult> {
      *
      * @return
      */
-    public abstract SingleOutputStreamOperator<R> queryConfiguration(SingleOutputStreamOperator<T> d);
+    public abstract SingleOutputStreamOperator<R> queryConfiguration(SingleOutputStreamOperator<T> d, WindowEnum windowAssigner, String opName);
 
     /**
      * Settings for the sink that consumes the output of the queries

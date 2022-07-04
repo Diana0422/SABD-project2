@@ -18,9 +18,8 @@ import java.time.Duration;
 
 public class Query2 extends Query<Query2Record, Query2Result> {
 
-    public Query2(String url, WindowEnum w) {
+    public Query2(String url) {
         this.url = url;
-        this.windowEnum = w;
     }
 
     /**
@@ -40,12 +39,16 @@ public class Query2 extends Query<Query2Record, Query2Result> {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        var window = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
+//        var window = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
-        var q2 = new Query2(url, window);
+        var q2 = new Query2(url);
         var d = q2.sourceConfigurationAndFiltering();
-        var resultStream = q2.queryConfiguration(d); // TODO: testare
+        var resultStream = q2.queryConfiguration(d, WindowEnum.Hour, "query2-hour"); // TODO: testare
+        var resultStream2 = q2.queryConfiguration(d, WindowEnum.Day, "query2-day"); // TODO: testare
+        var resultStream3 = q2.queryConfiguration(d, WindowEnum.Week, "query2-week"); // TODO: testare
         q2.sinkConfiguration(resultStream);
+        q2.sinkConfiguration(resultStream2);
+        q2.sinkConfiguration(resultStream3);
         q2.execute();
     }
 
@@ -73,14 +76,15 @@ public class Query2 extends Query<Query2Record, Query2Result> {
     }
 
     @Override
-    public SingleOutputStreamOperator<Query2Result> queryConfiguration(SingleOutputStreamOperator<Query2Record> stream) {
+    public SingleOutputStreamOperator<Query2Result> queryConfiguration(SingleOutputStreamOperator<Query2Record> stream, WindowEnum windowAssigner, String opName) {
         return stream.keyBy(Query2Record::getLocation) // group by location
-                .window(windowEnum.getWindowStrategy())// setting window strategy (hour, day, week)
+                .window(windowAssigner.getWindowStrategy())// setting window strategy (hour, day, week)
                 .aggregate(new AverageAggregate2(), new Query2ProcessWindowFunction()) // compute mean incrementally for elements that arrive
                 .keyBy(LocationTemperature::getTimestamp) // group by timestamp, which is the same for all the element of the window
-                .window(windowEnum.getWindowStrategy()) // conceptually like windowAll, so it is parallelizable !!!
+                .window(windowAssigner.getWindowStrategy()) // conceptually like windowAll, so it is parallelizable !!!
                 .aggregate(new RankAggregate(), new RankingProcessWindowFunction()) // compute the top5 and bottom5 for the single window, for each partition
-                .map(new MetricRichMapFunction<>()); // metrics (throughput and latency)
+                .map(new MetricRichMapFunction<>()) // metrics (throughput and latency)
+                .name(opName);
     }
 
     @Override

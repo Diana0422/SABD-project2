@@ -20,9 +20,8 @@ import java.time.Duration;
 
 public class Query3 extends Query<Query3Record, Query3Result> {
 
-    public Query3(String url, WindowEnum w) {
+    public Query3(String url) {
         this.url = url;
-        this.windowEnum = w;
     }
 
 
@@ -48,11 +47,15 @@ public class Query3 extends Query<Query3Record, Query3Result> {
      */
     public static void main(String[] args) {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
-        var w = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
-        var q3 = new Query3(url, w);
+//        var w = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
+        var q3 = new Query3(url);
         SingleOutputStreamOperator<Query3Record> d = q3.sourceConfigurationAndFiltering();
-        var resultStream = q3.queryConfiguration(d); // TODO: testare
+        var resultStream = q3.queryConfiguration(d, WindowEnum.Hour, "query3-hour"); // TODO: testare
+        var resultStream2 = q3.queryConfiguration(d, WindowEnum.Day, "query3-day"); // TODO: testare
+        var resultStream3 = q3.queryConfiguration(d, WindowEnum.Week, "query3-week"); // TODO: testare
         q3.sinkConfiguration(resultStream);
+        q3.sinkConfiguration(resultStream2);
+        q3.sinkConfiguration(resultStream3);
         q3.execute();
     }
 
@@ -80,15 +83,16 @@ public class Query3 extends Query<Query3Record, Query3Result> {
     }
 
     @Override
-    public SingleOutputStreamOperator<Query3Result> queryConfiguration(SingleOutputStreamOperator<Query3Record> d) {
-        return d.map(new CellMapper()) // we map every value to a Query3Cell. The cell that contains the sensor is calculated inside this mapper
+    public SingleOutputStreamOperator<Query3Result> queryConfiguration(SingleOutputStreamOperator<Query3Record> stream, WindowEnum windowAssigner, String opName) {
+        return stream.map(new CellMapper()) // we map every value to a Query3Cell. The cell that contains the sensor is calculated inside this mapper
                 .filter(a -> a.getCell() != null)// we filter out all records with null cell
                 .keyBy(query3Cell -> query3Cell.getCell().getId()) // grouping by id of cell
-                .window(windowEnum.getWindowStrategy()) //setting the desired window strategy
+                .window(windowAssigner.getWindowStrategy()) //setting the desired window strategy
                 .aggregate(new AvgMedianAggregate3()) // aggregating averages and medians. This is parallelizable
-                .windowAll(windowEnum.getWindowStrategy()) // this is not parallelizable, but is needed to put all Cell avg/medians in the same window
+                .windowAll(windowAssigner.getWindowStrategy()) // this is not parallelizable, but is needed to put all Cell avg/medians in the same window
                 .process(new FinalProcessWindowFunction()) // only changes the timestamp to the start of the window!
-                .map(new MetricRichMapFunction<>()); // just for metrics
+                .map(new MetricRichMapFunction<>()) // just for metrics
+                .name(opName);
     }
 
     @Override

@@ -18,9 +18,8 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import java.time.Duration;
 
 public class Query1 extends Query<Query1Record, Query1Result> {
-    public Query1(String url, WindowEnum windowAssigner) {
+    public Query1(String url) {
         this.url = url;
-        this.windowEnum = windowAssigner;
     }
     // kafka + flink https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/connectors/datastream/kafka/
     // watermark gen https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/dev/datastream/event-time/generating_watermarks/
@@ -42,14 +41,18 @@ public class Query1 extends Query<Query1Record, Query1Result> {
      */
     public static void main(String[] args) throws Exception {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
-        var windowAssigner = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
-        var q1 = new Query1(url, windowAssigner);
+//        var windowAssigner = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
+        var q1 = new Query1(url);
         SingleOutputStreamOperator<Query1Record> d = q1.sourceConfigurationAndFiltering();
-        System.out.println("Filtered Data");
-        var resultStream = q1.queryConfiguration(d); // TODO: testare
+        var resultStream = q1.queryConfiguration(d, WindowEnum.Hour, "query1-hour"); // TODO: testare
+        var resultStream2 = q1.queryConfiguration(d, WindowEnum.Week, "query1-week"); // TODO: testare
+        var resultStream3 = q1.queryConfiguration(d, WindowEnum.FromStart, "query1-start");
         q1.sinkConfiguration(resultStream);
+        q1.sinkConfiguration(resultStream2);
+        q1.sinkConfiguration(resultStream3);
         q1.execute();
     }
+
 
     @Override
     public SingleOutputStreamOperator<Query1Record> sourceConfigurationAndFiltering() {
@@ -68,13 +71,14 @@ public class Query1 extends Query<Query1Record, Query1Result> {
     }
 
     @Override
-    public SingleOutputStreamOperator<Query1Result> queryConfiguration(SingleOutputStreamOperator<Query1Record> stream) {
+    public SingleOutputStreamOperator<Query1Result> queryConfiguration(SingleOutputStreamOperator<Query1Record> stream, WindowEnum windowAssigner, String opName) {
         // Query1Record -> (sensorId, resto di Query1Record)
         return stream
                 .keyBy(Query1Record::getSensorId) // Set the sensorid as the record's key
-                .window(windowEnum.getWindowStrategy()) // Set the window strategy
+                .window(windowAssigner.getWindowStrategy()) // Set the window strategy
                 .aggregate(new AverageAggregator(), new TimestampWindowFunction1()) // Aggregate function to calculate average, ProcessWindowFunction to unify timestamp
-                .map(new MetricRichMapFunction<>());
+                .map(new MetricRichMapFunction<>())
+                .name(opName);
     }
 
     @Override

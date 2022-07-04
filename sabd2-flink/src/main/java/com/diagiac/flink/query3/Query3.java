@@ -89,6 +89,7 @@ public class Query3 extends Query<Query3Record, Query3Result> {
                 .keyBy(query3Cell -> query3Cell.getCell().getId()) // grouping by id of cell
                 .window(windowAssigner.getWindowStrategy()) //setting the desired window strategy
                 .aggregate(new AvgMedianAggregate3()) // aggregating averages and medians. This is parallelizable
+                //FIXME: eliminare windowAll e sostituire con keyBy timestamp + window + process
                 .windowAll(windowAssigner.getWindowStrategy()) // this is not parallelizable, but is needed to put all Cell avg/medians in the same window
                 .process(new FinalProcessWindowFunction()) // only changes the timestamp to the start of the window!
                 .map(new MetricRichMapFunction<>()) // just for metrics

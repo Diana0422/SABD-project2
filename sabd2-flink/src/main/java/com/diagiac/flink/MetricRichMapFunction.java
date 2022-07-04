@@ -27,12 +27,14 @@ public class MetricRichMapFunction<T> extends RichMapFunction<T, T> {
     public T map(T value) throws Exception {
         this.counter++;
 
-        // Compute throughput and latency
+        // gets milliseconds from the start of this operator
         double elapsed_millis = System.currentTimeMillis() - this.start;
+        // gets seconds from milliseconds
         double elapsed_sec = elapsed_millis / 1000;
 
-        this.throughput = this.counter / elapsed_sec;
-        this.latency = elapsed_millis / this.counter;
+        // Compute throughput and latency
+        this.throughput = this.counter / elapsed_sec; // tuple / s
+        this.latency = elapsed_millis / this.counter; // ms / tuple
 
         return value;
     }

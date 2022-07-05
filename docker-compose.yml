@@ -27,7 +27,7 @@ services:
 
   ## SENSOR PRODUCER APP -----------------------------------------
   publisher:
-    image: diana0422/publisher
+#    image: diana0422/publisher
     depends_on:
       - kafka
     environment:
@@ -39,9 +39,10 @@ services:
 
   ## RESULT CONSUMER APP ----------------------------------------
   consumer:
-    image: diana0422/consumer
+    # image: diana0422/consumer
     build:
-      context: sabd2-kafka/consumer
+      context: sabd2-kafka
+      dockerfile: consumer.Dockerfile
     volumes:
       - "./producer/data:/producer/data"
     depends_on:

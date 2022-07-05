@@ -47,6 +47,7 @@ public class SensorProducer {
             // Read data from file https://archive.sensor.community/csv_per_month/2022-05/2022-05_bmp180.zip
             // ReadCsv readCsv = new ReadCsv("data/2022-05_bmp180.csv");
             ReadCsv readCsv = new ReadCsv(dataset);
+            System.out.println("Start reading and ordering dataset");
             List<SensorDataModel> recordList = readCsv.readCSVFile();
             List<SensorDataModel> orderedList = orderByTimestamp(recordList);
             System.out.println("Start publishing");

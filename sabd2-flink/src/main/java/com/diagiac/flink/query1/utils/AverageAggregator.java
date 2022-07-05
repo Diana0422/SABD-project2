@@ -15,6 +15,7 @@ public class AverageAggregator implements AggregateFunction<Query1Record, Query1
 
     @Override
     public Query1Aggregator add(Query1Record queryRecord1, Query1Aggregator query1Aggregator) {
+//        System.out.println("queryRecord1 = " + queryRecord1 + ", query1Aggregator = " + query1Aggregator);
         long aggCount = queryRecord1.getCount() + query1Aggregator.getCount();
         double aggTemp = queryRecord1.getTemperature() + query1Aggregator.getTemperatureSum();
         return new Query1Aggregator(queryRecord1.getTimestamp(), queryRecord1.getSensorId(), aggCount, aggTemp);

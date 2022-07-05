@@ -84,8 +84,10 @@ public class Query1 extends Query<Query1Record, Query1Result> {
     @Override
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream, WindowEnum windowType) {
         /* Set up the redis sink */
-        System.out.println("Setting sinks:");
         resultStream.addSink(new RedisHashSink1(windowType));
+
+        /* Set up metrics sink */
+        resultStream.addSink(new MetricsSink("query1-"+windowType.name()));
         /* Set up stdOut Sink */
         System.out.println("Setting sinks: sink stdout");
         resultStream.print();

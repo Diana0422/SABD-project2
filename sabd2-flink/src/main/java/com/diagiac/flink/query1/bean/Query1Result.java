@@ -25,6 +25,10 @@ public class Query1Result implements FlinkResult {
                 '}';
     }
 
+    public String toStringCSV() {
+        return timestamp.toString()+","+sensorId.toString()+","+count.toString()+","+avgTemperature.toString()+"\n";
+    }
+
     @Override
     public String getKey(WindowEnum windowType) {
         return windowType.name() + ":" + sensorId.toString();

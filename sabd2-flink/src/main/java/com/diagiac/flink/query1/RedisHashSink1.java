@@ -14,6 +14,7 @@ public class RedisHashSink1 extends RedisHashSink<Query1Result> {
 
     @Override
     public void setHashFieldsFrom(Query1Result flinkResult) {
+//        System.out.println("flinkResult = " + flinkResult);
         setHashField(flinkResult.getKey(windowType), "timestamp", flinkResult.getTimestamp());
         setHashField(flinkResult.getKey(windowType), "count", flinkResult.getCount());
         setHashField(flinkResult.getKey(windowType), "averageTemperature", flinkResult.getAvgTemperature());

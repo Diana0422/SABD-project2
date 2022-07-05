@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 /**
  * It writes each record in input on a different file based on the topic from which it has read it
+ * TODO: correggere questa classe!!
  */
 public class ResultConsumer {
     private static final String query1Header = "ts,sensor_id,count,avg\n";

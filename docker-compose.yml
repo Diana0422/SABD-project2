@@ -28,6 +28,7 @@ services:
   ## SENSOR PRODUCER APP -----------------------------------------
   publisher:
 #    image: diana0422/publisher
+    container_name: publisher
     depends_on:
       - kafka
     environment:
@@ -36,17 +37,22 @@ services:
       INTERNAL_KAFKA_ADDR: 'kafka:9092'
     build:
       context: ./sabd2-kafka
+      dockerfile: publisher.Dockerfile
 
   ## RESULT CONSUMER APP ----------------------------------------
   consumer:
     # image: diana0422/consumer
+    container_name: consumer
     build:
-      context: sabd2-kafka
+      context: sabd2-kafka/consumer
       dockerfile: consumer.Dockerfile
+    environment:
+      ENVIRONMENT: local
+      INTERNAL_KAFKA_ADDR: 'kafka:9092'
     volumes:
-      - "./producer/data:/producer/data"
+      - "./Results:/output"
     depends_on:
-      - kafka
+      - publisher
       - jobmanager
 
   # SERVICE2: APACHE FLINK -------------------------------------

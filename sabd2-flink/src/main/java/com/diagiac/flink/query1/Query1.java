@@ -6,10 +6,14 @@ import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.bean.Query1Result;
 import com.diagiac.flink.query1.serialize.QueryRecordDeserializer1;
+import com.diagiac.flink.query1.serialize.QueryResultSerializer1;
 import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter1;
 import com.diagiac.flink.query1.utils.TimestampWindowFunction1;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.connector.base.DeliveryGuarantee;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
@@ -85,11 +89,23 @@ public class Query1 extends Query<Query1Record, Query1Result> {
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream, WindowEnum windowType) {
         /* Set up the redis sink */
         resultStream.addSink(new RedisHashSink1(windowType));
-
         /* Set up metrics sink */
-//        resultStream.addSink(new MetricsSink("query1-" + windowType.name()));
+        resultStream.addSink(new MetricsSink("query1-" + windowType.name()));
         /* Set up stdOut Sink */
         System.out.println("Setting sinks: sink stdout");
         resultStream.print();
+
+        /* Set up Kafka sink */
+        var sink = KafkaSink.<Query1Result>builder()
+                .setBootstrapServers(url)
+                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                        .setTopic("query1-"+windowType.name())
+                        .setKafkaValueSerializer(QueryResultSerializer1.class)
+                        .build()
+                )
+                .setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+                .build();
+
+        resultStream.sinkTo(sink);
     }
 }

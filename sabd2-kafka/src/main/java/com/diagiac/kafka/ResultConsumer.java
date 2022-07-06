@@ -11,21 +11,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
  * It writes each record in input on a different file based on the topic from which it has read it
- * TODO: correggere questa classe!!
  */
 public class ResultConsumer {
     private static final String query1Header = "ts,sensor_id,count,avg\n";
-    private static final String query2Header = "ts,sea,slot_a,rank_a,slot_p,rank_p\n";
-    private static final String query3Header = "ts,trip_1,rating_1,trip_2,rating_2,trip_3,rating_3,trip_4,rating_4,trip_5,rating_5\n";
+    private static final String query2Header = "ts,location1,avg_temp1,location2,avg_temp2,location3,avg_temp3,location4,avg_temp4,location5,avg_temp5,location6,avg_temp6,location7,avg_temp7,location8,avg_temp8,location9,avg_temp9,location10,avg_temp10\n";
+    private static final String query3Header = "ts,cell_0,avg_temp0,med_temp0,cell_1,avg_temp1,med_temp1,cell_2,avg_temp2,med_temp2,cell_3,avg_temp3,med_temp3,cell_4,avg_temp4,med_temp4,cell_5,avg_temp5,med_temp5,cell_6,avg_temp6,med_temp6,cell_7,avg_temp7,med_temp7,cell_8,avg_temp8,med_temp8,cell_9,avg_temp9,med_temp9,cell_10,avg_temp10,med_temp10,cell_11,avg_temp11,med_temp11,cell_12,avg_temp12,med_temp12,cell_13,avg_temp13,med_temp13,cell_14,avg_temp14,med_temp14,cell_15,avg_temp15,med_temp15\n";
     private static final Map<String, String> headers;
-    private static final String outputPath = "/Results";
+    private static final String outputPath = "/output";
 
     static {
         headers = new HashMap<>();
@@ -35,8 +33,9 @@ public class ResultConsumer {
     }
 
     public static void main(String[] args) {
-        Logger log = Logger.getLogger(Consumer.class.getSimpleName());
-        var url = (args.length > 1 ? args[1] : "127.0.0.1:29092");
+        Logger log = Logger.getLogger(ResultConsumer.class.getSimpleName());
+//        var url = (args.length > 1 ? args[0] : "127.0.0.1:29092");
+        var url = "kafka://kafka:9092";
 
         Properties props = new Properties();
         props.put("bootstrap.servers", url);
@@ -51,7 +50,7 @@ public class ResultConsumer {
 
         log.info("Starting receiving records");
         while (true) {
-            final ConsumerRecords<Long, String> consumerRecords = consumer.poll(Duration.ofMillis(1000));
+            final ConsumerRecords<Long, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
             if (consumerRecords.count() == 0) {
                 log.fine("No records");
             } else {
@@ -64,11 +63,13 @@ public class ResultConsumer {
                         if (fileWriter == null) {
                             log.log(Level.INFO, "New topic: {0}", topic);
                             fileWriter = new FileWriter(outputPath + "/" + topic + ".csv", false);
-                            fileWriter.write(headers.get(topic.substring(0,6)));
+                            String key = topic.substring(0,6)+"-header";
+                            String header = headers.get(key);
+                            fileWriter.write(header);
                             fileWriter.flush();
                             topicWriterMap.put(topic, fileWriter);
                         }
-                        fileWriter.write(longStringConsumerRecord.value() + "\n");
+                        fileWriter.write(longStringConsumerRecord.value());
 
                         fileWriter.flush();
                     } catch (IOException e) {

@@ -92,4 +92,28 @@ public class Query2Result implements FlinkResult {
     public String getKey(WindowEnum windowType) {
         return windowType.name() + ":" + "query2";
     }
+
+    public String toStringCSV() {
+        return timestamp.toString()+","
+                +location1.toString()+","
+                +temperature1.toString()+","
+                +location2.toString()+","
+                +temperature2.toString()+","
+                +location3.toString()+","
+                +temperature3.toString()+","
+                +location4.toString()+","
+                +temperature4.toString()+","
+                +location5.toString()+","
+                +temperature5.toString()+","
+                +location6.toString()+","
+                +temperature6.toString()+","
+                +location7.toString()+","
+                +temperature7.toString()+","
+                +location8.toString()+","
+                +temperature8.toString()+","
+                +location9.toString()+","
+                +temperature9.toString()+","
+                +location10.toString()+","
+                +temperature10+"\n";
+    }
 }

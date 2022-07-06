@@ -3,12 +3,18 @@ package com.diagiac.flink.query2;
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
+import com.diagiac.flink.query1.bean.Query1Result;
+import com.diagiac.flink.query1.serialize.QueryResultSerializer1;
 import com.diagiac.flink.query2.bean.LocationTemperature;
 import com.diagiac.flink.query2.bean.Query2Record;
 import com.diagiac.flink.query2.bean.Query2Result;
 import com.diagiac.flink.query2.serialize.QueryRecordDeserializer2;
+import com.diagiac.flink.query2.serialize.QueryResultSerializer2;
 import com.diagiac.flink.query2.util.*;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.connector.base.DeliveryGuarantee;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
@@ -93,5 +99,17 @@ public class Query2 extends Query<Query2Record, Query2Result> {
         resultStream.addSink(new RedisHashSink2(windowType));
         /* Set up stdOut Sink */
         resultStream.print();
+        /* Set up Kafka sink */
+        var sink = KafkaSink.<Query2Result>builder()
+                .setBootstrapServers(url)
+                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                        .setTopic("query2-"+windowType.name())
+                        .setKafkaValueSerializer(QueryResultSerializer2.class)
+                        .build()
+                )
+                .setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+                .build();
+
+        resultStream.sinkTo(sink);
     }
 }

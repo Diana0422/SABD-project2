@@ -3,14 +3,20 @@ package com.diagiac.flink.query3;
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
+import com.diagiac.flink.query2.bean.Query2Result;
+import com.diagiac.flink.query2.serialize.QueryResultSerializer2;
 import com.diagiac.flink.query3.bean.Query3Record;
 import com.diagiac.flink.query3.bean.Query3Result;
 import com.diagiac.flink.query3.serialize.QueryRecordDeserializer3;
+import com.diagiac.flink.query3.serialize.QueryResultSerializer3;
 import com.diagiac.flink.query3.util.AvgMedianAggregate3;
 import com.diagiac.flink.query3.util.CellMapper;
 import com.diagiac.flink.query3.util.FinalProcessWindowFunction;
 import com.diagiac.flink.query3.util.RecordFilter3;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.connector.base.DeliveryGuarantee;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
@@ -102,5 +108,17 @@ public class Query3 extends Query<Query3Record, Query3Result> {
         resultStream.addSink(new RedisHashSink3(windowType));
         /* Set up stdOut Sink */
         resultStream.print();
+        /* Set up Kafka sink */
+        var sink = KafkaSink.<Query3Result>builder()
+                .setBootstrapServers(url)
+                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                        .setTopic("query3-"+windowType.name())
+                        .setKafkaValueSerializer(QueryResultSerializer3.class)
+                        .build()
+                )
+                .setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+                .build();
+
+        resultStream.sinkTo(sink);
     }
 }

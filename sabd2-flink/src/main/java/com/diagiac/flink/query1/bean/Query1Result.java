@@ -30,7 +30,7 @@ public class Query1Result implements FlinkResult {
     }
 
     @Override
-    public String getKey(WindowEnum windowType) {
+    public String getRedisKey(WindowEnum windowType) {
         return windowType.name() + ":" + sensorId.toString();
 
     }

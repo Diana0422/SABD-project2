@@ -3,8 +3,6 @@ package com.diagiac.flink.query2;
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
-import com.diagiac.flink.query1.bean.Query1Result;
-import com.diagiac.flink.query1.serialize.QueryResultSerializer1;
 import com.diagiac.flink.query2.bean.LocationTemperature;
 import com.diagiac.flink.query2.bean.Query2Record;
 import com.diagiac.flink.query2.bean.Query2Result;

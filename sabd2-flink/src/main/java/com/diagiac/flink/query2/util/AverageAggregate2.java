@@ -11,24 +11,29 @@ public class AverageAggregate2 implements AggregateFunction<Query2Record, Query2
     @Override
     public Query2Accumulator createAccumulator() {
         // creates initial accumulator
-        return new Query2Accumulator(null, 0L, 0L, 0L);
+        return new Query2Accumulator(null, 0L, 0L, 0L, 0L);
     }
 
     @Override
-    public Query2Accumulator add(Query2Record queryRecord2, Query2Accumulator query2Accumulator) {
-        long aggCount = queryRecord2.getCount() + query2Accumulator.getCount();
-        double aggTemp = queryRecord2.getTemperature() + query2Accumulator.getTemperatureSum();
+    public Query2Accumulator add(Query2Record query2Record, Query2Accumulator query2Accumulator) {
+        long aggCount = query2Record.getCount() + query2Accumulator.getCount();
+        double aggTemp = query2Record.getTemperature() + query2Accumulator.getTemperatureSum();
 
-        if (query2Accumulator.getLocation() == 0L) {
-            query2Accumulator.setLocation(queryRecord2.getLocation());
-        }
+//        if (query2Accumulator.getLocation() == 0L) {
+//            query2Accumulator.setLocation(queryRecord2.getLocation());
+//        }
+//
+//        if (query2Accumulator.getSensorId() == 0L){
+//            query2Accumulator.setSensorId(queryRecord2.getSensor_id());
+//        }
 
-        return new Query2Accumulator(queryRecord2.getTimestamp(), aggCount, aggTemp, queryRecord2.getLocation());
+        return new Query2Accumulator(query2Record.getTimestamp(), aggCount, aggTemp,
+                query2Record.getLocation(), query2Record.getSensor_id());
     }
 
     @Override
     public LocationTemperature getResult(Query2Accumulator accumulator) {
-        return new LocationTemperature(accumulator.getTimestamp(), accumulator.getTemperatureSum() / accumulator.getCount(), accumulator.getLocation());
+        return new LocationTemperature(accumulator.getTimestamp(), accumulator.getTemperatureSum() / accumulator.getCount(), accumulator.getSensorId());
     }
 
     @Override
@@ -37,7 +42,8 @@ public class AverageAggregate2 implements AggregateFunction<Query2Record, Query2
                 acc1.getTimestamp(),
                 acc1.getCount() + acc2.getCount(),
                 acc1.getTemperatureSum() + acc2.getTemperatureSum(),
-                acc1.getLocation()
+                acc1.getLocation(),
+                acc1.getSensorId()
         );
     }
 }

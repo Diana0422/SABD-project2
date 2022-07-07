@@ -1,8 +1,8 @@
 dir=$(pwd)
 ## Compiling the kafka program
-#mvn -pl sabd2-kafka package
+mvn -pl sabd2-kafka package
 ## Compiling the flink program
-#mvn -pl sabd2-flink package
+mvn -pl sabd2-flink package
 
 # Creating Consumer and Producer docker images
 mkdir -p "$dir"/sabd2-kafka/consumer/target/

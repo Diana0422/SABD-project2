@@ -177,7 +177,7 @@ public class Query3Result implements FlinkResult {
     }
 
     @Override
-    public String getKey(WindowEnum windowType) {
+    public String getRedisKey(WindowEnum windowType) {
         return windowType.name() + ":" + "query3";
     }
 

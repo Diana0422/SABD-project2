@@ -12,5 +12,5 @@ import java.sql.Timestamp;
 public class LocationTemperature {
     private Timestamp timestamp;
     private Double avgTemperature;
-    private Long location;
+    private Long sensorId;
 }

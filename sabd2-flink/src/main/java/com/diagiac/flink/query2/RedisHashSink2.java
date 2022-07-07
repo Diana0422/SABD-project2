@@ -6,7 +6,7 @@ import com.diagiac.flink.RedisHashSink;
 
 public class RedisHashSink2 extends RedisHashSink<Query2Result> {
 
-    private WindowEnum windowType;
+    private final WindowEnum windowType;
 
     public RedisHashSink2(WindowEnum windowType) {
         this.windowType = windowType;
@@ -14,7 +14,7 @@ public class RedisHashSink2 extends RedisHashSink<Query2Result> {
 
     @Override
     public void setHashFieldsFrom(Query2Result flinkResult) {
-        String key = flinkResult.getKey(windowType);
+        String key = flinkResult.getRedisKey(windowType);
         setHashField(key, "timestamp", flinkResult.getTimestamp());
         setHashField(key, "location1", flinkResult.getLocation1());
         setHashField(key, "location2", flinkResult.getLocation2());

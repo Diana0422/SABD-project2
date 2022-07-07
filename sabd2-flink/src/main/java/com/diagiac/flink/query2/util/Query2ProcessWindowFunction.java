@@ -19,7 +19,7 @@ public class Query2ProcessWindowFunction extends ProcessWindowFunction<LocationT
     public void process(Long aLong, ProcessWindowFunction<LocationTemperature, LocationTemperature, Long, TimeWindow>.Context context, Iterable<LocationTemperature> iterable, Collector<LocationTemperature> collector) throws Exception {
         Timestamp ts = new Timestamp(context.window().getStart());
         for (LocationTemperature locationTemperature : iterable) {
-            collector.collect(new LocationTemperature(ts, locationTemperature.getAvgTemperature(), locationTemperature.getLocation()));
+            collector.collect(new LocationTemperature(ts, locationTemperature.getAvgTemperature(), locationTemperature.getSensorId()));
         }
         // iterable.iterator().forEachRemaining(locationTemperature -> collector.collect(new LocationTemperature(ts, locationTemperature.getAvgTemperature(), locationTemperature.getLocation())));
     }

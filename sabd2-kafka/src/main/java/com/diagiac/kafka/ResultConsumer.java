@@ -39,8 +39,9 @@ public class ResultConsumer {
 
         Properties props = new Properties();
         props.put("bootstrap.servers", url);
-        props.put("group.id", "test-group");
+        props.put("group.id", "consumer");
         props.put("enable.auto.commit", "true");
+        props.put("auto.offset.reset", "earliest");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.IntegerDeserializer");
         props.put("value.deserializer", StringDeserializer.class);
         org.apache.kafka.clients.consumer.Consumer<Long, String> consumer = new KafkaConsumer<>(props);

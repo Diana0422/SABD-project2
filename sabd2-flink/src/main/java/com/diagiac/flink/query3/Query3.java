@@ -3,16 +3,12 @@ package com.diagiac.flink.query3;
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
-import com.diagiac.flink.query2.bean.Query2Result;
-import com.diagiac.flink.query2.serialize.QueryResultSerializer2;
+import com.diagiac.flink.query3.bean.CellAvgMedianTemperature;
 import com.diagiac.flink.query3.bean.Query3Record;
 import com.diagiac.flink.query3.bean.Query3Result;
 import com.diagiac.flink.query3.serialize.QueryRecordDeserializer3;
 import com.diagiac.flink.query3.serialize.QueryResultSerializer3;
-import com.diagiac.flink.query3.util.AvgMedianAggregate3;
-import com.diagiac.flink.query3.util.CellMapper;
-import com.diagiac.flink.query3.util.FinalProcessWindowFunction;
-import com.diagiac.flink.query3.util.RecordFilter3;
+import com.diagiac.flink.query3.util.*;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
@@ -53,7 +49,6 @@ public class Query3 extends Query<Query3Record, Query3Result> {
      */
     public static void main(String[] args) {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
-//        var w = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
         var q3 = new Query3(url);
         SingleOutputStreamOperator<Query3Record> d = q3.sourceConfigurationAndFiltering();
         var resultStream = q3.queryConfiguration(d, WindowEnum.Hour, "query3-hour"); // TODO: testare
@@ -94,11 +89,11 @@ public class Query3 extends Query<Query3Record, Query3Result> {
                 .filter(a -> a.getCell() != null)// we filter out all records with null cell
                 .keyBy(query3Cell -> query3Cell.getCell().getId()) // grouping by id of cell
                 .window(windowAssigner.getWindowStrategy()) //setting the desired window strategy
-                .aggregate(new AvgMedianAggregate3()) // aggregating averages and medians. This is parallelizable
-                //FIXME: eliminare windowAll e sostituire con keyBy timestamp + window + process
-                .windowAll(windowAssigner.getWindowStrategy()) // this is not parallelizable, but is needed to put all Cell avg/medians in the same window
-                .process(new FinalProcessWindowFunction()) // only changes the timestamp to the start of the window!
-                .map(new MetricRichMapFunction<>()) // just for metrics
+                .aggregate(new AvgMedianAggregate3(), new AvgMedianProcessWindow()) // aggregating averages and medians. This is parallelizable
+                .keyBy(CellAvgMedianTemperature::getTimestamp)
+                .window(windowAssigner.getWindowStrategy())
+                .process(new FinalProcessWindowFunction())
+                .map(new MetricRichMapFunction<>())
                 .name(opName);
     }
 

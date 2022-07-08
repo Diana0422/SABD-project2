@@ -2,20 +2,29 @@ package com.diagiac.flink.query3.util;
 
 import java.util.Arrays;
 
+import static com.diagiac.flink.query3.util.P2MedianEstimator.InitializationStrategy.Adaptive;
+
 /**
  * Class that exstimates the median (0.5-quantile) using the P square algorithm.
- *
+ * <p>
  * Code is based on Andrey Akinshin 2021 C#
  * <a href="https://aakinshin.net/posts/p2-quantile-estimator-adjusting-order/">implementation</a>
  */
 public class P2MedianEstimator {
     private static final double prob = 0.5;
     private final InitializationStrategy strategy;
-    private final int[] n = new int[5];
+    /**
+     * Desired Positions
+     */
+    private int[] n = new int[5];
+    /**
+     * Marker position
+     */
     private double[] ns = new double[5];
-    private final double[] q = new double[5];
-
-    public int count;
+    /**
+     * Quantile Array. The central quantile is the median.
+     */
+    private double[] q = new double[5];
 
     public int getCount() {
         return count;
@@ -24,6 +33,8 @@ public class P2MedianEstimator {
     public void setCount(int count) {
         this.count = count;
     }
+
+    public int count;
 
     public enum InitializationStrategy {
         Classic,
@@ -47,7 +58,7 @@ public class P2MedianEstimator {
                 for (int i = 0; i < 5; i++)
                     n[i] = i;
 
-                if (strategy == InitializationStrategy.Adaptive) {
+                if (strategy == Adaptive) {
                     ns = Arrays.copyOf(q, 5);
                     n[1] = (int) Math.round(2 * prob);
                     n[2] = (int) Math.round(4 * prob);
@@ -57,11 +68,11 @@ public class P2MedianEstimator {
                     q[3] = ns[n[3]];
                 }
 
-                ns[0] = 0;
-                ns[1] = 2 * prob;
-                ns[2] = 4 * prob;
-                ns[3] = 2 + 2 * prob;
-                ns[4] = 4;
+                ns[0] = 0; // 0
+                ns[1] = 2 * prob; // 1
+                ns[2] = 4 * prob; // 2
+                ns[3] = 2 + 2 * prob; // 3
+                ns[4] = 4; // 4
             }
 
             return;
@@ -93,13 +104,13 @@ public class P2MedianEstimator {
 
 
         for (int i = 1; i <= 3; i++)
-            Adjust(i);
+            adjust(i);
 
 
         count++;
     }
 
-    private void Adjust(int i) {
+    private void adjust(int i) {
         double d = ns[i] - n[i];
         if (d >= 1 && n[i + 1] - n[i] > 1 || d <= -1 && n[i - 1] - n[i] < -1) {
             int dInt = (int) Math.signum(d);
@@ -133,6 +144,36 @@ public class P2MedianEstimator {
         }
 
         return q[2];
+    }
+
+    public P2MedianEstimator merge(P2MedianEstimator other) {
+        if (this.count == 1 && other.count == 1) {
+            var p2 = new P2MedianEstimator(Adaptive);
+            p2.add(this.q[0]);
+            p2.add(other.q[0]);
+            return p2;
+        }
+
+        if (this.count + other.count == 3) {
+            var p2 = new P2MedianEstimator(Adaptive);
+            p2.add(this.q[0]);
+            p2.add(other.q[0]);
+            return p2;
+        }
+
+
+        var p2Median = new P2MedianEstimator(Adaptive);
+
+        for (var x : this.q) {
+            p2Median.add(x);
+        }
+        for (var x : other.q) {
+            p2Median.add(x);
+        }
+
+//        p2Median.count = this.count + other.count;
+
+        return p2Median;
     }
 
     public void clear() {

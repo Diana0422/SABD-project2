@@ -26,7 +26,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1657214803141,
+  "iteration": 1657301733373,
   "links": [
     {
       "icon": "external link",
@@ -179,7 +179,7 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 23,
+        "w": 24,
         "x": 0,
         "y": 1
       },
@@ -277,7 +277,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 6,
         "w": 12,
         "x": 0,
         "y": 9
@@ -349,8 +349,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 11,
+        "h": 6,
+        "w": 12,
         "x": 12,
         "y": 9
       },
@@ -391,6 +391,138 @@
       "type": "bargauge"
     },
     {
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "PE334E3EDC3C079E4"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
+      "id": 80,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "command": "hmget",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "PE334E3EDC3C079E4"
+          },
+          "field": "location1 location2 location3 location4 location5",
+          "keyName": "${window}:query2",
+          "query": "",
+          "refId": "A",
+          "streaming": true,
+          "streamingDataType": "DataFrame",
+          "type": "command"
+        }
+      ],
+      "title": "Sensor IDs for Max Temperatures",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "PE334E3EDC3C079E4"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
+      "id": 81,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "command": "hmget",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "PE334E3EDC3C079E4"
+          },
+          "field": "location6 location7 location8 location9 location10",
+          "keyName": "${window}:query2",
+          "query": "",
+          "refId": "A",
+          "streaming": true,
+          "streamingDataType": "DataFrame",
+          "type": "command"
+        }
+      ],
+      "title": "Sensor IDs for Min Temperatures",
+      "type": "stat"
+    },
+    {
       "collapsed": false,
       "datasource": {
         "type": "redis-datasource",
@@ -400,7 +532,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 19
       },
       "id": 66,
       "panels": [],
@@ -451,7 +583,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 17
+        "y": 20
       },
       "id": 74,
       "options": {
@@ -565,7 +697,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 17
+        "y": 20
       },
       "id": 78,
       "options": {
@@ -654,7 +786,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 30
       },
       "id": 56,
       "panels": [
@@ -2483,6 +2615,6 @@
   "timezone": "",
   "title": "SABD - Project 2",
   "uid": "2J8ln097k",
-  "version": 5,
+  "version": 9,
   "weekStart": ""
 }

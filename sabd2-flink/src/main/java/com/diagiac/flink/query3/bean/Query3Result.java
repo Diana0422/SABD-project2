@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
+ * The result of query3, with this fields:
  * ts, cell_0, avg_temp0, med_temp0, ... cell_15, avg_temp15, med_temp15
  */
 @Data

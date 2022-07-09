@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
+/**
+ * Bean for the query3 to save intermediate results (avg temperature, median temperature, cell and timestamp)
+ */
 @Data
 public class CellAvgMedianTemperature {
     private Timestamp timestamp;

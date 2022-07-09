@@ -7,6 +7,9 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
+/**
+ * The result bean for query1. Its key contains the sensor id.
+ */
 @Data
 @AllArgsConstructor
 public class Query1Result implements FlinkResult {
@@ -32,6 +35,5 @@ public class Query1Result implements FlinkResult {
     @Override
     public String getRedisKey(WindowEnum windowType) {
         return windowType.name() + ":" + sensorId.toString();
-
     }
 }

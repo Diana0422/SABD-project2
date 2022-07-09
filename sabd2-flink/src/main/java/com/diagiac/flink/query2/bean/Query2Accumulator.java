@@ -3,12 +3,14 @@ package com.diagiac.flink.query2.bean;
 import lombok.Data;
 import java.sql.Timestamp;
 
+/**
+ * Accumulates average temperatures location, and timestamp for each
+ */
 @Data
 public class Query2Accumulator {
 
     private Timestamp timestamp;
     private Long location;
-
     private Long sensorId;
     private long count;
     private double temperatureSum;

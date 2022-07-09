@@ -7,6 +7,11 @@ import org.json.JSONObject;
 
 import java.sql.Timestamp;
 
+/**
+ * Query2Record is used to get needed fields for query2 from
+ * a JSON String coming from a kafka topic
+ * if a JSON field is empty, the corresponding class field will be null.
+ */
 @Data
 @NoArgsConstructor
 public class Query2Record implements FlinkRecord {
@@ -15,7 +20,6 @@ public class Query2Record implements FlinkRecord {
     private Long sensor_id;
     private Double temperature;
     private long count;
-
 
     public static Query2Record create(String jsonRecord) {
         JSONObject jsonObject = new JSONObject(jsonRecord);

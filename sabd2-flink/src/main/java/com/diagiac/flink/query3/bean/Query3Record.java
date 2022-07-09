@@ -6,6 +6,10 @@ import org.json.JSONObject;
 
 import java.sql.Timestamp;
 
+/**
+ * The query3Record for query3 is used to save data in a class
+ * from JSON strings coming from kafka source
+ */
 @Data
 public class Query3Record implements FlinkRecord {
     private Timestamp timestamp;

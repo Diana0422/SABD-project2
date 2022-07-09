@@ -3,11 +3,17 @@ package com.diagiac.flink;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
+/**
+ * Abstract class that represents a generic Flink query.
+ * It has method to separate every part of a query.
+ * The execute method is implemented and must be called to execute the query on the Flink Cluster.
+ * @param <T> with input param T (e.g. Query1Record)
+ * @param <R> and output param R (e.b. Query1Result)
+ */
 public abstract class Query<T extends FlinkRecord, R extends FlinkResult> {
 
     protected StreamExecutionEnvironment env;
     protected String url;
-    protected WindowEnum windowEnum;
 
     public Query(){
         this.env = StreamExecutionEnvironment.getExecutionEnvironment();

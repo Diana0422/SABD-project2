@@ -34,7 +34,7 @@ public class Query2Result implements FlinkResult {
     private Double temperature9;
     private Double temperature10;
 
-    public Query2Result(Timestamp timestamp, List<LocationTemperature> maxTemperatures, List<LocationTemperature> minTemperatures) {
+    public Query2Result(Timestamp timestamp, List<TemperatureMeasure> maxTemperatures, List<TemperatureMeasure> minTemperatures) {
         this.timestamp = timestamp;
         location1 = maxTemperatures.get(4).getSensorId();
         location2 = maxTemperatures.get(3).getSensorId();

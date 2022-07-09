@@ -1,18 +1,18 @@
 package com.diagiac.flink.query2.util;
-import com.diagiac.flink.query2.bean.LocationTemperature;
+import com.diagiac.flink.query2.bean.TemperatureMeasure;
 import com.diagiac.flink.query2.bean.Query2Result;
 import com.diagiac.flink.query2.bean.RankAccumulator;
 import org.apache.flink.api.common.functions.AggregateFunction;
 
-public class RankAggregate implements AggregateFunction<LocationTemperature, RankAccumulator, Query2Result> {
+public class RankAggregate implements AggregateFunction<TemperatureMeasure, RankAccumulator, Query2Result> {
     @Override
     public RankAccumulator createAccumulator() {
         return new RankAccumulator();
     }
 
     @Override
-    public RankAccumulator add(LocationTemperature locationTemperature, RankAccumulator rankAccumulator) {
-        rankAccumulator.addData(locationTemperature);
+    public RankAccumulator add(TemperatureMeasure temperatureMeasure, RankAccumulator rankAccumulator) {
+        rankAccumulator.addData(temperatureMeasure);
         return rankAccumulator;
     }
 

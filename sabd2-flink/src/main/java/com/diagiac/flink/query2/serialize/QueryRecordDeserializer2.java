@@ -1,6 +1,5 @@
 package com.diagiac.flink.query2.serialize;
 
-import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query2.bean.Query2Record;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -8,6 +7,9 @@ import org.apache.kafka.common.serialization.Deserializer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/**
+ * Deserializes records from a String to a Query2Record. Used in kafka source for query2.
+ */
 public class QueryRecordDeserializer2 implements Deserializer<Query2Record> {
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {

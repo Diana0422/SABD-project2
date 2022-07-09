@@ -1,6 +1,5 @@
 package com.diagiac.flink.query2.util;
 
-import com.diagiac.flink.query2.bean.LocationTemperature;
 import com.diagiac.flink.query2.bean.Query2Result;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;

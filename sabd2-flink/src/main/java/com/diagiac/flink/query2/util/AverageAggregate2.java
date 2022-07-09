@@ -1,11 +1,11 @@
 package com.diagiac.flink.query2.util;
 
-import com.diagiac.flink.query2.bean.LocationTemperature;
+import com.diagiac.flink.query2.bean.TemperatureMeasure;
 import com.diagiac.flink.query2.bean.Query2Record;
 import com.diagiac.flink.query2.bean.Query2Accumulator;
 import org.apache.flink.api.common.functions.AggregateFunction;
 
-public class AverageAggregate2 implements AggregateFunction<Query2Record, Query2Accumulator, LocationTemperature> {
+public class AverageAggregate2 implements AggregateFunction<Query2Record, Query2Accumulator, TemperatureMeasure> {
     public static final long serialVersionUID = 222141441412L;
 
     @Override
@@ -32,8 +32,8 @@ public class AverageAggregate2 implements AggregateFunction<Query2Record, Query2
     }
 
     @Override
-    public LocationTemperature getResult(Query2Accumulator accumulator) {
-        return new LocationTemperature(accumulator.getTimestamp(), accumulator.getTemperatureSum() / accumulator.getCount(), accumulator.getSensorId());
+    public TemperatureMeasure getResult(Query2Accumulator accumulator) {
+        return new TemperatureMeasure(accumulator.getTimestamp(), accumulator.getTemperatureSum() / accumulator.getCount(), accumulator.getSensorId());
     }
 
     @Override

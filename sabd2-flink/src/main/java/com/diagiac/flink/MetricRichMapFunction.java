@@ -3,6 +3,10 @@ package com.diagiac.flink;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.configuration.Configuration;
 
+/**
+ * This class computes throughput and latency for a query
+ * @param <T> a Query#Result
+ */
 public class MetricRichMapFunction<T> extends RichMapFunction<T, T> {
     // transient keyword means that the field will NOT be serialized
     private transient double throughput = 0;

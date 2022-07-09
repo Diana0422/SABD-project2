@@ -90,7 +90,7 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         /* Set up the redis sink */
         resultStream.addSink(new RedisHashSink1(windowType));
         /* Set up metrics sink */
-        resultStream.addSink(new MetricsSink("query1-" + windowType.name()));
+        resultStream.addSink(new MetricsSink("query1-" + windowType.name())); // TODO: forse inutile
         /* Set up stdOut Sink */
         System.out.println("Setting sinks: sink stdout");
         resultStream.print();

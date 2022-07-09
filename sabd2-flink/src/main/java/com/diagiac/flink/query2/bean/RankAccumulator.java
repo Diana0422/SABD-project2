@@ -4,8 +4,8 @@ import java.util.*;
 
 public class RankAccumulator {
     private final static int SIZE = 5;
-    private final TreeSet<LocationTemperature> rankingTop;
-    private final TreeSet<LocationTemperature> rankingBottom;
+    private final TreeSet<TemperatureMeasure> rankingTop;
+    private final TreeSet<TemperatureMeasure> rankingBottom;
 
 
     public RankAccumulator() {
@@ -28,14 +28,14 @@ public class RankAccumulator {
         });
 
         for (int i = 1; i <= SIZE; i++) {
-            this.rankingTop.add(new LocationTemperature(new Timestamp(0L), (double) -i, 0L));
+            this.rankingTop.add(new TemperatureMeasure(new Timestamp(0L), (double) -i, 0L));
         }
         for (int i = 1; i <= SIZE; i++) {
-            this.rankingBottom.add(new LocationTemperature(new Timestamp(0L), (double) i * 200, 0L));
+            this.rankingBottom.add(new TemperatureMeasure(new Timestamp(0L), (double) i * 200, 0L));
         }
     }
 
-    public void addData(LocationTemperature data) {
+    public void addData(TemperatureMeasure data) {
         var min = this.rankingTop.first(); // get max element in rank
 
         if (data.getAvgTemperature() > min.getAvgTemperature()) {
@@ -52,7 +52,7 @@ public class RankAccumulator {
     }
 
     public Query2Result getResult() {
-        NavigableSet<LocationTemperature> rankResultTop = this.rankingTop;
+        NavigableSet<TemperatureMeasure> rankResultTop = this.rankingTop;
         return new Query2Result(rankResultTop.first().getTimestamp(), new ArrayList<>(rankResultTop), new ArrayList<>(this.rankingBottom));
     }
 }

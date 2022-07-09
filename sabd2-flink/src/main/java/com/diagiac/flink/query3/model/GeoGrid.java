@@ -8,6 +8,10 @@ import java.util.Optional;
 
 import static com.diagiac.flink.query3.model.GeoCell.CellType.*;
 
+/**
+ * A 4x4 grid of 16 GeoCells.
+ * It is a synchronized Singleton.
+ */
 @Data
 public class GeoGrid {
     private static GeoGrid instance = null;
@@ -22,6 +26,8 @@ public class GeoGrid {
 
 
     /**
+     * Constructor of GeoCell called by getInstance()
+     * These are the ids of the cells
      * 12 13 14 15
      * 8  9  10 11
      * 4  5  6  7
@@ -51,6 +57,11 @@ public class GeoGrid {
         cells.add(new GeoCell(15, new GeoPoint(53.0, 23.0), new GeoPoint(58.0, 30.0), FourBorders)); // 15
     }
 
+    /**
+     *
+     * @param p
+     * @return
+     */
     public boolean insideGrid(GeoPoint p) {
         // latitude between 38 and 58
         // longitude between 2 and 30

@@ -1,6 +1,6 @@
 package com.diagiac.flink.query2.util;
 
-import com.diagiac.flink.query2.bean.LocationTemperature;
+import com.diagiac.flink.query2.bean.TemperatureMeasure;
 import com.diagiac.flink.query2.bean.Query2Result;
 import org.apache.flink.streaming.api.functions.windowing.ProcessAllWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
@@ -16,24 +16,24 @@ import java.util.List;
  * Query2Result: top5 min and max temperature + locations
  * TimeWindow: A window that represent a temporal interval
  */
-public class SortKeyedProcessFunction extends ProcessAllWindowFunction<LocationTemperature, Query2Result, TimeWindow> {
+public class SortKeyedProcessFunction extends ProcessAllWindowFunction<TemperatureMeasure, Query2Result, TimeWindow> {
 
     @Override
-    public void process(ProcessAllWindowFunction<LocationTemperature, Query2Result, TimeWindow>.Context context,
-                        Iterable<LocationTemperature> elements,
+    public void process(ProcessAllWindowFunction<TemperatureMeasure, Query2Result, TimeWindow>.Context context,
+                        Iterable<TemperatureMeasure> elements,
                         Collector<Query2Result> out) throws Exception {
-        var list = new ArrayList<LocationTemperature>();
-        for (LocationTemperature element : elements) {
+        var list = new ArrayList<TemperatureMeasure>();
+        for (TemperatureMeasure element : elements) {
             list.add(element);
         }
 
-        list.sort(Comparator.comparing(LocationTemperature::getAvgTemperature));
+        list.sort(Comparator.comparing(TemperatureMeasure::getAvgTemperature));
 
         var size = list.size();
 
         // MaX temperatures
-        List<LocationTemperature> maxTemperatures = list.subList(size - 5, size);
-        List<LocationTemperature> minTemperatures = list.subList(0, 5);
+        List<TemperatureMeasure> maxTemperatures = list.subList(size - 5, size);
+        List<TemperatureMeasure> minTemperatures = list.subList(0, 5);
 //        System.out.println("minTemperatures = " + minTemperatures.stream().map(LocationTemperature::getTimestamp).collect(Collectors.toList()));
         out.collect(new Query2Result(new Timestamp(context.window().getStart()), maxTemperatures, minTemperatures));
     }

@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
+/**
+ * Simple bean representing a sensor temperature measurement and the cell to which it belongs to.
+ */
 @Data
 public class Query3Cell {
     private GeoCell cell;

@@ -7,6 +7,9 @@ import org.apache.kafka.common.serialization.Serializer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/**
+ * The serializer from a string to a Query1Result. Used in the kafka sink to save to csv.
+ */
 public class QueryResultSerializer1 implements  Serializer<Query1Result> {
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {

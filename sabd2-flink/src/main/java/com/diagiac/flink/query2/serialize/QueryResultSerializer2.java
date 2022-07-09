@@ -7,6 +7,9 @@ import org.apache.kafka.common.serialization.Serializer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/**
+ * serializes query2record to string for kafka sink.
+ */
 public class QueryResultSerializer2 implements Serializer<Query2Result> {
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {

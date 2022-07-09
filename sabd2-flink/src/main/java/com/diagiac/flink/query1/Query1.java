@@ -18,8 +18,15 @@ import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
+import org.apache.flink.streaming.connectors.kafka.KafkaSerializationSchema;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 
+import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Properties;
 
 public class Query1 extends Query<Query1Record, Query1Result> {
     public Query1(String url) {
@@ -80,8 +87,8 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         return stream
                 .keyBy(Query1Record::getSensorId) // Set the sensorid as the record's key
                 .window(windowAssigner.getWindowStrategy()) // Set the window strategy
-                .aggregate(new AverageAggregator(), new TimestampWindowFunction1()) // Aggregate function to calculate average, ProcessWindowFunction to unify timestamp
-                .map(new MetricRichMapFunction<>())
+                .aggregate(new AverageAggregator(), new TimestampWindowFunction1())
+                .map(new MetricRichMapFunction<>())// Aggregate function to calculate average, ProcessWindowFunction to unify timestamp
                 .name(opName);
     }
 
@@ -93,7 +100,6 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         resultStream.addSink(new MetricsSink("query1-" + windowType.name())); // TODO: forse inutile
         /* Set up stdOut Sink */
         System.out.println("Setting sinks: sink stdout");
-        resultStream.print();
 
         /* Set up Kafka sink */
         var sink = KafkaSink.<Query1Result>builder()
@@ -103,9 +109,11 @@ public class Query1 extends Query<Query1Record, Query1Result> {
                         .setKafkaValueSerializer(QueryResultSerializer1.class)
                         .build()
                 )
-                .setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
                 .build();
 
         resultStream.sinkTo(sink);
+
+        /* Set up stdOut Sink */
+        resultStream.print();
     }
 }

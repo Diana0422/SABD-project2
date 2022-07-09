@@ -12,6 +12,7 @@ services:
     ports:
       - '9092:9092' # internal
       - '29092:29092' # localhost
+    container_name: kafka
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
@@ -24,6 +25,8 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
       - zookeeper
+    volumes:
+      - "./sabd2-kafka/target:/target"
 
   ## SENSOR PRODUCER APP -----------------------------------------
   publisher:
@@ -88,7 +91,7 @@ services:
       - jobmanager
 
   prometheus:
-    image: prom/prometheus:v2.33.3
+    image: prom/prometheus:latest
     container_name: prometheus
     ports:
       - "9090:9090"

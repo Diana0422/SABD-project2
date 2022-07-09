@@ -20,6 +20,8 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
 import java.time.Duration;
 
+import static com.diagiac.flink.Constants.KAFKA_SINK_ENABLED;
+
 public class Query2 extends Query<Query2Record, Query2Result> {
 
     public Query2(String url) {
@@ -40,10 +42,8 @@ public class Query2 extends Query<Query2Record, Query2Result> {
      * – every 1 week (event time)
      *
      * @param args
-     * @throws Exception
      */
-    public static void main(String[] args) throws Exception {
-//        var window = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
+    public static void main(String[] args) {
         var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
         var q2 = new Query2(url);
         var d = q2.sourceConfigurationAndFiltering();
@@ -74,7 +74,7 @@ public class Query2 extends Query<Query2Record, Query2Result> {
         */
 
         var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query2Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
-                .withTimestampAssigner((queryRecord2, l) -> queryRecord2.getTimestamp().getTime()), "Kafka Source")
+                        .withTimestampAssigner((queryRecord2, l) -> queryRecord2.getTimestamp().getTime()), "Kafka Source")
                 .setParallelism(1);
         return kafkaSource.filter(new RecordFilter2());
     }
@@ -97,17 +97,20 @@ public class Query2 extends Query<Query2Record, Query2Result> {
         resultStream.addSink(new RedisHashSink2(windowType));
         /* Set up stdOut Sink */
         resultStream.print();
-        /* Set up Kafka sink */
-        var sink = KafkaSink.<Query2Result>builder()
-                .setBootstrapServers(url)
-                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
-                        .setTopic("query2-"+windowType.name())
-                        .setKafkaValueSerializer(QueryResultSerializer2.class)
-                        .build()
-                )
-                .setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
-                .build();
 
-        resultStream.sinkTo(sink);
+        if (KAFKA_SINK_ENABLED) {
+            /* Set up Kafka sink */
+            var sink = KafkaSink.<Query2Result>builder()
+                    .setBootstrapServers(url)
+                    .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                            .setTopic("query2-" + windowType.name())
+                            .setKafkaValueSerializer(QueryResultSerializer2.class)
+                            .build()
+                    )
+                    .setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+                    .build();
+            resultStream.sinkTo(sink);
+        }
+
     }
 }

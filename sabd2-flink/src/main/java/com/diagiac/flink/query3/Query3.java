@@ -20,6 +20,8 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
 import java.time.Duration;
 
+import static com.diagiac.flink.Constants.KAFKA_SINK_ENABLED;
+
 public class Query3 extends Query<Query3Record, Query3Result> {
 
     public Query3(String url) {
@@ -104,17 +106,18 @@ public class Query3 extends Query<Query3Record, Query3Result> {
         resultStream.addSink(new RedisHashSink3(windowType));
         /* Set up stdOut Sink */
         resultStream.print();
-        /* Set up Kafka sink */
-        var sink = KafkaSink.<Query3Result>builder()
-                .setBootstrapServers(url)
-                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
-                        .setTopic("query3-"+windowType.name())
-                        .setKafkaValueSerializer(QueryResultSerializer3.class)
-                        .build()
-                )
-                .setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
-                .build();
-
-        resultStream.sinkTo(sink);
+        if (KAFKA_SINK_ENABLED) {
+            /* Set up Kafka sink */
+            var sink = KafkaSink.<Query3Result>builder()
+                    .setBootstrapServers(url)
+                    .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                            .setTopic("query3-" + windowType.name())
+                            .setKafkaValueSerializer(QueryResultSerializer3.class)
+                            .build()
+                    )
+                    .setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+                    .build();
+            resultStream.sinkTo(sink);
+        }
     }
 }

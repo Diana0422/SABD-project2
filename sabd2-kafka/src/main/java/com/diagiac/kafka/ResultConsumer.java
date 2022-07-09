@@ -1,5 +1,6 @@
 package com.diagiac.kafka;
 
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -44,41 +45,42 @@ public class ResultConsumer {
         props.put("auto.offset.reset", "earliest");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.IntegerDeserializer");
         props.put("value.deserializer", StringDeserializer.class);
-        org.apache.kafka.clients.consumer.Consumer<Long, String> consumer = new KafkaConsumer<>(props);
+        try(Consumer<Long, String> consumer = new KafkaConsumer<>(props)){
+            Map<String, FileWriter> topicWriterMap = new HashMap<>();
+            consumer.subscribe(Pattern.compile("^(query).*$"));
 
-        Map<String, FileWriter> topicWriterMap = new HashMap<>();
-        consumer.subscribe(Pattern.compile("^(query).*$"));
+            log.info("Starting receiving records");
+            while (true) {
+                final ConsumerRecords<Long, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
+                if (consumerRecords.count() == 0) {
+                    log.fine("No records");
+                } else {
+                    consumerRecords.forEach(longStringConsumerRecord -> {
+                        try {
+                            String topic = longStringConsumerRecord.topic();
+                            log.log(Level.FINER, "Topic: {0} - Record: {1}",
+                                    Arrays.asList(topic, longStringConsumerRecord.value()));
+                            FileWriter fileWriter = topicWriterMap.get(topic);
+                            if (fileWriter == null) {
+                                log.log(Level.INFO, "New topic: {0}", topic);
+                                fileWriter = new FileWriter(outputPath + "/" + topic + ".csv", false);
+                                String key = topic.substring(0,6)+"-header";
+                                String header = headers.get(key);
+                                fileWriter.write(header);
+                                fileWriter.flush();
+                                topicWriterMap.put(topic, fileWriter);
+                            }
+                            fileWriter.write(longStringConsumerRecord.value());
 
-        log.info("Starting receiving records");
-        while (true) {
-            final ConsumerRecords<Long, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
-            if (consumerRecords.count() == 0) {
-                log.fine("No records");
-            } else {
-                consumerRecords.forEach(longStringConsumerRecord -> {
-                    try {
-                        String topic = longStringConsumerRecord.topic();
-                        log.log(Level.FINER, "Topic: {0} - Record: {1}",
-                                Arrays.asList(topic, longStringConsumerRecord.value()));
-                        FileWriter fileWriter = topicWriterMap.get(topic);
-                        if (fileWriter == null) {
-                            log.log(Level.INFO, "New topic: {0}", topic);
-                            fileWriter = new FileWriter(outputPath + "/" + topic + ".csv", false);
-                            String key = topic.substring(0,6)+"-header";
-                            String header = headers.get(key);
-                            fileWriter.write(header);
                             fileWriter.flush();
-                            topicWriterMap.put(topic, fileWriter);
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                        fileWriter.write(longStringConsumerRecord.value());
-
-                        fileWriter.flush();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                    });
+                }
+                consumer.commitAsync();
             }
-            consumer.commitAsync();
         }
+
     }
 }

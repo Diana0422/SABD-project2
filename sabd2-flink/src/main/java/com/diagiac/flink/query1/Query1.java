@@ -11,22 +11,16 @@ import com.diagiac.flink.query1.utils.AverageAggregator;
 import com.diagiac.flink.query1.utils.RecordFilter1;
 import com.diagiac.flink.query1.utils.TimestampWindowFunction1;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
-import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
 import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
-import org.apache.flink.streaming.connectors.kafka.KafkaSerializationSchema;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
-import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Properties;
+
+import static com.diagiac.flink.Constants.KAFKA_SINK_ENABLED;
 
 public class Query1 extends Query<Query1Record, Query1Result> {
     public Query1(String url) {
@@ -101,18 +95,19 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         /* Set up stdOut Sink */
         System.out.println("Setting sinks: sink stdout");
 
-        /* Set up Kafka sink */
-        var sink = KafkaSink.<Query1Result>builder()
-                .setBootstrapServers(url)
-                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
-                        .setTopic("query1-"+windowType.name())
-                        .setKafkaValueSerializer(QueryResultSerializer1.class)
-                        .build()
-                )
-                .build();
+        if (KAFKA_SINK_ENABLED) {
+            /* Set up Kafka sink */
+            var sink = KafkaSink.<Query1Result>builder()
+                    .setBootstrapServers(url)
+                    .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                            .setTopic("query1-" + windowType.name())
+                            .setKafkaValueSerializer(QueryResultSerializer1.class)
+                            .build()
+                    )
+                    .build();
 
-        resultStream.sinkTo(sink);
-
+            resultStream.sinkTo(sink);
+        }
         /* Set up stdOut Sink */
         resultStream.print();
     }

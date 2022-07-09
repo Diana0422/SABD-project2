@@ -13,8 +13,16 @@ import java.util.stream.Stream;
 import static com.diagiac.flink.query3.util.P2MedianEstimator.InitializationStrategy.Adaptive;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Some parameterized test on the approximate median
+ */
 public class MedianTest {
     private static final double DELTA = 100.0;
+
+    /**
+     * Parameters for medianTest
+     * @return
+     */
     static Stream<List<Double>> doubleListProvider() {
         // You can use this to get two string arguments instead of one
         // Arguments.of("argomento1", "argomento2");
@@ -27,6 +35,10 @@ public class MedianTest {
         );
     }
 
+    /**
+     * Parameters for medianSplitTest and doubleMergeMedianTest
+     * @return
+     */
     static Stream<Arguments> doubleSplitListProvider() {
         // You can use this to get two string arguments instead of one
         // Arguments.of("argomento1", "argomento2");
@@ -39,6 +51,10 @@ public class MedianTest {
         );
     }
 
+    /**
+     * Checks the estimator implementation and compares it to the true median
+     * @param doubles
+     */
     @MethodSource("doubleListProvider")
     @ParameterizedTest
     public void medianTest(List<Double> doubles) {
@@ -54,9 +70,15 @@ public class MedianTest {
         System.out.println("True median: " + trueMedian + " approximate median: " + approxMedian);
     }
 
+    /**
+     * Test for the merge method that we added.
+     * @param doubles1 see doubleSplitListProvider
+     * @param doubles2 see doubleSplitListProvider
+     */
     @MethodSource("doubleSplitListProvider")
     @ParameterizedTest
     public void medianSplitTest(List<Double> doubles1, List<Double> doubles2) {
+        // Initialize the two estimator to merge and the single estimator to compare it with the merged
         P2MedianEstimator p1 = new P2MedianEstimator(Adaptive);
         P2MedianEstimator p2 = new P2MedianEstimator(Adaptive);
         P2MedianEstimator pTot = new P2MedianEstimator(Adaptive);
@@ -71,15 +93,17 @@ public class MedianTest {
             pTot.add(d);
         }
 
-
+        // only to check
         double approxMedian1 = p1.getMedian();
         double approxMedian2 = p2.getMedian();
         System.out.println("approxMedian1 = " + approxMedian1);
         System.out.println("approxMedian2 = " + approxMedian2);
 
+        // we check the merged and the inverse merged median
         double totMedian = pTot.getMedian();
         double mergeMedian = p1.merge(p2).getMedian();
         double inverseMedian = p2.merge(p1).getMedian();
+        // we also compare all with the true median of the entire list
         List<Double> completeArray = new ArrayList<>();
         completeArray.addAll(doubles1);
         completeArray.addAll(doubles2);
@@ -87,10 +111,16 @@ public class MedianTest {
         System.out.println("True approximate median: " + totMedian + " merged median: " + mergeMedian +
                            "\ninverse approximate median: " + inverseMedian + " true Median: " + trueMedian(completeArray));
 
-        assertEquals(totMedian, inverseMedian, DELTA, "the total median is different from the merge median");
-        assertEquals(totMedian, mergeMedian, DELTA, "the total median is different from the merge median");
+        assertEquals(totMedian, inverseMedian, DELTA, "the total median is MUCH different from the merge median");
+        assertEquals(totMedian, mergeMedian, DELTA, "the total median is MUCH different from the merge median");
     }
 
+    /**
+     * Test for the merge method that we added. In this case it compares
+     * two chained merge()s with the single estimator and the trueMedian!
+     * @param doubles1 see doubleSplitListProvider
+     * @param doubles2 see doubleSplitListProvider
+     */
     @MethodSource("doubleSplitListProvider")
     @ParameterizedTest
     public void doubleMergeMedianTest(List<Double> doubles1, List<Double> doubles2){
@@ -119,7 +149,7 @@ public class MedianTest {
         completeArray.addAll(doubles1);
         completeArray.addAll(doubles2);
         completeArray.addAll(fixedDoubles);
-
+        // this is the double merge
         double doubleMerge = p1.merge(p2).merge(p3).getMedian();
         double approxMedian = pTot.getMedian();
         System.out.println(" double merged median: " + doubleMerge + " true median: " + trueMedian(completeArray) + " approximate median: " + approxMedian);
@@ -127,17 +157,22 @@ public class MedianTest {
     }
 
 
-    private double trueMedian(List<Double> numArray) {
+    /**
+     * Utility method to compute the true median and compare with the approximate one
+     * @param doubleList a list of numbers
+     * @return the true median of the numbers
+     */
+    private double trueMedian(List<Double> doubleList) {
         // First step: sort the array
-        numArray.sort(Comparator.naturalOrder());
+        doubleList.sort(Comparator.naturalOrder());
         double median;
         // Second step - check if the length of the array is odd or even
-        if (numArray.size() % 2 == 0)
+        if (doubleList.size() % 2 == 0)
             //Third step A - if it is even get the two median values and compute the average of those
-            median = (numArray.get(numArray.size() / 2) + (double) numArray.get(numArray.size() / 2 - 1)) / 2;
+            median = (doubleList.get(doubleList.size() / 2) + (double) doubleList.get(doubleList.size() / 2 - 1)) / 2;
         else
             //Third step B - if it is odd, simply get the median value
-            median = numArray.get(numArray.size() / 2);
+            median = doubleList.get(doubleList.size() / 2);
         return median;
     }
 }

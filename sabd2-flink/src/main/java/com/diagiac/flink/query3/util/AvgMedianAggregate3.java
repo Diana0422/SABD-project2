@@ -7,6 +7,10 @@ import org.apache.flink.api.common.functions.AggregateFunction;
 
 import static com.diagiac.flink.query3.util.P2MedianEstimator.InitializationStrategy.Adaptive;
 
+/**
+ * An AggregateFunction that computes average and approximate median for a window
+ * The median calculation uses the P square algorithm to achieve a O(1) space used.
+ */
 public class AvgMedianAggregate3 implements AggregateFunction<Query3Cell, Query3Accumulator, CellAvgMedianTemperature> {
 
     @Override
@@ -52,6 +56,7 @@ public class AvgMedianAggregate3 implements AggregateFunction<Query3Cell, Query3
                 acc1.getCount() + acc2.getCount(),
                 acc1.getTemperatureSum() + acc2.getTemperatureSum(),
                 acc1.getCell(),
+                // we created a merge method in the P2MedianEstimator to merge two P2MedianEstimators and achieve reasonable median approximations
                 acc1.getMedianEstimator().merge(acc2.getMedianEstimator())
         );
     }

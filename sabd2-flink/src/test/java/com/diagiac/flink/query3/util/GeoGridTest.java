@@ -10,8 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GeoGridTest {
 
+    /**
+     * Tests the insideGrid method to check if a point is or is not inside the grid
+     */
     @Test
-    public void insideGrid() {
+    public void insideGridTest() {
         GeoGrid geoGrid = GeoGrid.getInstance();
 
         // IN
@@ -41,6 +44,11 @@ public class GeoGridTest {
 
     }
 
+    /**
+     * Checks the cell that contains a point is correct,
+     * including cases of point at the corners and borders between cells
+     * Also checks that for points external to the grid the cell is Optional.empty()
+     */
     @Test
     public void getContainingCellTest(){
         GeoGrid geoGrid = GeoGrid.getInstance();

@@ -8,6 +8,10 @@ import org.apache.flink.api.common.functions.MapFunction;
 
 import java.util.Optional;
 
+/**
+ * Mapper function to map each Query3Record to a Query3Cell, to simplify later calculations
+ * and most importantly, to subsequently call keyBy() on the cell id.
+ */
 public class CellMapper implements MapFunction<Query3Record, Query3Cell> {
     @Override
     public Query3Cell map(Query3Record record) throws Exception {

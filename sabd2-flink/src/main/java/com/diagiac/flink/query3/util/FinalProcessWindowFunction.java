@@ -2,12 +2,10 @@ package com.diagiac.flink.query3.util;
 
 import com.diagiac.flink.query3.bean.CellAvgMedianTemperature;
 import com.diagiac.flink.query3.bean.Query3Result;
-import org.apache.flink.streaming.api.functions.windowing.ProcessAllWindowFunction;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 
 //public class FinalProcessWindowFunction extends ProcessAllWindowFunction<CellAvgMedianTemperature, Query3Result, TimeWindow> {
@@ -32,6 +30,10 @@ import java.sql.Timestamp;
 //    }
 //}
 
+/**
+ * Puts all 16 CellAvgMedianTemperature (even those with no measurements) in the same Query3Result,
+ * to print everything in the requested order on the csv and show correctly the avg and medians on Grafana
+ */
 public class FinalProcessWindowFunction extends ProcessWindowFunction<CellAvgMedianTemperature, Query3Result, Timestamp, TimeWindow> {
     @Override
     public void process(Timestamp timestamp, ProcessWindowFunction<CellAvgMedianTemperature, Query3Result, Timestamp, TimeWindow>.Context context, Iterable<CellAvgMedianTemperature> elements, Collector<Query3Result> out) throws Exception {

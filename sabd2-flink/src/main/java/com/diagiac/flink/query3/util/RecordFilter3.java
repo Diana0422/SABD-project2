@@ -5,16 +5,13 @@ import org.apache.flink.api.common.functions.FilterFunction;
 
 import java.sql.Timestamp;
 
+/**
+ * Removes all values that have no temperature, no longitude, no latitude
+ * and also the outlier temperatures (too low or too high)
+ */
 public class RecordFilter3 implements FilterFunction<Query3Record> {
-    /**
-     * Removes all values that have no temperature, no longitude, no latitude
-     *
-     * @param value The value to be filtered.
-     * @return
-     * @throws Exception
-     */
     @Override
-    public boolean filter(Query3Record value) throws Exception {
+    public boolean filter(Query3Record value) {
         Double temperature = value.getTemperature();
         Double latitude = value.getLatitude();
         Double longitude = value.getLongitude();

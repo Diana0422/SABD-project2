@@ -7,7 +7,11 @@ import org.apache.kafka.common.serialization.Serializer;
 
 import java.util.Map;
 
-public class JsonSerializer<T> implements Serializer {
+/**
+ * Serialize a generic object to a string of bytes
+ * @param <T>
+ */
+public class JsonSerializer<T> implements Serializer<T> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private byte[] ser;

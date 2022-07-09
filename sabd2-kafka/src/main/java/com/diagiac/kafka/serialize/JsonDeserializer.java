@@ -7,6 +7,9 @@ import org.apache.kafka.common.serialization.Deserializer;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * Unused. Can be used to deserialize a JSON string into a SensorDataModel
+ */
 public class JsonDeserializer implements Deserializer<SensorDataModel> {
     private final ObjectMapper objectMapper = new ObjectMapper();
     SensorDataModel dataModel;

@@ -10,6 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GeoCellTest {
 
+    /**
+     * Tests the geoCell.containsGeoPoint method
+     */
     @Test
     public void containsGeoPointTest(){
         GeoGrid geoGrid = GeoGrid.getInstance();

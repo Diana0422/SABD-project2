@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 /**
  * It writes each record in input on a different file based on the topic from which it has read it
+ * The output file is a CSV!!!
  */
 public class ResultConsumer {
     private static final String query1Header = "ts,sensor_id,count,avg\n";
@@ -34,7 +35,6 @@ public class ResultConsumer {
 
     public static void main(String[] args) {
         Logger log = Logger.getLogger(ResultConsumer.class.getSimpleName());
-//        var url = (args.length > 1 ? args[0] : "127.0.0.1:29092");
         var url = "kafka://kafka:9092";
 
         Properties props = new Properties();

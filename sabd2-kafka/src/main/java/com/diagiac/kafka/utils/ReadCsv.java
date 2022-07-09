@@ -11,6 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Reads the csv and save it on a list of SensorDataModel
+ */
 public class ReadCsv {
 
     private final String csvFileName;
@@ -31,6 +34,7 @@ public class ReadCsv {
                     .withIgnoreEmptyLine(true).build();
 
             recordList = csvToBean.parse();
+            csvReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

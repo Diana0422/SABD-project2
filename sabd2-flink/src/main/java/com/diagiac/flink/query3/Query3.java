@@ -70,12 +70,13 @@ public class Query3 extends Query<Query3Record, Query3Result> {
                 .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(QueryRecordDeserializer3.class))
                 .build();
 
-        /* // Checkpointing - Start a checkpoint every 1000 ms
+        /* TODO: remove this // Checkpointing - Start a checkpoint every 1000 ms
         env.enableCheckpointing(1000);
         env.getCheckpointConfig().setTolerableCheckpointFailureNumber(2);
         env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
         env.getCheckpointConfig().setCheckpointStorage("file:///tmp/frauddetection/checkpoint");
         */
+
 
         var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query3Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
                         .withTimestampAssigner((query3Record, l) -> query3Record.getTimestamp().getTime()), "Kafka Source")

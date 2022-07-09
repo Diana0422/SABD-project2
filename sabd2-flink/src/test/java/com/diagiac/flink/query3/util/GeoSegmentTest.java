@@ -10,6 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GeoSegmentTest {
 
+    /**
+     * Checks if geoSegment.containsPoint() method works.
+     */
     @Test
     public void containsPoint(){
         GeoGrid g = GeoGrid.getInstance();

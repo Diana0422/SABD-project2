@@ -36,8 +36,8 @@ public class SensorProducer {
         Properties props = new Properties();
         props.put("broker.list", url);
         props.put("bootstrap.servers", url);
-        props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer"); // TODO forse cambio
-        props.put("value.serializer", JsonSerializer.class); // TODO forse cambio
+        props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
+        props.put("value.serializer", JsonSerializer.class);
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
 
         //create producer

@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 public class Query2ProcessWindowFunction extends ProcessWindowFunction<TemperatureMeasure, TemperatureMeasure, Long, TimeWindow> {
     /**
-     * It simply updates the window timestamp at the start of the window in each locationTemperature object in the window
+     * It simply updates the window timestamp at the start of the window in each TemperatureMeasure object in the window
      * @param aLong The key for which this window is evaluated.
      * @param context The context in which the window is being evaluated.
      * @param iterable The elements in the window being evaluated.
@@ -21,6 +21,5 @@ public class Query2ProcessWindowFunction extends ProcessWindowFunction<Temperatu
         for (TemperatureMeasure temperatureMeasure : iterable) {
             collector.collect(new TemperatureMeasure(ts, temperatureMeasure.getAvgTemperature(), temperatureMeasure.getSensorId()));
         }
-        // iterable.iterator().forEachRemaining(locationTemperature -> collector.collect(new LocationTemperature(ts, locationTemperature.getAvgTemperature(), locationTemperature.getLocation())));
     }
 }

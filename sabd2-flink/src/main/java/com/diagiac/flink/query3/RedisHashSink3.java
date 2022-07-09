@@ -4,9 +4,16 @@ import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query3.bean.Query3Result;
 import com.diagiac.flink.RedisHashSink;
 
+/**
+ * This sink is used to save query3Results to a redis Hash set.
+ * Each hashset has 33 fields:
+ * - a timestamp,
+ * - 16 average temperatures (one for each numbered cell)
+ * - 16 median temperatures (one for each numbered cell)
+ */
 public class RedisHashSink3 extends RedisHashSink<Query3Result> {
 
-    private WindowEnum windowType;
+    private final WindowEnum windowType;
 
     public RedisHashSink3(WindowEnum windowType) {
         this.windowType = windowType;

@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.Objects;
 
+/**
+ * Simple entity/model class that represents a geographic point with latitude and longitude
+ */
 @Data
 @AllArgsConstructor
 public class GeoPoint {

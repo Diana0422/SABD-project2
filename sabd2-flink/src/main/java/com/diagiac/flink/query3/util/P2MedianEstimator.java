@@ -6,17 +6,19 @@ import static com.diagiac.flink.query3.util.P2MedianEstimator.InitializationStra
 
 /**
  * Class that exstimates the median (0.5-quantile) using the P square algorithm.
+ * The only things we added is the merge() method, and we removed the possibility to get
+ * a quantile other than the median
  * <p>
  * Code is based on Andrey Akinshin 2021 C#
  * <a href="https://aakinshin.net/posts/p2-quantile-estimator-adjusting-order/">implementation</a>
  */
 public class P2MedianEstimator {
-    private static final double prob = 0.5;
+    private static final double prob = 0.5; // we fixed the probability to 0.5 to always get the median
     private final InitializationStrategy strategy;
     /**
      * Desired Positions
      */
-    private int[] n = new int[5];
+    private final int[] n = new int[5];
     /**
      * Marker position
      */
@@ -24,16 +26,10 @@ public class P2MedianEstimator {
     /**
      * Quantile Array. The central quantile is the median.
      */
-    private double[] q = new double[5];
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
+    private final double[] q = new double[5];
+    /**
+     * Number of element computed. DO NOT USE IT TO COMPUTE Average. The merge method resets this value to max 10.
+     */
     public int count;
 
     public enum InitializationStrategy {
@@ -49,6 +45,11 @@ public class P2MedianEstimator {
         this.strategy = strategy;
     }
 
+    /**
+     * We used this method to add a new value to the estimator
+     * and also to merge two estimators into one
+     * @param value the value to add (e.g. the measured temperature)
+     */
     public void add(double value) {
         if (count < 5) {
             q[count++] = value;
@@ -146,32 +147,29 @@ public class P2MedianEstimator {
         return q[2];
     }
 
+    /**
+     * Merges two P2MedianEstimator into one, keeping a good approximation of median
+     * @param other the other estimator to merge
+     * @return the merged estimator
+     */
     public P2MedianEstimator merge(P2MedianEstimator other) {
+        // with only two elements in each estimator, we get the true median.
         if (this.count == 1 && other.count == 1) {
             var p2 = new P2MedianEstimator(Adaptive);
-            p2.add(this.q[0]);
+            p2.add(this.q[0]); // we add the 2 elements in the q[] array to the new estimator
             p2.add(other.q[0]);
             return p2;
         }
-
-        if (this.count + other.count == 3) {
-            var p2 = new P2MedianEstimator(Adaptive);
-            p2.add(this.q[0]);
-            p2.add(other.q[0]);
-            return p2;
-        }
-
-
+        // In general, we add the all elements in the q[] array to the new estimator
+        // the count of the new P2MedianEstimator will be in {0,1,...,10}
         var p2Median = new P2MedianEstimator(Adaptive);
 
         for (var x : this.q) {
-            p2Median.add(x);
+            p2Median.add(x); // max 5 elements added
         }
         for (var x : other.q) {
-            p2Median.add(x);
+            p2Median.add(x); // max 5 elements added
         }
-
-//        p2Median.count = this.count + other.count;
 
         return p2Median;
     }

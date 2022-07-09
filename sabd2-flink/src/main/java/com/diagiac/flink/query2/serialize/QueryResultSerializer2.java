@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * serializes query2record to string for kafka sink.
+ * Serializes query2record to string for kafka sink.
  */
 public class QueryResultSerializer2 implements Serializer<Query2Result> {
     @Override

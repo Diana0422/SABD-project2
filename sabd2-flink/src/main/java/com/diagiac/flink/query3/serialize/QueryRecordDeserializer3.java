@@ -7,8 +7,10 @@ import org.apache.kafka.common.serialization.Deserializer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/**
+ * Deserializes records from a String to a Query3Record. Used in kafka source for query3.
+ */
 public class QueryRecordDeserializer3 implements Deserializer<Query3Record> {
-
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
         Deserializer.super.configure(configs, isKey);

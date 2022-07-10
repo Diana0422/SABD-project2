@@ -24,8 +24,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 3,
-  "iteration": 1657382069604,
+  "id": 1,
+  "iteration": 1657463725179,
   "links": [
     {
       "icon": "info",
@@ -50,7 +50,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "aU09gB67k"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -124,10 +124,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "aU09gB67k"
+            "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "builder",
-          "expr": "flink_taskmanager_job_task_operator_throughput{operator_name=~\"$Show\"}",
+          "editorMode": "code",
+          "expr": "flink_taskmanager_job_task_operator_throughput",
           "legendFormat": "{{operator_name}}",
           "range": true,
           "refId": "A"
@@ -139,7 +139,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "aU09gB67k"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -213,10 +213,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "aU09gB67k"
+            "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "builder",
-          "expr": "flink_taskmanager_job_task_operator_latency{operator_name=~\"$Show\"}",
+          "editorMode": "code",
+          "expr": "flink_taskmanager_job_task_operator_latency",
           "legendFormat": "{{operator_name}}",
           "range": true,
           "refId": "A"
@@ -283,7 +283,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -315,6 +315,6 @@
   "timezone": "browser",
   "title": "Prometheus 2.0 Stats",
   "uid": "UDdpyzz7z",
-  "version": 16,
+  "version": 1,
   "weekStart": ""
 }

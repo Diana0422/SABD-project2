@@ -7,22 +7,22 @@ if "%1" == "3" GOTO q3
 if "%1" == "4" GOTO q4
 
 @rem otherwise close and show error message
-echo "Usage: ./scripts/submit-job.sh <query_num in 1-4> <parallelism_level 1-4>"
+echo "Usage: ./scripts/submit_job.sh <query_num in 1-4> <parallelism_level 1-4>"
 GOTO done
 
 :q1
 echo Submitting query 1 to Flink
-docker exec -t -i jobmanager flink run -p "%2" -c com.diagiac.flink.query1.Query1 ./sensor-app/sabd2-flink-1.0-jar-with-dependencies.jar kafka://kafka:9092
+docker exec -t -i jobmanager flink run -p "%2" -c com.diagiac.flink.query1.Query1 ./sensor-app/sabd2-flink-1.0-jar-with-dependencies.jar "kafka://kafka:9092"
 goto done
 
 :q2
 echo Submitting query 2 to Flink
-docker exec -t -i jobmanager flink run -p "%2" -c com.diagiac.flink.query2.Query2 ./sensor-app/sabd2-flink-1.0-jar-with-dependencies.jar kafka://kafka:9092
+docker exec -t -i jobmanager flink run -p "%2" -c com.diagiac.flink.query2.Query2 ./sensor-app/sabd2-flink-1.0-jar-with-dependencies.jar "kafka://kafka:9092"
 goto done
 
 :q3
 echo Submitting query 3 to Flink
-docker exec -t -i jobmanager flink run -p "%2" -c com.diagiac.flink.query3.Query3 ./sensor-app/sabd2-flink-1.0-jar-with-dependencies.jar kafka://kafka:9092
+docker exec -t -i jobmanager flink run -p "%2" -c com.diagiac.flink.query3.Query3 ./sensor-app/sabd2-flink-1.0-jar-with-dependencies.jar "kafka://kafka:9092"
 goto done
 
 :q4

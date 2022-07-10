@@ -1,9 +1,13 @@
 package com.diagiac.flink.query1;
 
 
+import java.io.Serializable;
+
 import static org.apache.commons.math3.util.Precision.round;
 
-public class SyncronizedMetricsCounter {
+
+@Deprecated
+public class SyncronizedMetricsCounter implements Serializable {
     // tuples counter
     private static long counter = 0L;
     // first output time
@@ -15,7 +19,7 @@ public class SyncronizedMetricsCounter {
      *
      * @param context type of query and window
      */
-    public static synchronized void incrementCounter(String context) {
+    public synchronized void incrementCounter(String context) {
         if (counter == 0L) {
             // set starting time
             startTime = System.currentTimeMillis();
@@ -27,8 +31,9 @@ public class SyncronizedMetricsCounter {
 
         double totalLatency = System.currentTimeMillis() - startTime;
 
-        // mean throughput
-        double throughput = counter / totalLatency;
+        // mean throughput TUPLE TOTALI FINO AD ORA / TEMPO TOTALE FINO AD ORA
+        // TEMPO TRA DUE TUPLE IN USCITA CONSECUTIVE
+        double throughput = counter / totalLatency; // TUPLE AL MS
         // mean latency
         double latency = totalLatency / counter;
 

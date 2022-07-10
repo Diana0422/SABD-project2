@@ -50,7 +50,7 @@ public class Query3 extends Query<Query3Record, Query3Result> {
      * @param args
      */
     public static void main(String[] args) {
-        var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
+        var url = args.length > 0 ? args[0] : "127.0.0.1:29092";
         var q3 = new Query3(url);
         SingleOutputStreamOperator<Query3Record> d = q3.sourceConfigurationAndFiltering();
         var resultStream = q3.queryConfiguration(d, WindowEnum.Hour, "query3-hour"); // TODO: testare

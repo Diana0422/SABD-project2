@@ -44,7 +44,7 @@ public class Query2 extends Query<Query2Record, Query2Result> {
      * @param args
      */
     public static void main(String[] args) {
-        var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
+        var url = args.length > 0 ? args[0] : "127.0.0.1:29092";
         var q2 = new Query2(url);
         var d = q2.sourceConfigurationAndFiltering();
         var resultStream = q2.queryConfiguration(d, WindowEnum.Hour, "query2-hour"); // TODO: testare

@@ -1,6 +1,6 @@
 version: '2.2'
 services:
-  ## SERVICE1: APACHE KAFKA + ZOOKEEPER
+  ## SERVICE 1&2: APACHE KAFKA + ZOOKEEPER
   zookeeper:
     image: 'bitnami/zookeeper:latest'
     ports:
@@ -28,9 +28,8 @@ services:
     volumes:
       - "./sabd2-kafka/target:/target"
 
-  ## SENSOR PRODUCER APP -----------------------------------------
+  ## SERVICE 3: SENSOR PRODUCER APP -----------------------------------------
   publisher:
-#    image: diana0422/publisher
     container_name: publisher
     depends_on:
       - kafka
@@ -42,9 +41,8 @@ services:
       context: ./sabd2-kafka
       dockerfile: publisher.Dockerfile
 
-  ## RESULT CONSUMER APP ----------------------------------------
+  ## SERVICE 4: RESULT CONSUMER APP ----------------------------------------
   consumer:
-    # image: diana0422/consumer
     container_name: consumer
     build:
       context: sabd2-kafka/consumer
@@ -58,7 +56,7 @@ services:
       - publisher
       - jobmanager
 
-  # SERVICE2: APACHE FLINK -------------------------------------
+  ## SERVICE5: APACHE FLINK -------------------------------------
   jobmanager:
     image: flink:latest
     container_name: jobmanager
@@ -75,7 +73,8 @@ services:
         metrics.reporter.prom.port: 9999
     volumes:
       - ./sabd2-flink/target:/opt/flink/sensor-app/
-
+      - ./Results/benchmarks:/opt/flink/sensor-app/benchmarks
+  ## SERVICE 6: Flink worker
   taskmanager:
     image: flink:latest
     command: taskmanager
@@ -90,6 +89,7 @@ services:
     depends_on:
       - jobmanager
 
+  ## Service 7 Prometheus
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -99,14 +99,14 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       # - ./prometheus/flink.rules.yml:/etc/prometheus/flink.rules.yml
 
-    # SERVICE4: REDIS ---------------------------------------------
+  ## SERVICE8: REDIS ---------------------------------------------
   redis:
     image: redis:latest
     container_name: redis-cache
     ports:
       - '6379:6379'
 
-#   SERVICE5: GRAFANA -------------------------------------------
+  ##  SERVICE9: GRAFANA -------------------------------------------
   grafana:
     build:
       context: ./grafana

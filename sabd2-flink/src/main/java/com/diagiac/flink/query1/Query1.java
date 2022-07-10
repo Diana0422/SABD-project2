@@ -45,12 +45,11 @@ public class Query1 extends Query<Query1Record, Query1Result> {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
-//        var windowAssigner = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
+        var url = args.length > 0 ? args[0] : "127.0.0.1:29092";
         var q1 = new Query1(url);
         SingleOutputStreamOperator<Query1Record> d = q1.sourceConfigurationAndFiltering();
-        var resultStream = q1.queryConfiguration(d, WindowEnum.Hour, "query1-hour"); // TODO: testare
-        var resultStream2 = q1.queryConfiguration(d, WindowEnum.Week, "query1-week"); // TODO: testare
+        var resultStream = q1.queryConfiguration(d, WindowEnum.Hour, "query1-hour");
+        var resultStream2 = q1.queryConfiguration(d, WindowEnum.Week, "query1-week");
         var resultStream3 = q1.queryConfiguration(d, WindowEnum.FromStart, "query1-start");
         q1.sinkConfiguration(resultStream, WindowEnum.Hour);
         q1.sinkConfiguration(resultStream2, WindowEnum.Week);
@@ -91,9 +90,8 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         /* Set up the redis sink */
         resultStream.addSink(new RedisHashSink1(windowType));
         /* Set up metrics sink */
-        resultStream.addSink(new MetricsSink("query1-" + windowType.name())); // TODO: forse inutile
+        // resultStream.addSink(new MetricsSink("query1-" + windowType.name())); // TODO: forse inutile
         /* Set up stdOut Sink */
-        System.out.println("Setting sinks: sink stdout");
 
         if (KAFKA_SINK_ENABLED) {
             /* Set up Kafka sink */

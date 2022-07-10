@@ -31,4 +31,8 @@ public class SensorDataModel {
     @CsvBindByName
     private String temperature;
 
+    public static SensorDataModel create(String value) {
+        // TODO
+        return null;
+    }
 }

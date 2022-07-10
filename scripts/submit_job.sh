@@ -1,3 +1,4 @@
+
 if [[ $1 -eq 1 ]]
 then
   echo "Submitting query 1 to Flink"

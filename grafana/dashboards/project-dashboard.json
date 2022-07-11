@@ -25,8 +25,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1656943224319,
+  "id": 2,
+  "iteration": 1657303454815,
   "links": [
     {
       "icon": "external link",
@@ -88,8 +88,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -179,7 +178,7 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 22,
+        "w": 24,
         "x": 0,
         "y": 1
       },
@@ -251,25 +250,20 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-GrYlRd"
           },
           "mappings": [],
           "max": 50,
           "min": -50,
           "thresholds": {
-            "mode": "percentage",
+            "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 70
+                "color": "green"
               },
               {
                 "color": "red",
-                "value": 85
+                "value": 80
               }
             ]
           }
@@ -277,12 +271,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
+        "h": 6,
+        "w": 12,
         "x": 0,
         "y": 9
       },
-      "id": 76,
+      "id": 82,
       "options": {
         "displayMode": "gradient",
         "minVizHeight": 10,
@@ -298,7 +292,6 @@
         "showUnfilled": true
       },
       "pluginVersion": "9.0.2",
-      "repeat": "redis",
       "repeatDirection": "h",
       "targets": [
         {
@@ -336,8 +329,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -349,10 +341,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 11,
-        "x": 11,
-        "y": 16
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 9
       },
       "id": 77,
       "options": {
@@ -391,6 +383,136 @@
       "type": "bargauge"
     },
     {
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "PE334E3EDC3C079E4"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
+      "id": 80,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "command": "hmget",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "PE334E3EDC3C079E4"
+          },
+          "field": "location1 location2 location3 location4 location5",
+          "keyName": "${window}:query2",
+          "query": "",
+          "refId": "A",
+          "streaming": true,
+          "streamingDataType": "DataFrame",
+          "type": "command"
+        }
+      ],
+      "title": "Sensor IDs for Max Temperatures",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "PE334E3EDC3C079E4"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
+      "id": 81,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "command": "hmget",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "PE334E3EDC3C079E4"
+          },
+          "field": "location6 location7 location8 location9 location10",
+          "keyName": "${window}:query2",
+          "query": "",
+          "refId": "A",
+          "streaming": true,
+          "streamingDataType": "DataFrame",
+          "type": "command"
+        }
+      ],
+      "title": "Sensor IDs for Min Temperatures",
+      "type": "stat"
+    },
+    {
       "collapsed": false,
       "datasource": {
         "type": "redis-datasource",
@@ -400,7 +522,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 19
       },
       "id": 66,
       "panels": [],
@@ -434,8 +556,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -451,7 +572,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 20
       },
       "id": 74,
       "options": {
@@ -548,8 +669,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -565,7 +685,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 20
       },
       "id": 78,
       "options": {
@@ -654,7 +774,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 30
       },
       "id": 56,
       "panels": [
@@ -2424,9 +2544,9 @@
       },
       {
         "current": {
-          "selected": true,
-          "text": "Hour",
-          "value": "Hour"
+          "selected": false,
+          "text": "Day",
+          "value": "Day"
         },
         "description": "defines the type of tumbling window to consider",
         "hide": 0,
@@ -2436,12 +2556,12 @@
         "name": "window",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "Hour",
             "value": "Hour"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "Day",
             "value": "Day"
           },
@@ -2483,6 +2603,6 @@
   "timezone": "",
   "title": "SABD - Project 2",
   "uid": "2J8ln097k",
-  "version": 7,
+  "version": 13,
   "weekStart": ""
 }

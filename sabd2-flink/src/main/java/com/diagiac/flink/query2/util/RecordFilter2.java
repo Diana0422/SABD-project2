@@ -10,9 +10,11 @@ public class RecordFilter2 implements FilterFunction<Query2Record> {
     public boolean filter(Query2Record value) throws Exception {
         Double temperature = value.getTemperature();
         Long location = value.getLocation();
+        Long sensorId = value.getSensor_id();
         boolean temperatureIsPresent = temperature != null;
         boolean locationIsPresent = location != null;
-        if (temperatureIsPresent && locationIsPresent) {
+        boolean sensorIdIsPresent = sensorId != null;
+        if (temperatureIsPresent && locationIsPresent && sensorIdIsPresent) {
             return temperature > -93.2 && temperature < 56.7;
         } else {
             return false;

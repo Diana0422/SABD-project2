@@ -1,14 +1,16 @@
 package com.diagiac.flink.query1.serialize;
 
-import com.diagiac.flink.FlinkRecord;
 import com.diagiac.flink.query1.bean.Query1Record;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Deserializer;
-import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/**
+ * The deserializer from a string to a Query1Record. Used in the kafka source
+ * to get everything useful from the arriving tuple
+ */
 public class QueryRecordDeserializer1 implements Deserializer<Query1Record> {
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {

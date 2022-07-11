@@ -3,20 +3,24 @@ package com.diagiac.flink.query3;
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
+import com.diagiac.flink.query3.bean.CellAvgMedianTemperature;
 import com.diagiac.flink.query3.bean.Query3Record;
 import com.diagiac.flink.query3.bean.Query3Result;
 import com.diagiac.flink.query3.serialize.QueryRecordDeserializer3;
-import com.diagiac.flink.query3.util.AvgMedianAggregate3;
-import com.diagiac.flink.query3.util.CellMapper;
-import com.diagiac.flink.query3.util.FinalProcessWindowFunction;
-import com.diagiac.flink.query3.util.RecordFilter3;
+import com.diagiac.flink.query3.serialize.QueryResultSerializer3;
+import com.diagiac.flink.query3.util.*;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.connector.base.DeliveryGuarantee;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
 import java.time.Duration;
+
+import static com.diagiac.flink.Constants.KAFKA_SINK_ENABLED;
 
 public class Query3 extends Query<Query3Record, Query3Result> {
 
@@ -46,8 +50,7 @@ public class Query3 extends Query<Query3Record, Query3Result> {
      * @param args
      */
     public static void main(String[] args) {
-        var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
-//        var w = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
+        var url = args.length > 0 ? args[0] : "127.0.0.1:29092";
         var q3 = new Query3(url);
         SingleOutputStreamOperator<Query3Record> d = q3.sourceConfigurationAndFiltering();
         var resultStream = q3.queryConfiguration(d, WindowEnum.Hour, "query3-hour"); // TODO: testare
@@ -69,12 +72,13 @@ public class Query3 extends Query<Query3Record, Query3Result> {
                 .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(QueryRecordDeserializer3.class))
                 .build();
 
-        /* // Checkpointing - Start a checkpoint every 1000 ms
+        /* TODO: remove this // Checkpointing - Start a checkpoint every 1000 ms
         env.enableCheckpointing(1000);
         env.getCheckpointConfig().setTolerableCheckpointFailureNumber(2);
         env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
         env.getCheckpointConfig().setCheckpointStorage("file:///tmp/frauddetection/checkpoint");
         */
+
 
         var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query3Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
                         .withTimestampAssigner((query3Record, l) -> query3Record.getTimestamp().getTime()), "Kafka Source")
@@ -88,11 +92,11 @@ public class Query3 extends Query<Query3Record, Query3Result> {
                 .filter(a -> a.getCell() != null)// we filter out all records with null cell
                 .keyBy(query3Cell -> query3Cell.getCell().getId()) // grouping by id of cell
                 .window(windowAssigner.getWindowStrategy()) //setting the desired window strategy
-                .aggregate(new AvgMedianAggregate3()) // aggregating averages and medians. This is parallelizable
-                //FIXME: eliminare windowAll e sostituire con keyBy timestamp + window + process
-                .windowAll(windowAssigner.getWindowStrategy()) // this is not parallelizable, but is needed to put all Cell avg/medians in the same window
-                .process(new FinalProcessWindowFunction()) // only changes the timestamp to the start of the window!
-                .map(new MetricRichMapFunction<>()) // just for metrics
+                .aggregate(new AvgMedianAggregate3(), new Query3ProcessWindowFunction()) // aggregating averages and medians. This is parallelizable
+                .keyBy(CellAvgMedianTemperature::getTimestamp)
+                .window(windowAssigner.getWindowStrategy())
+                .process(new FinalProcessWindowFunction())
+                .map(new MetricRichMapFunction<>())
                 .name(opName);
     }
 
@@ -102,5 +106,18 @@ public class Query3 extends Query<Query3Record, Query3Result> {
         resultStream.addSink(new RedisHashSink3(windowType));
         /* Set up stdOut Sink */
         resultStream.print();
+        if (KAFKA_SINK_ENABLED) {
+            /* Set up Kafka sink */
+            var sink = KafkaSink.<Query3Result>builder()
+                    .setBootstrapServers(url)
+                    .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                            .setTopic("query3-" + windowType.name())
+                            .setKafkaValueSerializer(QueryResultSerializer3.class)
+                            .build()
+                    )
+                    .setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+                    .build();
+            resultStream.sinkTo(sink);
+        }
     }
 }

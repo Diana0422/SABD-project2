@@ -1,43 +1,35 @@
 package com.diagiac.flink.query3.bean;
 
 import com.diagiac.flink.query3.model.GeoCell;
+import com.diagiac.flink.query3.util.P2MedianEstimator;
 import lombok.Data;
-import org.apache.flink.hadoop.shaded.com.google.common.collect.Iterables;
 
 import java.sql.Timestamp;
-import java.util.TreeSet;
 
+/**
+ * Accumulator for query3 that computes:
+ * - average (sum / count)
+ * - approximate median with P2 algorithm
+ * and also has the corresponding timestamp and cell.
+ */
 @Data
 public class Query3Accumulator {
     private Timestamp timestamp;
     private long count;
     private double temperatureSum;
     private GeoCell cell;
+    private P2MedianEstimator medianEstimator;
 
-    private TreeSet<Query3Cell> orderedCellTemperatures;
-
-    public Query3Accumulator(Timestamp timestamp, long count, double temperatureSum, GeoCell cell) {
+    public Query3Accumulator(Timestamp timestamp, long count, double temperatureSum, GeoCell cell, P2MedianEstimator merged) {
         this.timestamp = timestamp;
         this.count = count;
         this.temperatureSum = temperatureSum;
         this.cell = cell;
-        this.orderedCellTemperatures = new TreeSet<>((o1, o2) -> {
-            int result = o1.getTemperature().compareTo(o2.getTemperature());
-            if (result == 0) { // TODO: può capitare ???
-                return o1.getTimestamp().compareTo(o2.getTimestamp());
-            } else {
-                return result;
-            }
-        });
+        this.medianEstimator = merged;
     }
 
-    public Query3Accumulator(Timestamp t, long count, double temperatureSum, GeoCell cell, TreeSet<Query3Cell> treeSet) {
-        this(t, count, temperatureSum, cell);
-        this.orderedCellTemperatures = treeSet;
-    }
-
-    public void addData(Query3Cell query3Cell) {
-        orderedCellTemperatures.add(query3Cell);
+    public void addData(Double temperature) {
+        this.medianEstimator.add(temperature);
     }
 
     /**
@@ -46,13 +38,7 @@ public class Query3Accumulator {
      * @return the temperature of the central element or the mean of the two central elements.
      */
     public double calculateMedian() {
-        if (orderedCellTemperatures.size() % 2 == 0) {
-            var central1 = Iterables.get(orderedCellTemperatures, orderedCellTemperatures.size() / 2);
-            var central2 = Iterables.get(orderedCellTemperatures, orderedCellTemperatures.size() / 2 - 1);
-            return (central1.getTemperature() + central2.getTemperature()) / 2.0;
-        } else {
-            return Iterables.get(orderedCellTemperatures, orderedCellTemperatures.size() / 2).getTemperature();
-        }
+        return this.medianEstimator.getMedian();
     }
 
     public double calculateAverage() {

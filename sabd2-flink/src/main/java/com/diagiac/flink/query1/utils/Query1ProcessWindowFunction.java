@@ -6,7 +6,12 @@ import org.apache.flink.util.Collector;
 
 import java.sql.Timestamp;
 
-public class TimestampWindowFunction1 extends ProcessWindowFunction<Query1Result, Query1Result, Long, TimeWindow> {
+/**
+ * This simple processWindow Function is only used to
+ * change the timestamp from the one from the tuple
+ * to the timestamp at the start of the window.
+ */
+public class Query1ProcessWindowFunction extends ProcessWindowFunction<Query1Result, Query1Result, Long, TimeWindow> {
     @Override
     public void process(Long aLong, ProcessWindowFunction<Query1Result, Query1Result, Long, TimeWindow>.Context context, Iterable<Query1Result> iterable, Collector<Query1Result> collector) throws Exception {
         Timestamp ts = new Timestamp(context.window().getStart());

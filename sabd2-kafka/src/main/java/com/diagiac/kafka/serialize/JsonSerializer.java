@@ -1,13 +1,18 @@
 package com.diagiac.kafka.serialize;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
 
 import java.util.Map;
 
-public class JsonSerializer<T> implements Serializer {
+/**
+ * Serialize a generic object to a string of bytes
+ * @param <T>
+ */
+public class JsonSerializer<T> implements Serializer<T> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private byte[] ser;

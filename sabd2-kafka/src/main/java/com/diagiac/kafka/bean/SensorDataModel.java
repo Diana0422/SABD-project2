@@ -3,6 +3,10 @@ package com.diagiac.kafka.bean;
 import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
 
+/**
+ * Bean used to bind CSV column with class fields.
+ * The name of the field is equal to the name of the column.
+ */
 @Data
 public class SensorDataModel {
 
@@ -27,4 +31,8 @@ public class SensorDataModel {
     @CsvBindByName
     private String temperature;
 
+    public static SensorDataModel create(String value) {
+        // TODO
+        return null;
+    }
 }

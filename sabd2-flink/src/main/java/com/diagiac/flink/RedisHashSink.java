@@ -23,8 +23,13 @@ public abstract class RedisHashSink<T extends FlinkResult> extends RichSinkFunct
         jedis = new Jedis("redis-cache", 6379);
     }
 
+    /**
+     * Called for every FlinkResult that comes from Flink
+     * @param flinkResult The input record.
+     * @param context Additional context about the input record.
+     */
     @Override
-    public void invoke(T flinkResult, Context context) throws Exception {
+    public void invoke(T flinkResult, Context context) {
         if (!jedis.isConnected()) {
             jedis.connect();
         }
@@ -48,10 +53,9 @@ public abstract class RedisHashSink<T extends FlinkResult> extends RichSinkFunct
     /**
      * Closes the jedis connection.
      *
-     * @throws Exception
      */
     @Override
-    public void close() throws Exception {
+    public void close() {
         jedis.close();
     }
 }

@@ -12,12 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 public class Query2Result implements FlinkResult {
     private Timestamp timestamp;
-    private Long location1;
+    private Long location1; // this is the sensor relative to the max temperature location
     private Long location2;
     private Long location3;
     private Long location4;
     private Long location5;
-    private Long location6;
+    private Long location6; // this is the sensor id relative to the min temperature location
     private Long location7;
     private Long location8;
     private Long location9;
@@ -34,19 +34,19 @@ public class Query2Result implements FlinkResult {
     private Double temperature9;
     private Double temperature10;
 
-    public Query2Result(Timestamp timestamp, List<LocationTemperature> maxTemperatures, List<LocationTemperature> minTemperatures) {
+    public Query2Result(Timestamp timestamp, List<TemperatureMeasure> maxTemperatures, List<TemperatureMeasure> minTemperatures) {
         this.timestamp = timestamp;
-        location1 = maxTemperatures.get(4).getLocation();
-        location2 = maxTemperatures.get(3).getLocation();
-        location3 = maxTemperatures.get(2).getLocation();
-        location4 = maxTemperatures.get(1).getLocation();
-        location5 = maxTemperatures.get(0).getLocation();
+        location1 = maxTemperatures.get(4).getSensorId();
+        location2 = maxTemperatures.get(3).getSensorId();
+        location3 = maxTemperatures.get(2).getSensorId();
+        location4 = maxTemperatures.get(1).getSensorId();
+        location5 = maxTemperatures.get(0).getSensorId();
 
-        location6 = minTemperatures.get(0).getLocation();
-        location7 = minTemperatures.get(1).getLocation();
-        location8 = minTemperatures.get(2).getLocation();
-        location9 = minTemperatures.get(3).getLocation();
-        location10 = minTemperatures.get(4).getLocation();
+        location6 = minTemperatures.get(0).getSensorId();
+        location7 = minTemperatures.get(1).getSensorId();
+        location8 = minTemperatures.get(2).getSensorId();
+        location9 = minTemperatures.get(3).getSensorId();
+        location10 = minTemperatures.get(4).getSensorId();
 
         temperature1 = maxTemperatures.get(4).getAvgTemperature();
         temperature2 = maxTemperatures.get(3).getAvgTemperature();
@@ -59,6 +59,10 @@ public class Query2Result implements FlinkResult {
         temperature8 = minTemperatures.get(2).getAvgTemperature();
         temperature9 = minTemperatures.get(3).getAvgTemperature();
         temperature10 = minTemperatures.get(4).getAvgTemperature();
+    }
+
+    public Query2Result(Timestamp ts, Query2Result q2r){
+
     }
 
     @Override
@@ -89,7 +93,31 @@ public class Query2Result implements FlinkResult {
     }
 
     @Override
-    public String getKey(WindowEnum windowType) {
+    public String getRedisKey(WindowEnum windowType) {
         return windowType.name() + ":" + "query2";
+    }
+
+    public String toStringCSV() {
+        return timestamp.toString() + ","
+               + location1.toString() + ","
+               + temperature1.toString() + ","
+               + location2.toString() + ","
+               + temperature2.toString() + ","
+               + location3.toString() + ","
+               + temperature3.toString() + ","
+               + location4.toString() + ","
+               + temperature4.toString() + ","
+               + location5.toString() + ","
+               + temperature5.toString() + ","
+               + location6.toString() + ","
+               + temperature6.toString() + ","
+               + location7.toString() + ","
+               + temperature7.toString() + ","
+               + location8.toString() + ","
+               + temperature8.toString() + ","
+               + location9.toString() + ","
+               + temperature9.toString() + ","
+               + location10.toString() + ","
+               + temperature10 + "\n";
     }
 }

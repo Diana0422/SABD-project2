@@ -5,7 +5,10 @@ import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.bean.Query1Result;
 import org.apache.flink.api.common.functions.AggregateFunction;
 
-public class AverageAggregator implements AggregateFunction<Query1Record, Query1Aggregator, Query1Result> {
+/**
+ * Aggregator that computes mean of temperature for each individual sensor id less than 10000 (which is the key)
+ */
+public class AverageAggregate1 implements AggregateFunction<Query1Record, Query1Aggregator, Query1Result> {
     private static final long serialVersionUID = 33333333333333L;
 
     @Override
@@ -22,7 +25,7 @@ public class AverageAggregator implements AggregateFunction<Query1Record, Query1
 
     @Override
     public Query1Result getResult(Query1Aggregator query1Aggregator) {
-        return new Query1Result(query1Aggregator.getTimestamp(), query1Aggregator.getSensorId(), query1Aggregator.getCount(), query1Aggregator.getTemperatureSum() / query1Aggregator.getCount());
+        return new Query1Result(query1Aggregator);
     }
 
     @Override

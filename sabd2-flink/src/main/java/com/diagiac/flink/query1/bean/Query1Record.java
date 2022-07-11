@@ -6,6 +6,9 @@ import org.json.JSONObject;
 
 import java.sql.Timestamp;
 
+/**
+ * The bean extracted from Kafka source
+ */
 @Data
 public class Query1Record  implements FlinkRecord {
     private Long sensorId;

@@ -36,8 +36,8 @@ public class SensorProducer {
         Properties props = new Properties();
         props.put("broker.list", url);
         props.put("bootstrap.servers", url);
-        props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer"); // TODO forse cambio
-        props.put("value.serializer", JsonSerializer.class); // TODO forse cambio
+        props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
+        props.put("value.serializer", JsonSerializer.class);
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
 
         //create producer
@@ -47,6 +47,7 @@ public class SensorProducer {
             // Read data from file https://archive.sensor.community/csv_per_month/2022-05/2022-05_bmp180.zip
             // ReadCsv readCsv = new ReadCsv("data/2022-05_bmp180.csv");
             ReadCsv readCsv = new ReadCsv(dataset);
+            System.out.println("Start reading and ordering dataset");
             List<SensorDataModel> recordList = readCsv.readCSVFile();
             List<SensorDataModel> orderedList = orderByTimestamp(recordList);
             System.out.println("Start publishing");

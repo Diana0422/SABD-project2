@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
+/**
+ * Aggregator bean used in the AverageAggregator class.
+ */
 @Data
 public class Query1Aggregator {
     private Timestamp timestamp;
@@ -16,5 +19,9 @@ public class Query1Aggregator {
         this.sensorId = sensorId;
         this.count = count;
         this.temperatureSum = temperatureSum;
+    }
+
+    public double getAverageTemperature() {
+        return this.temperatureSum / count;
     }
 }

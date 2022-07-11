@@ -6,11 +6,14 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
+/**
+ * Simple bean to represent timestamp, avgTemperature and sensor id of a sensor
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LocationTemperature {
+public class TemperatureMeasure {
     private Timestamp timestamp;
     private Double avgTemperature;
-    private Long location;
+    private Long sensorId;
 }

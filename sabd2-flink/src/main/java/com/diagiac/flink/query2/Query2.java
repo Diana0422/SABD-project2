@@ -3,18 +3,24 @@ package com.diagiac.flink.query2;
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
-import com.diagiac.flink.query2.bean.LocationTemperature;
+import com.diagiac.flink.query2.bean.TemperatureMeasure;
 import com.diagiac.flink.query2.bean.Query2Record;
 import com.diagiac.flink.query2.bean.Query2Result;
 import com.diagiac.flink.query2.serialize.QueryRecordDeserializer2;
+import com.diagiac.flink.query2.serialize.QueryResultSerializer2;
 import com.diagiac.flink.query2.util.*;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.connector.base.DeliveryGuarantee;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
 import java.time.Duration;
+
+import static com.diagiac.flink.Constants.KAFKA_SINK_ENABLED;
 
 public class Query2 extends Query<Query2Record, Query2Result> {
 
@@ -36,11 +42,9 @@ public class Query2 extends Query<Query2Record, Query2Result> {
      * – every 1 week (event time)
      *
      * @param args
-     * @throws Exception
      */
-    public static void main(String[] args) throws Exception {
-//        var window = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
-        var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
+    public static void main(String[] args) {
+        var url = args.length > 0 ? args[0] : "127.0.0.1:29092";
         var q2 = new Query2(url);
         var d = q2.sourceConfigurationAndFiltering();
         var resultStream = q2.queryConfiguration(d, WindowEnum.Hour, "query2-hour"); // TODO: testare
@@ -70,7 +74,7 @@ public class Query2 extends Query<Query2Record, Query2Result> {
         */
 
         var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query2Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
-                .withTimestampAssigner((queryRecord2, l) -> queryRecord2.getTimestamp().getTime()), "Kafka Source")
+                        .withTimestampAssigner((queryRecord2, l) -> queryRecord2.getTimestamp().getTime()), "Kafka Source")
                 .setParallelism(1);
         return kafkaSource.filter(new RecordFilter2());
     }
@@ -80,7 +84,7 @@ public class Query2 extends Query<Query2Record, Query2Result> {
         return stream.keyBy(Query2Record::getLocation) // group by location
                 .window(windowAssigner.getWindowStrategy())// setting window strategy (hour, day, week)
                 .aggregate(new AverageAggregate2(), new Query2ProcessWindowFunction()) // compute mean incrementally for elements that arrive
-                .keyBy(LocationTemperature::getTimestamp) // group by timestamp, which is the same for all the element of the window
+                .keyBy(TemperatureMeasure::getTimestamp) // group by timestamp, which is the same for all the element of the window
                 .window(windowAssigner.getWindowStrategy()) // conceptually like windowAll, so it is parallelizable !!!
                 .aggregate(new RankAggregate(), new RankingProcessWindowFunction()) // compute the top5 and bottom5 for the single window, for each partition
                 .map(new MetricRichMapFunction<>()) // metrics (throughput and latency)
@@ -93,5 +97,20 @@ public class Query2 extends Query<Query2Record, Query2Result> {
         resultStream.addSink(new RedisHashSink2(windowType));
         /* Set up stdOut Sink */
         resultStream.print();
+
+        if (KAFKA_SINK_ENABLED) {
+            /* Set up Kafka sink */
+            var sink = KafkaSink.<Query2Result>builder()
+                    .setBootstrapServers(url)
+                    .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                            .setTopic("query2-" + windowType.name())
+                            .setKafkaValueSerializer(QueryResultSerializer2.class)
+                            .build()
+                    )
+                    .setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+                    .build();
+            resultStream.sinkTo(sink);
+        }
+
     }
 }

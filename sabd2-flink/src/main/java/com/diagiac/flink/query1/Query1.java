@@ -6,16 +6,21 @@ import com.diagiac.flink.WindowEnum;
 import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.bean.Query1Result;
 import com.diagiac.flink.query1.serialize.QueryRecordDeserializer1;
-import com.diagiac.flink.query1.utils.AverageAggregator;
+import com.diagiac.flink.query1.serialize.QueryResultSerializer1;
+import com.diagiac.flink.query1.utils.AverageAggregate1;
 import com.diagiac.flink.query1.utils.RecordFilter1;
-import com.diagiac.flink.query1.utils.TimestampWindowFunction1;
+import com.diagiac.flink.query1.utils.Query1ProcessWindowFunction;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 
 import java.time.Duration;
+
+import static com.diagiac.flink.Constants.KAFKA_SINK_ENABLED;
 
 public class Query1 extends Query<Query1Record, Query1Result> {
     public Query1(String url) {
@@ -40,12 +45,11 @@ public class Query1 extends Query<Query1Record, Query1Result> {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        var url = args.length > 1 ? args[1] : "127.0.0.1:29092";
-//        var windowAssigner = args.length > 0 ? WindowEnum.valueOf(args[0]) : WindowEnum.Hour;
+        var url = args.length > 0 ? args[0] : "127.0.0.1:29092";
         var q1 = new Query1(url);
         SingleOutputStreamOperator<Query1Record> d = q1.sourceConfigurationAndFiltering();
-        var resultStream = q1.queryConfiguration(d, WindowEnum.Hour, "query1-hour"); // TODO: testare
-        var resultStream2 = q1.queryConfiguration(d, WindowEnum.Week, "query1-week"); // TODO: testare
+        var resultStream = q1.queryConfiguration(d, WindowEnum.Hour, "query1-hour");
+        var resultStream2 = q1.queryConfiguration(d, WindowEnum.Week, "query1-week");
         var resultStream3 = q1.queryConfiguration(d, WindowEnum.FromStart, "query1-start");
         q1.sinkConfiguration(resultStream, WindowEnum.Hour);
         q1.sinkConfiguration(resultStream2, WindowEnum.Week);
@@ -76,18 +80,33 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         return stream
                 .keyBy(Query1Record::getSensorId) // Set the sensorid as the record's key
                 .window(windowAssigner.getWindowStrategy()) // Set the window strategy
-                .aggregate(new AverageAggregator(), new TimestampWindowFunction1()) // Aggregate function to calculate average, ProcessWindowFunction to unify timestamp
-                .map(new MetricRichMapFunction<>())
+                .aggregate(new AverageAggregate1(), new Query1ProcessWindowFunction())
+                .map(new MetricRichMapFunction<>())// Aggregate function to calculate average, ProcessWindowFunction to unify timestamp
                 .name(opName);
     }
 
     @Override
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream, WindowEnum windowType) {
         /* Set up the redis sink */
-        System.out.println("Setting sinks:");
         resultStream.addSink(new RedisHashSink1(windowType));
+        /* Set up metrics sink */
+        // resultStream.addSink(new MetricsSink("query1-" + windowType.name())); // TODO: forse inutile
         /* Set up stdOut Sink */
-        System.out.println("Setting sinks: sink stdout");
+
+        if (KAFKA_SINK_ENABLED) {
+            /* Set up Kafka sink */
+            var sink = KafkaSink.<Query1Result>builder()
+                    .setBootstrapServers(url)
+                    .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                            .setTopic("query1-" + windowType.name())
+                            .setKafkaValueSerializer(QueryResultSerializer1.class)
+                            .build()
+                    )
+                    .build();
+
+            resultStream.sinkTo(sink);
+        }
+        /* Set up stdOut Sink */
         resultStream.print();
     }
 }

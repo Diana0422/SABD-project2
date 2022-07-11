@@ -20,4 +20,8 @@ public class Query1Aggregator {
         this.count = count;
         this.temperatureSum = temperatureSum;
     }
+
+    public double getAverageTemperature() {
+        return this.temperatureSum / count;
+    }
 }

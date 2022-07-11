@@ -18,6 +18,13 @@ public class Query1Result implements FlinkResult {
     private Long count;
     private Double avgTemperature;
 
+    public Query1Result(Query1Aggregator query1Aggregator) {
+        this.timestamp = query1Aggregator.getTimestamp();
+        this.sensorId = query1Aggregator.getSensorId();
+        this.count = query1Aggregator.getCount();
+        this.avgTemperature = query1Aggregator.getAverageTemperature();
+    }
+
     @Override
     public String toString() {
         return "Query1Result{" +

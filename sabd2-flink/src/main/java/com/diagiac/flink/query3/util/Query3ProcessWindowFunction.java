@@ -9,16 +9,13 @@ import java.sql.Timestamp;
 
 /**
  * It simply updates the window timestamp at the start of the window in each CellAvgMedianTemperature object in the window
- * @param aLong The key for which this window is evaluated.
- * @param context The context in which the window is being evaluated.
- * @param iterable The elements in the window being evaluated.
- * @param collector A collector for emitting elements.
- * @throws Exception
  */
-public class AvgMedianProcessWindow extends ProcessWindowFunction<CellAvgMedianTemperature, CellAvgMedianTemperature, Integer, TimeWindow> {
+public class Query3ProcessWindowFunction extends ProcessWindowFunction<CellAvgMedianTemperature, CellAvgMedianTemperature, Integer, TimeWindow> {
     @Override
     public void process(Integer integer, ProcessWindowFunction<CellAvgMedianTemperature, CellAvgMedianTemperature, Integer, TimeWindow>.Context context, Iterable<CellAvgMedianTemperature> elements, Collector<CellAvgMedianTemperature> out) throws Exception {
         Timestamp ts = new Timestamp(context.window().getStart());
-        elements.iterator().forEachRemaining(cellAvgMedianTemperature -> out.collect(new CellAvgMedianTemperature(ts, cellAvgMedianTemperature.getAvgTemperature(), cellAvgMedianTemperature.getMedianTemperature(), cellAvgMedianTemperature.getCell())));
+        for (CellAvgMedianTemperature cellAvg : elements) {
+            out.collect(new CellAvgMedianTemperature(ts, cellAvg.getAvgTemperature(), cellAvg.getMedianTemperature(), cellAvg.getCell()));
+        }
     }
 }

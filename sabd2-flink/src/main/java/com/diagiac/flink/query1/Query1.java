@@ -7,9 +7,9 @@ import com.diagiac.flink.query1.bean.Query1Record;
 import com.diagiac.flink.query1.bean.Query1Result;
 import com.diagiac.flink.query1.serialize.QueryRecordDeserializer1;
 import com.diagiac.flink.query1.serialize.QueryResultSerializer1;
-import com.diagiac.flink.query1.utils.AverageAggregator;
+import com.diagiac.flink.query1.utils.AverageAggregate1;
 import com.diagiac.flink.query1.utils.RecordFilter1;
-import com.diagiac.flink.query1.utils.TimestampWindowFunction1;
+import com.diagiac.flink.query1.utils.Query1ProcessWindowFunction;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
 import org.apache.flink.connector.kafka.sink.KafkaSink;
@@ -80,7 +80,7 @@ public class Query1 extends Query<Query1Record, Query1Result> {
         return stream
                 .keyBy(Query1Record::getSensorId) // Set the sensorid as the record's key
                 .window(windowAssigner.getWindowStrategy()) // Set the window strategy
-                .aggregate(new AverageAggregator(), new TimestampWindowFunction1())
+                .aggregate(new AverageAggregate1(), new Query1ProcessWindowFunction())
                 .map(new MetricRichMapFunction<>())// Aggregate function to calculate average, ProcessWindowFunction to unify timestamp
                 .name(opName);
     }

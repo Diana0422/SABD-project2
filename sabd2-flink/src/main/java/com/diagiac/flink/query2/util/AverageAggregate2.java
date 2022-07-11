@@ -18,15 +18,6 @@ public class AverageAggregate2 implements AggregateFunction<Query2Record, Query2
     public Query2Accumulator add(Query2Record query2Record, Query2Accumulator query2Accumulator) {
         long aggCount = query2Record.getCount() + query2Accumulator.getCount();
         double aggTemp = query2Record.getTemperature() + query2Accumulator.getTemperatureSum();
-
-//        if (query2Accumulator.getLocation() == 0L) {
-//            query2Accumulator.setLocation(queryRecord2.getLocation());
-//        }
-//
-//        if (query2Accumulator.getSensorId() == 0L){
-//            query2Accumulator.setSensorId(queryRecord2.getSensor_id());
-//        }
-
         return new Query2Accumulator(query2Record.getTimestamp(), aggCount, aggTemp,
                 query2Record.getLocation(), query2Record.getSensor_id());
     }

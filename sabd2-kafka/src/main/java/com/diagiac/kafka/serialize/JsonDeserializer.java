@@ -1,6 +1,7 @@
 package com.diagiac.kafka.serialize;
 
 import com.diagiac.kafka.bean.SensorDataModel;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Deserializer;
 
@@ -13,6 +14,11 @@ import java.util.Map;
 public class JsonDeserializer implements Deserializer<SensorDataModel> {
     private final ObjectMapper objectMapper = new ObjectMapper();
     SensorDataModel dataModel;
+
+    public JsonDeserializer() {
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
     @Override
     public void configure(Map configs, boolean isKey) {}
 
@@ -28,4 +34,7 @@ public class JsonDeserializer implements Deserializer<SensorDataModel> {
         }
         return dataModel;
     }
+
+    @Override
+    public void close() {}
 }

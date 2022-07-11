@@ -42,19 +42,19 @@ services:
       dockerfile: publisher.Dockerfile
 
   ## SERVICE 4: RESULT CONSUMER APP ----------------------------------------
-#  consumer:
-#    container_name: consumer
-#    build:
-#      context: sabd2-kafka/consumer
-#      dockerfile: consumer.Dockerfile
-#    environment:
-#      ENVIRONMENT: local
-#      INTERNAL_KAFKA_ADDR: 'kafka:9092'
-#    volumes:
-#      - "./Results:/output"
-#    depends_on:
-#      - publisher
-#      - jobmanager
+  consumer:
+    container_name: consumer
+    build:
+      context: sabd2-kafka/consumer
+      dockerfile: consumer.Dockerfile
+    environment:
+      ENVIRONMENT: local
+      INTERNAL_KAFKA_ADDR: 'kafka:9092'
+    volumes:
+      - "./Results:/output"
+    depends_on:
+      - publisher
+      - jobmanager
 
   ## SERVICE5: APACHE FLINK -------------------------------------
   jobmanager:

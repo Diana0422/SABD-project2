@@ -43,7 +43,7 @@ public class ResultConsumer {
         props.put("group.id", "consumer");
         props.put("enable.auto.commit", "true");
         props.put("auto.offset.reset", "earliest");
-        props.put("key.deserializer", "org.apache.kafka.common.serialization.IntegerDeserializer");
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", StringDeserializer.class);
         try(Consumer<Long, String> consumer = new KafkaConsumer<>(props)){
             Map<String, FileWriter> topicWriterMap = new HashMap<>();

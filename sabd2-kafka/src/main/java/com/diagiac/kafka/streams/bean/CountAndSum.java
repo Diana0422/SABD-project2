@@ -1,4 +1,4 @@
-package com.diagiac.kafka.streams;
+package com.diagiac.kafka.streams.bean;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

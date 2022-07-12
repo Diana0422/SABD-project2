@@ -1,6 +1,6 @@
 package com.diagiac.kafka.serialize;
 
-import com.diagiac.kafka.streams.AvgResult;
+import com.diagiac.kafka.streams.bean.AvgResult;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serializer;
 

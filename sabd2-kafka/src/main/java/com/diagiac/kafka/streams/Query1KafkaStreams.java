@@ -1,21 +1,21 @@
 package com.diagiac.kafka.streams;
 
 import com.diagiac.kafka.bean.SensorDataModel;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.serialization.Deserializer;
-import org.apache.kafka.common.serialization.Serde;
+import com.diagiac.kafka.streams.bean.AvgResult;
+import com.diagiac.kafka.streams.bean.CountAndSum;
+import com.diagiac.kafka.streams.metrics.MetricsProcessorSupplier;
+import com.diagiac.kafka.streams.serde.AvgCountSerde;
+import com.diagiac.kafka.streams.serde.CustomSerde;
+import com.diagiac.kafka.streams.serde.WindowSerde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.*;
-import org.apache.kafka.streams.processor.TimestampExtractor;
 
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.Properties;
-import java.util.stream.Stream;
 
 public class Query1KafkaStreams {
     public static void main(String[] args) {
@@ -24,10 +24,12 @@ public class Query1KafkaStreams {
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "Query1-streams");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka://kafka:9092");
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass());
-        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, MySerde.class);
+        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, CustomSerde.class);
+        props.put("metrics.recording.level", "DEBUG");
+        props.put("metric.reporters", "org.apache.kafka.common.metrics.JmxReporter");
 
         final StreamsBuilder builder = new StreamsBuilder();
-        KStream<Integer, SensorDataModel> stream = builder.stream("input-records", Consumed.with(Serdes.Integer(), new MySerde())
+        KStream<Integer, SensorDataModel> stream = builder.stream("input-records", Consumed.with(Serdes.Integer(), new CustomSerde())
                 .withTimestampExtractor((record, partitionTime) -> {
                     SensorDataModel data = (SensorDataModel) record.value();
                     Timestamp ts = Timestamp.valueOf(data.getTimestamp().replace("T", " "));
@@ -70,6 +72,7 @@ public class Query1KafkaStreams {
                 .mapValues((longWindowed, countAndSum) -> new AvgResult(longWindowed.key(), new Timestamp(longWindowed.window().start()), countAndSum.getCount(), countAndSum.getSum()/ countAndSum.getCount()).toStringCSV());
 
 
+        outputHour.toStream().process(new MetricsProcessorSupplier("query1streams-Hour"));
         outputHour.toStream().to("query1streams-Hour", Produced.with(new WindowSerde(), Serdes.String()));
 
         /* 1 Week window */
@@ -80,7 +83,6 @@ public class Query1KafkaStreams {
                 .groupBy((aLong, sensorDataModel) -> Long.valueOf(sensorDataModel.getSensor_id()))
                 .windowedBy(tumblingWindowWeek)
                 .aggregate(() -> new CountAndSum(0L, 0.0), (aLong, sensorDataModel, countAndSum) -> {
-                    System.out.println("sensorDataModel = " + sensorDataModel);
                     countAndSum.setSum(countAndSum.getSum() + Double.parseDouble(sensorDataModel.getTemperature()));
                     countAndSum.setCount(countAndSum.getCount() + 1);
                     return countAndSum;
@@ -89,6 +91,7 @@ public class Query1KafkaStreams {
                 .mapValues((longWindowed, countAndSum) -> new AvgResult(longWindowed.key(), new Timestamp(longWindowed.window().start()), countAndSum.getCount(), countAndSum.getSum()/ countAndSum.getCount()).toStringCSV());
 
 
+        outputWeek.toStream().process(new MetricsProcessorSupplier("query1streams-Week"));
         outputWeek.toStream().to("query1streams-Week", Produced.with(new WindowSerde(), Serdes.String()));
 
         /* From start window */
@@ -106,7 +109,7 @@ public class Query1KafkaStreams {
                 .suppress(Suppressed.untilTimeLimit(Duration.ofDays(30), Suppressed.BufferConfig.unbounded()))
                 .mapValues((longWindowed, countAndSum) -> new AvgResult(longWindowed.key(), new Timestamp(longWindowed.window().start()), countAndSum.getCount(), countAndSum.getSum()/ countAndSum.getCount()).toStringCSV());
 
-
+        outputStart.toStream().process(new MetricsProcessorSupplier("query1streams-Start"));
         outputStart.toStream().to("query1streams-FromStart", Produced.with(new WindowSerde(), Serdes.String()));
 
         final KafkaStreams streams = new KafkaStreams(builder.build(), props);

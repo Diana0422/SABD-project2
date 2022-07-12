@@ -1,21 +1,18 @@
-package com.diagiac.kafka.streams;
+package com.diagiac.kafka.streams.serde;
 
 import com.diagiac.kafka.bean.SensorDataModel;
-import com.diagiac.kafka.serialize.CustomDeserializer;
 import com.diagiac.kafka.serialize.JsonDeserializer;
 import com.diagiac.kafka.serialize.JsonSerializer;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
 
 import java.util.Map;
 
-public class AvgCountSerde implements Serde<CountAndSum> {
+public class CustomSerde implements Serde<SensorDataModel> {
 
-    public AvgCountSerde() {}
+    public CustomSerde() {}
+
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
         Serde.super.configure(configs, isKey);
@@ -27,12 +24,10 @@ public class AvgCountSerde implements Serde<CountAndSum> {
     }
 
     @Override
-    public Serializer<CountAndSum> serializer() {
+    public Serializer<SensorDataModel> serializer() {
         return new JsonSerializer<>();
     }
 
     @Override
-    public Deserializer<CountAndSum> deserializer() {
-        return new CustomDeserializer<>(CountAndSum.class);
-    }
+    public Deserializer<SensorDataModel> deserializer() { return new JsonDeserializer(); }
 }

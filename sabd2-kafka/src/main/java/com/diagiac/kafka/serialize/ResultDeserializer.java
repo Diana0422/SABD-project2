@@ -1,7 +1,6 @@
 package com.diagiac.kafka.serialize;
 
-import com.diagiac.kafka.bean.SensorDataModel;
-import com.diagiac.kafka.streams.AvgResult;
+import com.diagiac.kafka.streams.bean.AvgResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Deserializer;

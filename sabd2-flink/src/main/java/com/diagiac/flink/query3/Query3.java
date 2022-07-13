@@ -7,10 +7,7 @@ import com.diagiac.flink.query3.bean.Query3Record;
 import com.diagiac.flink.query3.bean.Query3Result;
 import com.diagiac.flink.query3.serialize.QueryRecordDeserializer3;
 import com.diagiac.flink.query3.serialize.QueryResultSerializer3;
-import com.diagiac.flink.query3.util.AvgMedianAggregate3;
-import com.diagiac.flink.query3.util.CellMapper;
-import com.diagiac.flink.query3.util.FinalAllProcessWindowFunction;
-import com.diagiac.flink.query3.util.RecordFilter3;
+import com.diagiac.flink.query3.util.*;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
@@ -87,7 +84,7 @@ public class Query3 extends Query<Query3Record, Query3Result> {
                 .filter(a -> a.getCell() != null)// we filter out all records with null cell
                 .keyBy(query3Cell -> query3Cell.getCell().getId()) // grouping by id of cell
                 .window(windowAssigner.getWindowStrategy()) //setting the desired window strategy
-                .aggregate(new AvgMedianAggregate3()) // aggregating averages and medians. This is parallelizable
+                .aggregate(new AvgMedianAggregate3(), new Query3ProcessWindowFunction()) // aggregating averages and medians. This is parallelizable
                 .windowAll(windowAssigner.getWindowStrategy())
                 .process(new FinalAllProcessWindowFunction())
                 .map(new MetricRichMapFunction<>())

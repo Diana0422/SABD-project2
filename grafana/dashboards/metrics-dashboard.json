@@ -24,8 +24,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 3,
-  "iteration": 1657564459309,
+  "id": 1,
+  "iteration": 1657699100743,
   "links": [
     {
       "icon": "info",
@@ -50,7 +50,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "aU09gB67k"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -124,7 +124,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "aU09gB67k"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "builder",
           "expr": "flink_taskmanager_job_task_operator_throughput{operator_name=~\"$Show\"}",
@@ -139,7 +139,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "aU09gB67k"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -213,10 +213,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "aU09gB67k"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "builder",
           "expr": "flink_taskmanager_job_task_operator_latency{operator_name=~\"$Show\"}",
+          "interval": "",
           "legendFormat": "{{operator_name}}",
           "range": true,
           "refId": "A"
@@ -315,6 +316,6 @@
   "timezone": "browser",
   "title": "Prometheus 2.0 Stats",
   "uid": "UDdpyzz7z",
-  "version": 18,
+  "version": 4,
   "weekStart": ""
 }

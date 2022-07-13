@@ -92,7 +92,7 @@ public class Query3 extends Query<Query3Record, Query3Result> {
                 .filter(a -> a.getCell() != null)// we filter out all records with null cell
                 .keyBy(query3Cell -> query3Cell.getCell().getId()) // grouping by id of cell
                 .window(windowAssigner.getWindowStrategy()) //setting the desired window strategy
-                .aggregate(new AvgMedianAggregate3(), new Query3ProcessWindowFunction()) // aggregating averages and medians. This is parallelizable
+                .aggregate(new AvgMedianAggregate3()) // aggregating averages and medians. This is parallelizable
                 .keyBy(CellAvgMedianTemperature::getTimestamp)
                 .window(windowAssigner.getWindowStrategy())
                 .process(new FinalProcessWindowFunction())

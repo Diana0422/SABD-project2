@@ -54,63 +54,17 @@ public class Query1KafkaStreams {
             }
         });
 
-
-
         /* 1 hour window */
         Duration windowSizeHour = Duration.ofMinutes(60);
-        TimeWindows tumblingWindowHour = TimeWindows.ofSizeWithNoGrace(windowSizeHour);
-
-        var outputHour = filtered
-                .groupBy((aLong, sensorDataModel) -> Long.valueOf(sensorDataModel.getSensor_id()))
-                .windowedBy(tumblingWindowHour)
-                .aggregate(() -> new CountAndSum(0L, 0.0), (aLong, sensorDataModel, countAndSum) -> {
-                    countAndSum.setSum(countAndSum.getSum() + Double.parseDouble(sensorDataModel.getTemperature()));
-                    countAndSum.setCount(countAndSum.getCount() + 1);
-                    return countAndSum;
-                }, Materialized.with(Serdes.Long(), new AvgCountSerde()))
-                .suppress(Suppressed.untilTimeLimit(Duration.ofMinutes(60), Suppressed.BufferConfig.unbounded()))
-                .mapValues((longWindowed, countAndSum) -> new AvgResult(longWindowed.key(), new Timestamp(longWindowed.window().start()), countAndSum.getCount(), countAndSum.getSum()/ countAndSum.getCount()).toStringCSV());
-
-
-        outputHour.toStream().process(new MetricsProcessorSupplier("query1streams-Hour"));
-        outputHour.toStream().to("query1streams-Hour", Produced.with(new WindowSerde(), Serdes.String()));
+        queryKafka(filtered, windowSizeHour, "query1streams-Hour");
 
         /* 1 Week window */
         Duration windowSizeWeek = Duration.ofDays(7);
-        TimeWindows tumblingWindowWeek = TimeWindows.ofSizeWithNoGrace(windowSizeWeek);
-
-        var outputWeek = filtered
-                .groupBy((aLong, sensorDataModel) -> Long.valueOf(sensorDataModel.getSensor_id()))
-                .windowedBy(tumblingWindowWeek)
-                .aggregate(() -> new CountAndSum(0L, 0.0), (aLong, sensorDataModel, countAndSum) -> {
-                    countAndSum.setSum(countAndSum.getSum() + Double.parseDouble(sensorDataModel.getTemperature()));
-                    countAndSum.setCount(countAndSum.getCount() + 1);
-                    return countAndSum;
-                }, Materialized.with(Serdes.Long(), new AvgCountSerde()))
-                .suppress(Suppressed.untilTimeLimit(Duration.ofDays(7), Suppressed.BufferConfig.unbounded()))
-                .mapValues((longWindowed, countAndSum) -> new AvgResult(longWindowed.key(), new Timestamp(longWindowed.window().start()), countAndSum.getCount(), countAndSum.getSum()/ countAndSum.getCount()).toStringCSV());
-
-
-        outputWeek.toStream().process(new MetricsProcessorSupplier("query1streams-Week"));
-        outputWeek.toStream().to("query1streams-Week", Produced.with(new WindowSerde(), Serdes.String()));
+        queryKafka(filtered, windowSizeWeek, "query1streams-Week");
 
         /* From start window */
         Duration windowSizeMonth = Duration.ofDays(30);
-        TimeWindows tumblingWindowMonth = TimeWindows.ofSizeWithNoGrace(windowSizeMonth);
-
-        var outputStart = filtered
-                .groupBy((aLong, sensorDataModel) -> Long.valueOf(sensorDataModel.getSensor_id()))
-                .windowedBy(tumblingWindowMonth)
-                .aggregate(() -> new CountAndSum(0L, 0.0), (aLong, sensorDataModel, countAndSum) -> {
-                    countAndSum.setSum(countAndSum.getSum() + Double.parseDouble(sensorDataModel.getTemperature()));
-                    countAndSum.setCount(countAndSum.getCount() + 1);
-                    return countAndSum;
-                }, Materialized.with(Serdes.Long(), new AvgCountSerde()))
-                .suppress(Suppressed.untilTimeLimit(Duration.ofDays(30), Suppressed.BufferConfig.unbounded()))
-                .mapValues((longWindowed, countAndSum) -> new AvgResult(longWindowed.key(), new Timestamp(longWindowed.window().start()), countAndSum.getCount(), countAndSum.getSum()/ countAndSum.getCount()).toStringCSV());
-
-        outputStart.toStream().process(new MetricsProcessorSupplier("query1streams-Start"));
-        outputStart.toStream().to("query1streams-FromStart", Produced.with(new WindowSerde(), Serdes.String()));
+        queryKafka(filtered, windowSizeMonth, "query1streams-FromStart");
 
         final KafkaStreams streams = new KafkaStreams(builder.build(), props);
 
@@ -119,5 +73,25 @@ public class Query1KafkaStreams {
 
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
 
+    }
+
+    public static void queryKafka(KStream<Integer, SensorDataModel> filteredKStream, Duration windowSize, String queryName) {
+        TimeWindows tumblingWindow = TimeWindows.ofSizeWithNoGrace(windowSize);
+
+        var kStreamOutput = filteredKStream
+                .groupBy((aLong, sensorDataModel) -> Long.valueOf(sensorDataModel.getSensor_id()))
+                .windowedBy(tumblingWindow)
+                .aggregate(() -> new CountAndSum(0L, 0.0), (aLong, sensorDataModel, countAndSum) -> {
+                    countAndSum.setSum(countAndSum.getSum() + Double.parseDouble(sensorDataModel.getTemperature()));
+                    countAndSum.setCount(countAndSum.getCount() + 1);
+                    return countAndSum;
+                }, Materialized.with(Serdes.Long(), new AvgCountSerde()))
+                // suppress avoids printing partial results
+                .suppress(Suppressed.untilTimeLimit(windowSize, Suppressed.BufferConfig.unbounded()))
+                .mapValues((longWindowed, countAndSum) -> new AvgResult(longWindowed.key(), new Timestamp(longWindowed.window().start()), countAndSum.getCount(), countAndSum.getSum() / countAndSum.getCount())
+                        .toStringCSV());
+
+        kStreamOutput.toStream().process(new MetricsProcessorSupplier(queryName));
+        kStreamOutput.toStream().to(queryName, Produced.with(new WindowSerde(), Serdes.String()));
     }
 }

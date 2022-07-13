@@ -45,7 +45,7 @@ public class ResultConsumer {
         props.put("auto.offset.reset", "earliest");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", StringDeserializer.class);
-        try(Consumer<Long, String> consumer = new KafkaConsumer<>(props)){
+        try (Consumer<Long, String> consumer = new KafkaConsumer<>(props)) {
             Map<String, FileWriter> topicWriterMap = new HashMap<>();
             consumer.subscribe(Pattern.compile("^(query).*$"));
 
@@ -64,14 +64,13 @@ public class ResultConsumer {
                             if (fileWriter == null) {
                                 log.log(Level.INFO, "New topic: {0}", topic);
                                 fileWriter = new FileWriter(outputPath + "/" + topic + ".csv", false);
-                                String key = topic.substring(0,6)+"-header";
+                                String key = topic.substring(0, 6) + "-header";
                                 String header = headers.get(key);
                                 fileWriter.write(header);
                                 fileWriter.flush();
                                 topicWriterMap.put(topic, fileWriter);
                             }
                             fileWriter.write(longStringConsumerRecord.value());
-
                             fileWriter.flush();
                         } catch (IOException e) {
                             e.printStackTrace();

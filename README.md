@@ -71,8 +71,8 @@ where `num-query` is the number of the query to execute:
 * **Grafana**: http://localhost:8000/
 
 You can find the **Grafana Dashboards** of the project at:
-* **performances**:
-* **query results**:
+* **performances**: http://localhost:8000/d/UDdpyzz7z/prometheus-2-0-stats?orgId=1&refresh=5s
+* **query results**: http://localhost:8000/d/2J8ln097k/sabd-project-2?orgId=1&var-redis=Redis-Cache&var-sensor=8762&var-window=Hour
 
 ## Frameworks:
 * **Kafka**: used for data ingestion

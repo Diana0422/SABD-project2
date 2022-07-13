@@ -30,9 +30,4 @@ public class SensorDataModel {
     private String pressure_sealevel;
     @CsvBindByName
     private String temperature;
-
-    public static SensorDataModel create(String value) {
-        // TODO
-        return null;
-    }
 }

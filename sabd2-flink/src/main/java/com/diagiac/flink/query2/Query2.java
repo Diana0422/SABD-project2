@@ -49,9 +49,9 @@ public class Query2 extends Query<Query2Record, Query2Result> {
         var url = args.length > 0 ? args[0] : "127.0.0.1:29092";
         var q2 = new Query2(url);
         var d = q2.sourceConfigurationAndFiltering();
-        var resultStream = q2.queryConfiguration(d, WindowEnum.Hour, "query2-hour"); // TODO: testare
-        var resultStream2 = q2.queryConfiguration(d, WindowEnum.Day, "query2-day"); // TODO: testare
-        var resultStream3 = q2.queryConfiguration(d, WindowEnum.Week, "query2-week"); // TODO: testare
+        var resultStream = q2.queryConfiguration(d, WindowEnum.Hour, "query2-hour");
+        var resultStream2 = q2.queryConfiguration(d, WindowEnum.Day, "query2-day");
+        var resultStream3 = q2.queryConfiguration(d, WindowEnum.Week, "query2-week");
         q2.sinkConfiguration(resultStream, WindowEnum.Hour);
         q2.sinkConfiguration(resultStream2, WindowEnum.Day);
         q2.sinkConfiguration(resultStream3, WindowEnum.Week);

@@ -55,9 +55,9 @@ public class Query3 extends Query<Query3Record, Query3Result> {
         var url = args.length > 0 ? args[0] : "127.0.0.1:29092";
         var q3 = new Query3(url);
         SingleOutputStreamOperator<Query3Record> d = q3.sourceConfigurationAndFiltering();
-        var resultStream = q3.queryConfiguration(d, WindowEnum.Hour, "query3-hour"); // TODO: testare
-        var resultStream2 = q3.queryConfiguration(d, WindowEnum.Day, "query3-day"); // TODO: testare
-        var resultStream3 = q3.queryConfiguration(d, WindowEnum.Week, "query3-week"); // TODO: testare
+        var resultStream = q3.queryConfiguration(d, WindowEnum.Hour, "query3-hour");
+        var resultStream2 = q3.queryConfiguration(d, WindowEnum.Day, "query3-day");
+        var resultStream3 = q3.queryConfiguration(d, WindowEnum.Week, "query3-week");
         q3.sinkConfiguration(resultStream, WindowEnum.Hour);
         q3.sinkConfiguration(resultStream2, WindowEnum.Day);
         q3.sinkConfiguration(resultStream3, WindowEnum.Week);
@@ -97,9 +97,9 @@ public class Query3 extends Query<Query3Record, Query3Result> {
     @Override
     public void sinkConfiguration(SingleOutputStreamOperator<Query3Result> resultStream, WindowEnum windowType) {
         /* Set up the redis sink */
-        resultStream.addSink(new RedisHashSink3(windowType));
+        resultStream.addSink(new RedisHashSink3(windowType)).setParallelism(1);
         /* Set up stdOut Sink */
-        resultStream.print();
+        resultStream.print().setParallelism(1);
         if (KAFKA_SINK_ENABLED) {
             /* Set up Kafka sink */
             var sink = KafkaSink.<Query3Result>builder()

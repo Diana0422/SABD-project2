@@ -19,8 +19,6 @@ public class SensorProducer {
     public static final Logger logger = Logger.getLogger(SensorProducer.class.getSimpleName());
 
     public static void main(String[] args) throws InterruptedException {
-
-        // TODO: leggere i file da conf.properties
         var dataset = (args.length > 0 ? args[0] : "sabd2-kafka/2022-05_bmp180.csv");
         if (!new File(dataset).exists()) {
             System.out.println("The dataset doesn't exists, download and extract it from https://archive.sensor.community/csv_per_month/2022-05/2022-05_bmp180.zip");

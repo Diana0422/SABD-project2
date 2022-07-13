@@ -82,16 +82,15 @@ public class Query1 extends Query<Query1Record, Query1Result> {
                 .window(windowAssigner.getWindowStrategy()) // Set the window strategy
                 .aggregate(new AverageAggregate1(), new Query1ProcessWindowFunction())
                 .map(new MetricRichMapFunction<>())// Aggregate function to calculate average, ProcessWindowFunction to unify timestamp
-                .setParallelism(1)
                 .name(opName);
     }
 
     @Override
     public void sinkConfiguration(SingleOutputStreamOperator<Query1Result> resultStream, WindowEnum windowType) {
         /* Set up the redis sink */
-        resultStream.addSink(new RedisHashSink1(windowType)).setParallelism(1);
+        resultStream.addSink(new RedisHashSink1(windowType));
         /* Set up stdOut Sink */
-        resultStream.print().setParallelism(1);
+        resultStream.print();
 
         if (KAFKA_SINK_ENABLED) {
             /* Set up Kafka sink */
@@ -106,6 +105,5 @@ public class Query1 extends Query<Query1Record, Query1Result> {
 
             resultStream.sinkTo(sink);
         }
-        /* Set up stdOut Sink */
     }
 }

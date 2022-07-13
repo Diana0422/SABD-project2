@@ -3,12 +3,14 @@ package com.diagiac.flink.query2;
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
-import com.diagiac.flink.query2.bean.TemperatureMeasure;
 import com.diagiac.flink.query2.bean.Query2Record;
 import com.diagiac.flink.query2.bean.Query2Result;
 import com.diagiac.flink.query2.serialize.QueryRecordDeserializer2;
 import com.diagiac.flink.query2.serialize.QueryResultSerializer2;
-import com.diagiac.flink.query2.util.*;
+import com.diagiac.flink.query2.util.AverageAggregate2;
+import com.diagiac.flink.query2.util.Query2ProcessWindowFunction;
+import com.diagiac.flink.query2.util.RankAggregate;
+import com.diagiac.flink.query2.util.RecordFilter2;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
@@ -84,9 +86,8 @@ public class Query2 extends Query<Query2Record, Query2Result> {
         return stream.keyBy(Query2Record::getLocation) // group by location
                 .window(windowAssigner.getWindowStrategy())// setting window strategy (hour, day, week)
                 .aggregate(new AverageAggregate2(), new Query2ProcessWindowFunction()) // compute mean incrementally for elements that arrive
-                .keyBy(TemperatureMeasure::getTimestamp) // group by timestamp, which is the same for all the element of the window
-                .window(windowAssigner.getWindowStrategy()) // conceptually like windowAll, so it is parallelizable !!!
-                .aggregate(new RankAggregate(), new RankingProcessWindowFunction()) // compute the top5 and bottom5 for the single window, for each partition
+                .windowAll(windowAssigner.getWindowStrategy())
+                .aggregate(new RankAggregate()) // compute the top5 and bottom5 for the single window, for each partition
                 .map(new MetricRichMapFunction<>()) // metrics (throughput and latency)
                 .name(opName);
     }

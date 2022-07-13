@@ -3,12 +3,14 @@ package com.diagiac.flink.query3;
 import com.diagiac.flink.MetricRichMapFunction;
 import com.diagiac.flink.Query;
 import com.diagiac.flink.WindowEnum;
-import com.diagiac.flink.query3.bean.CellAvgMedianTemperature;
 import com.diagiac.flink.query3.bean.Query3Record;
 import com.diagiac.flink.query3.bean.Query3Result;
 import com.diagiac.flink.query3.serialize.QueryRecordDeserializer3;
 import com.diagiac.flink.query3.serialize.QueryResultSerializer3;
-import com.diagiac.flink.query3.util.*;
+import com.diagiac.flink.query3.util.AvgMedianAggregate3;
+import com.diagiac.flink.query3.util.CellMapper;
+import com.diagiac.flink.query3.util.FinalAllProcessWindowFunction;
+import com.diagiac.flink.query3.util.RecordFilter3;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
@@ -72,13 +74,6 @@ public class Query3 extends Query<Query3Record, Query3Result> {
                 .setDeserializer(KafkaRecordDeserializationSchema.valueOnly(QueryRecordDeserializer3.class))
                 .build();
 
-        /* TODO: remove this // Checkpointing - Start a checkpoint every 1000 ms
-        env.enableCheckpointing(1000);
-        env.getCheckpointConfig().setTolerableCheckpointFailureNumber(2);
-        env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
-        env.getCheckpointConfig().setCheckpointStorage("file:///tmp/frauddetection/checkpoint");
-        */
-
 
         var kafkaSource = env.fromSource(source, WatermarkStrategy.<Query3Record>forBoundedOutOfOrderness(Duration.ofSeconds(60))
                         .withTimestampAssigner((query3Record, l) -> query3Record.getTimestamp().getTime()), "Kafka Source")
@@ -93,9 +88,8 @@ public class Query3 extends Query<Query3Record, Query3Result> {
                 .keyBy(query3Cell -> query3Cell.getCell().getId()) // grouping by id of cell
                 .window(windowAssigner.getWindowStrategy()) //setting the desired window strategy
                 .aggregate(new AvgMedianAggregate3()) // aggregating averages and medians. This is parallelizable
-                .keyBy(CellAvgMedianTemperature::getTimestamp)
-                .window(windowAssigner.getWindowStrategy())
-                .process(new FinalProcessWindowFunction())
+                .windowAll(windowAssigner.getWindowStrategy())
+                .process(new FinalAllProcessWindowFunction())
                 .map(new MetricRichMapFunction<>())
                 .name(opName);
     }

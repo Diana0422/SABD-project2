@@ -18,7 +18,7 @@ public class GeoSegmentTest {
         GeoGrid g = GeoGrid.getInstance();
 
         // ==== horizontal start end included ====
-        GeoSegment horizSegment = g.getCells().get(15).getIncludedSegments().get(1);
+        GeoSegment horizSegment = g.getCells().get(3).getIncludedSegments().get(1);
         // internal
         assertTrue(horizSegment.containsPoint(new GeoPoint(53.0, 26.0)));
         // border right and left
@@ -28,7 +28,7 @@ public class GeoSegmentTest {
         assertFalse(horizSegment.containsPoint(new GeoPoint(53.0, 31.0)));
 
         // vertical cell 1
-        GeoSegment seg1 = g.getCells().get(1).getIncludedSegments().get(1);
+        GeoSegment seg1 = g.getCells().get(13).getIncludedSegments().get(1);
         // internal
         assertTrue(seg1.containsPoint(new GeoPoint(40.0, 9.0)));
         // border included

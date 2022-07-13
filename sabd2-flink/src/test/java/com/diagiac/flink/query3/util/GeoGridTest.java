@@ -53,50 +53,50 @@ public class GeoGridTest {
     public void getContainingCellTest(){
         GeoGrid geoGrid = GeoGrid.getInstance();
         // internal to cell 0
-        assertEquals(geoGrid.getCells().get(0), geoGrid.getContainingCell(new GeoPoint(40.57312, 5.5434)).orElse(null));
+        assertEquals(geoGrid.getCells().get(12), geoGrid.getContainingCell(new GeoPoint(40.57312, 5.5434)).orElse(null));
         // external to all cell
         assertEquals(Optional.empty(), geoGrid.getContainingCell(new GeoPoint(44.91019, -5.10112))); // 44.91019, -5.10112
         // borders 0
-        assertEquals(geoGrid.getCells().get(0), geoGrid.getContainingCell(new GeoPoint(38.0, 6.0)).orElse(null)); // DOWN 0
-        assertEquals(geoGrid.getCells().get(0), geoGrid.getContainingCell(new GeoPoint(40.0, 2.0)).orElse(null)); // LEFT 0
-        assertEquals(geoGrid.getCells().get(4), geoGrid.getContainingCell(new GeoPoint(43.0, 6.0)).orElse(null)); // UP 0 -> 4
-        assertEquals(geoGrid.getCells().get(1), geoGrid.getContainingCell(new GeoPoint(40.0, 9.0)).orElse(null)); // RIGHT 0 -> 1
+        assertEquals(geoGrid.getCells().get(12), geoGrid.getContainingCell(new GeoPoint(38.0, 6.0)).orElse(null)); // DOWN 0
+        assertEquals(geoGrid.getCells().get(12), geoGrid.getContainingCell(new GeoPoint(40.0, 2.0)).orElse(null)); // LEFT 0
+        assertEquals(geoGrid.getCells().get(8), geoGrid.getContainingCell(new GeoPoint(43.0, 6.0)).orElse(null)); // UP 0 -> 4
+        assertEquals(geoGrid.getCells().get(13), geoGrid.getContainingCell(new GeoPoint(40.0, 9.0)).orElse(null)); // RIGHT 0 -> 1
         // border 3 SOUTH AND EAST
-        assertEquals(geoGrid.getCells().get(3), geoGrid.getContainingCell(new GeoPoint(38.0, 28.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(3), geoGrid.getContainingCell(new GeoPoint(40.0, 30.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(15), geoGrid.getContainingCell(new GeoPoint(38.0, 28.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(15), geoGrid.getContainingCell(new GeoPoint(40.0, 30.0)).orElse(null));
         // border 7 SOUTH AND EAST
-        assertEquals(geoGrid.getCells().get(7), geoGrid.getContainingCell(new GeoPoint(43.0, 28.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(7), geoGrid.getContainingCell(new GeoPoint(46.0, 30.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(11), geoGrid.getContainingCell(new GeoPoint(43.0, 28.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(11), geoGrid.getContainingCell(new GeoPoint(46.0, 30.0)).orElse(null));
         // border 11 SOURH AND EAST AND WEST
-        assertEquals(geoGrid.getCells().get(11), geoGrid.getContainingCell(new GeoPoint(48.0, 28.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(11), geoGrid.getContainingCell(new GeoPoint(50.0, 30.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(11), geoGrid.getContainingCell(new GeoPoint(50.0, 23.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(7), geoGrid.getContainingCell(new GeoPoint(48.0, 28.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(7), geoGrid.getContainingCell(new GeoPoint(50.0, 30.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(7), geoGrid.getContainingCell(new GeoPoint(50.0, 23.0)).orElse(null));
         // border 15 SOUTH AND EAST AND WEST AND NORTH
-        assertEquals(geoGrid.getCells().get(15), geoGrid.getContainingCell(new GeoPoint(53.0, 28.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(15), geoGrid.getContainingCell(new GeoPoint(56.0, 30.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(15), geoGrid.getContainingCell(new GeoPoint(56.0, 23.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(15), geoGrid.getContainingCell(new GeoPoint(58.0, 27.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(3), geoGrid.getContainingCell(new GeoPoint(53.0, 28.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(3), geoGrid.getContainingCell(new GeoPoint(56.0, 30.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(3), geoGrid.getContainingCell(new GeoPoint(56.0, 23.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(3), geoGrid.getContainingCell(new GeoPoint(58.0, 27.0)).orElse(null));
         // border 14 SOUTH AND WEST AND NORTH
-        assertEquals(geoGrid.getCells().get(14), geoGrid.getContainingCell(new GeoPoint(53.0, 20.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(14), geoGrid.getContainingCell(new GeoPoint(56.0, 16.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(14), geoGrid.getContainingCell(new GeoPoint(58.0, 20.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(2), geoGrid.getContainingCell(new GeoPoint(53.0, 20.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(2), geoGrid.getContainingCell(new GeoPoint(56.0, 16.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(2), geoGrid.getContainingCell(new GeoPoint(58.0, 20.0)).orElse(null));
 
         // border 13 SOUTH AND WEST AND NORTH
-        assertEquals(geoGrid.getCells().get(13), geoGrid.getContainingCell(new GeoPoint(53.0, 10.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(13), geoGrid.getContainingCell(new GeoPoint(56.0, 9.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(13), geoGrid.getContainingCell(new GeoPoint(58.0, 10.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(1), geoGrid.getContainingCell(new GeoPoint(53.0, 10.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(1), geoGrid.getContainingCell(new GeoPoint(56.0, 9.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(1), geoGrid.getContainingCell(new GeoPoint(58.0, 10.0)).orElse(null));
 
         // border 13 SOUTH AND WEST AND NORTH
-        assertEquals(geoGrid.getCells().get(12), geoGrid.getContainingCell(new GeoPoint(53.0, 6.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(12), geoGrid.getContainingCell(new GeoPoint(56.0, 2.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(12), geoGrid.getContainingCell(new GeoPoint(58.0, 6.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(0), geoGrid.getContainingCell(new GeoPoint(53.0, 6.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(0), geoGrid.getContainingCell(new GeoPoint(56.0, 2.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(0), geoGrid.getContainingCell(new GeoPoint(58.0, 6.0)).orElse(null));
 
         // 4 outside corner
-        assertEquals(geoGrid.getCells().get(0), geoGrid.getContainingCell(new GeoPoint(38.0, 2.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(3), geoGrid.getContainingCell(new GeoPoint(38.0, 30.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(12), geoGrid.getContainingCell(new GeoPoint(58.0, 2.0)).orElse(null));
-        assertEquals(geoGrid.getCells().get(15), geoGrid.getContainingCell(new GeoPoint(58.0, 30.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(12), geoGrid.getContainingCell(new GeoPoint(38.0, 2.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(15), geoGrid.getContainingCell(new GeoPoint(38.0, 30.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(0), geoGrid.getContainingCell(new GeoPoint(58.0, 2.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(3), geoGrid.getContainingCell(new GeoPoint(58.0, 30.0)).orElse(null));
 
-        assertEquals(geoGrid.getCells().get(10), geoGrid.getContainingCell(new GeoPoint(51.0, 17.0)).orElse(null));
+        assertEquals(geoGrid.getCells().get(6), geoGrid.getContainingCell(new GeoPoint(51.0, 17.0)).orElse(null));
     }
 }
